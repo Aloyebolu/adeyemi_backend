@@ -1,0 +1,117 @@
+[
+  {
+    "_id": "6973458b2117c38191889396",
+    "student": "69711bff46dc170b985f993b",
+    "courses": [
+      "692fb82c1cddeff2e93a32ca",
+      "692fb82c1cddeff2e93a32c9",
+      "692fb82c1cddeff2e93a32eb"
+    ],
+    "semester": "695d151800b837433ca64c1e",
+    "session": "2025/2026",
+    "level": 100,
+    "totalUnits": 0,
+    "status": "Approved",
+    "attamptNumber": 1,
+    "approvedBy": null,
+    "carryOverId": null,
+    "notes": "Auto-created during result upload for course: undefined; Added undefined during result upload; Added undefined during result upload",
+    "registeredByHod": null,
+    "department": "692857cfc3c2904e51b75554",
+    "createdAt": "2026-01-23T09:55:23.639Z",
+    "updatedAt": "2026-01-26T06:36:58.597Z",
+    "__v": 2
+  },
+  {
+    "_id": "6973458b2117c381918893a4",
+    "student": "69711c0146dc170b985f996d",
+    "courses": [
+      "692fb82c1cddeff2e93a32ca",
+      "692fb82c1cddeff2e93a32c9",
+      "692fb82c1cddeff2e93a32eb"
+    ],
+    "semester": "695d151800b837433ca64c1e",
+    "session": "2025/2026",
+    "level": 100,
+    "totalUnits": 0,
+    "status": "Approved",
+    "attamptNumber": 1,
+    "approvedBy": null,
+    "carryOverId": null,
+    "notes": "Auto-created during result upload for course: undefined; Added undefined during result upload; Added undefined during result upload",
+    "registeredByHod": null,
+    "department": "692857cfc3c2904e51b75554",
+    "createdAt": "2026-01-23T09:55:23.760Z",
+    "updatedAt": "2026-01-26T06:36:58.643Z",
+    "__v": 2
+  },
+  {
+    "_id": "6973458b2117c381918893b2",
+    "student": "69711c0146dc170b985f9977",
+    "courses": [
+      "692fb82c1cddeff2e93a32ca",
+      "692fb82c1cddeff2e93a32c9",
+      "692fb82c1cddeff2e93a32eb"
+    ],
+    "semester": "695d151800b837433ca64c1e",
+    "session": "2025/2026",
+    "level": 100,
+    "totalUnits": 0,
+    "status": "Approved",
+    "attamptNumber": 1,
+    "approvedBy": null,
+    "carryOverId": null,
+    "notes": "Auto-created during result upload for course: undefined; Added undefined during result upload; Added undefined during result upload",
+    "registeredByHod": null,
+    "department": "692857cfc3c2904e51b75554",
+    "createdAt": "2026-01-23T09:55:23.795Z",
+    "updatedAt": "2026-01-26T06:36:58.688Z",
+    "__v": 2
+  },
+  {
+    "_id": "6973458b2117c381918893c0",
+    "student": "69711c0146dc170b985f9995",
+    "courses": [
+      "692fb82c1cddeff2e93a32ca",
+      "692fb82c1cddeff2e93a32c9",
+      "692fb82c1cddeff2e93a32eb"
+    ],
+    "semester": "695d151800b837433ca64c1e",
+    "session": "2025/2026",
+    "level": 100,
+    "totalUnits": 0,
+    "status": "Approved",
+    "attamptNumber": 1,
+    "approvedBy": null,
+    "carryOverId": null,
+    "notes": "Auto-created during result upload for course: undefined; Added undefined during result upload; Added undefined during result upload",
+    "registeredByHod": null,
+    "department": "692857cfc3c2904e51b75554",
+    "createdAt": "2026-01-23T09:55:23.829Z",
+    "updatedAt": "2026-01-26T06:36:58.739Z",
+    "__v": 2
+  },
+  {
+    "_id": "6973458b2117c381918893ce",
+    "student": "69711c0146dc170b985f99a9",
+    "courses": [
+      "692fb82c1cddeff2e93a32ca",
+      "692fb82c1cddeff2e93a32c9",
+      "692fb82c1cddeff2e93a32eb"
+    ],
+    "semester": "695d151800b837433ca64c1e",
+    "session": "2025/2026",
+    "level": 100,
+    "totalUnits": 0,
+    "status": "Approved",
+    "attamptNumber": 1,
+    "approvedBy": null,
+    "carryOverId": null,
+    "notes": "Auto-created during result upload for course: undefined; Added undefined during result upload; Added undefined during result upload",
+    "registeredByHod": null,
+    "department": "692857cfc3c2904e51b75554",
+    "createdAt": "2026-01-23T09:55:23.862Z",
+    "updatedAt": "2026-01-26T06:36:58.788Z",
+    "__v": 2
+  }
+]

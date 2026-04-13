@@ -1,0 +1,939 @@
+{
+    "COMPUTER SCIENCE": [
+        {
+            "name": "Abah Peter agada",
+            "matricNumber": "CSC/2024/0001U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Abdulkareem faruq Adeola",
+            "matricNumber": "CSC/2024/0002U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Abdulraheem Abdullah Olawale",
+            "matricNumber": "CSC/2024/0003U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Abdulsalam Khalid adedeji",
+            "matricNumber": "CSC/2024/0004U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Abdurrasaq khidr Olamilekan",
+            "matricNumber": "CSC/2024/0005U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Abidakun mary olaitan",
+            "matricNumber": "CSC/2024/0006U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Abideen qoyum ayodeji",
+            "matricNumber": "CSC/2024/0007U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Abisoye muritadol Abiodun",
+            "matricNumber": "CSC/2024/0008U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Adebayo Qazeem adetunji",
+            "matricNumber": "CSC/2024/0009U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Adedoyin Goodness Atilola",
+            "matricNumber": "CSC/2024/0010U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Adegbusi Daniel ifedayo",
+            "matricNumber": "CSC/2024/0011U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Adegun Johnson Friday",
+            "matricNumber": "CSC/2024/0013U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Adejinni Isreal Akinade",
+            "matricNumber": "CSC/2024/0014U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Adejuwon Daniel oluwadamiloju",
+            "matricNumber": "CSC/2024/0015U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Adekayero adewale ayobami",
+            "matricNumber": "CSC/2024/0016U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Adekola opeyemi Samuel",
+            "matricNumber": "CSC/2024/0017U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Adeleye Happiness Darasimi",
+            "matricNumber": "CSC/2024/0019U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Adeloye Victoria adeyinka",
+            "matricNumber": "CSC/2024/0020U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Adeniyi samuel Francis",
+            "matricNumber": "CSC/2024/0021U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Adeojo Goodness Obaloluwa",
+            "matricNumber": "CSC/2024/0023U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Adeoye Emmanuel Oluwadamilare",
+            "matricNumber": "CSC/2024/0024U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Adesina Elizabeth Motunrayo",
+            "matricNumber": "CSC/2024/0025U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Adesola Jabar Atanda",
+            "matricNumber": "CSC/2024/0026U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Adesuyi Micheal Ayobami",
+            "matricNumber": "CSC/2024/0027U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Adetoye Israel Oluwatosin",
+            "matricNumber": "CSC/2024/0028U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Adetunji oluwatimilehin Joseph",
+            "matricNumber": "CSC/2024/0029U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Adewumi Promise Samuel",
+            "matricNumber": "CSC/2024/0030U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Adeyekun abdullahi",
+            "matricNumber": "CSC/2024/0032U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Adeyemi Oluwagbotemi",
+            "matricNumber": "CSC/2024/0033U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Agbelusi Pelumi Korede",
+            "matricNumber": "CSC/2024/0035U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Agunloye Emmanuel olamide",
+            "matricNumber": "CSC/2024/0036U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Ajayi Abiola Elijah",
+            "matricNumber": "CSC/2024/0037U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Ajayi David Ileriayo",
+            "matricNumber": "CSC/2024/0038U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Ajayi jubril abolaji",
+            "matricNumber": "CSC/2024/0039U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Ajibade bright pelumi",
+            "matricNumber": "CSC/2024/0040U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Ajiboye Solomon",
+            "matricNumber": "CSC/2024/0041U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Ajileye marvellous Israel",
+            "matricNumber": "CSC/2024/0042U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Akanbi Ezekiel Olaoluwa",
+            "matricNumber": "CSC/2024/0043U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Akande Ayobami Boluwatife",
+            "matricNumber": "CSC/2024/0044U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Akande Darasimi",
+            "matricNumber": "CSC/2024/0045U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Akande Faith Temitope",
+            "matricNumber": "CSC/2024/0046U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Akande Rufus Tobi",
+            "matricNumber": "CSC/2024/0047U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Akeem Quadri Ayomiposi",
+            "matricNumber": "CSC/2024/0048U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Akinbogun Oladapo Emmanuel",
+            "matricNumber": "CSC/2024/0049U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Akingbolasan Samuel oladipupo",
+            "matricNumber": "CSC/2024/0050U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Akinjisola Promise Busayo",
+            "matricNumber": "CSC/2024/0051U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Akinkungbe Elisha",
+            "matricNumber": "CSC/2024/0052U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Akinola peace oluwatimileyin",
+            "matricNumber": "CSC/2024/0053U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Akinrimisi Smart Kolawole",
+            "matricNumber": "CSC/2024/0054U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Akinsanmi Daniel Samuel",
+            "matricNumber": "CSC/2024/0055U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Akintola Gbenga",
+            "matricNumber": "CSC/2024/0056U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Akintola Marvellous Ayomide",
+            "matricNumber": "CSC/2024/0057U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Akintomide Micheal Ayomide",
+            "matricNumber": "CSC/2024/0058U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Akinwolere Sylvester",
+            "matricNumber": "CSC/2024/0059U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Akinyele Peter",
+            "matricNumber": "CSC/2024/0060U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Akinyemi Joshua Marvelous",
+            "matricNumber": "CSC/2024/0061U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Alonge Taiwo Oluwafenrami",
+            "matricNumber": "CSC/2024/0062U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Anifowoshe Daniel Oluwatimileyin",
+            "matricNumber": "CSC/2024/0063U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Animashawn tosh Michael",
+            "matricNumber": "CSC/2024/0064U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Anosike Jude Chidubem",
+            "matricNumber": "CSC/2024/0065U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Aregbesola Divine oluwasogo",
+            "matricNumber": "CSC/2024/0066U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Arikewuyo Abdulwaasi Sharafadeen",
+            "matricNumber": "CSC/2024/0067U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Anilewola Moses Temiloluwa",
+            "matricNumber": "CSC/2024/0068U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Atebofia Joshua ogueneruemu",
+            "matricNumber": "CSC/2024/0069U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Atinwo Adeyemi Emmanuel",
+            "matricNumber": "CSC/2024/0070U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Aturu Joel Abarosi",
+            "matricNumber": "CSC/2024/0071U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Augustine jude",
+            "matricNumber": "CSC/2024/0072U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Ayeni Samuel Ayomide",
+            "matricNumber": "CSC/2024/0073U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Ayodeji Iynilouwa Abiodun",
+            "matricNumber": "CSC/2024/0074U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Ayoola Samuel",
+            "matricNumber": "CSC/2024/0075U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Azeez Muhammad",
+            "matricNumber": "CSC/2024/0076U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Babalola Awal",
+            "matricNumber": "CSC/2024/0077U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Babalola blessing",
+            "matricNumber": "CSC/2024/0078U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Bada Michael oladipupo",
+            "matricNumber": "CSC/2024/0079U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Balogun Quadri Opeyemi",
+            "matricNumber": "CSC/2024/0080U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Bamidele Deborah itunu",
+            "matricNumber": "CSC/2024/0081U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Banjo Abdulmalik Olamide",
+            "matricNumber": "CSC/2024/0082U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Benard Mary",
+            "matricNumber": "CSC/2024/0084U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Christopher Emmanuel",
+            "matricNumber": "CSC/2024/0086U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Dada Micheal",
+            "matricNumber": "CSC/2024/0087U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Dada Oluwaseun Joshua",
+            "matricNumber": "CSC/2024/0088U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Damilola Orimisan Temidayo",
+            "matricNumber": "CSC/2024/0089U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Daramola Isaiah Oriade",
+            "matricNumber": "CSC/2024/0090U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Dare Franklin Adebayo",
+            "matricNumber": "CSC/2024/0091U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Dodolewa ayoade adewunmi",
+            "matricNumber": "CSC/2024/0092U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Duro Adeyemi Favour",
+            "matricNumber": "CSC/2024/0093U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Ebijimi Joshua juwon",
+            "matricNumber": "CSC/2024/0094U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Egbeneye Michael Oluwapelumi",
+            "matricNumber": "CSC/2024/0095U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Eludini Oluwadamilare Oluwasegun",
+            "matricNumber": "CSC/2024/0096U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Emmanuel Glory",
+            "matricNumber": "CSC/2024/0097U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Emuyi Oluwole Emmaculate",
+            "matricNumber": "CSC/2024/0098U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Eniola victor oluwapelumi",
+            "matricNumber": "CSC/2024/0099U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Eniolorunda Yinka Isreal",
+            "matricNumber": "CSC/2024/0100U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Esinoye Elijah",
+            "matricNumber": "CSC/2024/0101U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Ezekiel Samson Favor",
+            "matricNumber": "CSC/2024/0102U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Famule Ayomide Samson",
+            "matricNumber": "CSC/2024/0103U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Fasanya Favour Damilola",
+            "matricNumber": "CSC/2024/0104U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Fasasi Ahmed akorede",
+            "matricNumber": "CSC/2024/0105U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Fatoba Enoch Olamide",
+            "matricNumber": "CSC/2024/0106U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Fawheinmi ayomide Abiodun",
+            "matricNumber": "CSC/2024/0107U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Gabriel Ayomide Philip",
+            "matricNumber": "CSC/2024/0108U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Ganiyu Yusuf Oluwanifemi",
+            "matricNumber": "CSC/2024/0109U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Gbolahan oluwaferanmi Esther",
+            "matricNumber": "CSC/2024/0110U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "George Deborah Favour",
+            "matricNumber": "CSC/2024/0111U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "George Oluwafikayomi Daniel",
+            "matricNumber": "CSC/2024/0112U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Ifesanwo Oreoluwa Emmanuel",
+            "matricNumber": "CSC/2024/0115U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Ilesanmi korede olamide",
+            "matricNumber": "CSC/2024/0116U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Imohimi destiny ohijemeagbon",
+            "matricNumber": "CSC/2024/0117U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Iyamore Lawson Nathaniel",
+            "matricNumber": "CSC/2024/0118U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Iyiola Eniola Oluwatodimu",
+            "matricNumber": "CSC/2024/0119U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "James Oluwatobiloba",
+            "matricNumber": "CSC/2024/0121U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "John Thank God Sunday",
+            "matricNumber": "CSC/2024/0122U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Johnson Benjamin Abiola",
+            "matricNumber": "CSC/2024/0123U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Kareem Sodiq Ayomide",
+            "matricNumber": "CSC/2024/0124U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Kayode Ezekiel",
+            "matricNumber": "CSC/2024/0125U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Kolapo Oluwabukunmi",
+            "matricNumber": "CSC/2024/0126U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Kolawole Emmanuel",
+            "matricNumber": "CSC/2024/0127U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Kolawole John juwon",
+            "matricNumber": "CSC/2024/0128U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Komolafe olamilekan",
+            "matricNumber": "CSC/2024/0129U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Monebi Kingsley olorunwa",
+            "matricNumber": "CSC/2024/0130U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Muhammad habib ayodeji",
+            "matricNumber": "CSC/2024/0131U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Mukaila Habeeb Olarewaju",
+            "matricNumber": "CSC/2024/0132U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Muo Nzubechukwu Believe",
+            "matricNumber": "CSC/2024/0133U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Nwachukwu Chidimma",
+            "matricNumber": "CSC/2024/0134U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Obisesan Abdulsomod Ademola",
+            "matricNumber": "CSC/2024/0135U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Odeleye Segun David",
+            "matricNumber": "CSC/2024/0136U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Ogbofaemi Oshiofa Anthony",
+            "matricNumber": "CSC/2024/0138U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Oginni Richard Precious",
+            "matricNumber": "CSC/2024/0139U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Ogolo John",
+            "matricNumber": "CSC/2024/0140U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Ogunbiyi Ebenezer Ayomide",
+            "matricNumber": "CSC/2024/0141U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Ogunlana Sikirulahi Ajibola",
+            "matricNumber": "CSC/2024/0142U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Oguntona Demilade",
+            "matricNumber": "CSC/2024/0143U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Ojelade Glory",
+            "matricNumber": "CSC/2024/0144U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Ojewoye kehinde Gbenuola",
+            "matricNumber": "CSC/2024/0145U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Okomayin David Oluwatobi",
+            "matricNumber": "CSC/2024/0146U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Okonkwo chukuemeka victor",
+            "matricNumber": "CSC/2024/0147U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Oladele Ayobami Paul",
+            "matricNumber": "CSC/2024/0148U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Oladoyin Johnson Adebayo",
+            "matricNumber": "CSC/2024/0149U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Olagunju Taiwo Raphael",
+            "matricNumber": "CSC/2024/0150U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Olajide tosin",
+            "matricNumber": "CSC/2024/0151U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Olakigbe Emmanuel Oluwafemi",
+            "matricNumber": "CSC/2024/0152U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Olalekan Olayinka Oluwasegun",
+            "matricNumber": "CSC/2024/0153U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Olanipekun Jubril",
+            "matricNumber": "CSC/2024/0154U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Olaniyi Israel",
+            "matricNumber": "CSC/2024/0155U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Olanrewaju Holiness Temiloluwa",
+            "matricNumber": "CSC/2024/0156U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Olanrewaju Shakirat Anuoluwapo",
+            "matricNumber": "CSC/2024/0157U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Olaoye Samuel Ameh",
+            "matricNumber": "CSC/2024/0159U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Olasehinde Iyanuoluwa Damilola",
+            "matricNumber": "CSC/2024/0160U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Olatoye semilore olatunbosun",
+            "matricNumber": "CSC/2024/0161U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Olatunmbi Timothy Damilare",
+            "matricNumber": "CSC/2024/0162U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Ologunleko Inioluwa Perfection",
+            "matricNumber": "CSC/2024/0165U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Oloi Chigozie",
+            "matricNumber": "CSC/2024/0166U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Olopete Ayomide Emmanuel",
+            "matricNumber": "CSC/2024/0167U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Olubodun Mercy Iyanuoluwa",
+            "matricNumber": "CSC/2024/0168U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Oluwagbemi Ayomide Daniel",
+            "matricNumber": "CSC/2024/0169U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Oluwasina Oluwagbotemi Ebenezer",
+            "matricNumber": "CSC/2024/0171U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Omogbolahan Ajayi Temitope",
+            "matricNumber": "CSC/2024/0172U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Omoge oluwatobi Samuel",
+            "matricNumber": "CSC/2024/0173U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Omotola success Solomon",
+            "matricNumber": "CSC/2024/0174U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Omotoso Samuel kayode",
+            "matricNumber": "CSC/2024/0175U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Omotunde Timileyin Salem",
+            "matricNumber": "CSC/2024/0176U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Omotuyi Oyindamola",
+            "matricNumber": "CSC/2024/0177U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Onyenyiionwu Favour",
+            "matricNumber": "CSC/2024/0178U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Opadayo Ayomide Kikiope",
+            "matricNumber": "CSC/2024/0179U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Owoeye Mary Odunayo",
+            "matricNumber": "CSC/2024/0180U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Owojuyigbe Ezekiel.E",
+            "matricNumber": "CSC/2024/0181U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Owoseni Mariam",
+            "matricNumber": "CSC/2024/0182U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Oyedele Abigail",
+            "matricNumber": "CSC/2024/0183U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Oyedokun Daniel Oluwaseyi",
+            "matricNumber": "CSC/2024/0184U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Oyelade qoyum Akorede",
+            "matricNumber": "CSC/2024/0185U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Oyetunde Ezekiel Sunday",
+            "matricNumber": "CSC/2024/0187U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Ozor Joshua Owebubechukwu",
+            "matricNumber": "CSC/2024/0188U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Patrick Emmanuel Onyedika",
+            "matricNumber": "CSC/2024/0189U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Paul Favour Oluwaseun",
+            "matricNumber": "CSC/2024/0190U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Peter Emmanuel blessing",
+            "matricNumber": "CSC/2024/0191U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Salawu Emmanuel",
+            "matricNumber": "CSC/2024/0192U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Saliu Sileayo",
+            "matricNumber": "CSC/2024/0193U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Samson Samuel",
+            "matricNumber": "CSC/2024/0194U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Samuel Eunice",
+            "matricNumber": "CSC/2024/0195U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Shadrach Deborah Grace",
+            "matricNumber": "CSC/2024/0196U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Soliu Aliullahi Danjuma",
+            "matricNumber": "CSC/2024/0197U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Sonaike Samuel oluwaseun",
+            "matricNumber": "CSC/2024/0198U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Stephen Imoleayo",
+            "matricNumber": "CSC/2024/0199U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Wasiu Awaliyat",
+            "matricNumber": "CSC/2024/0200U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Winjobi Naheemat",
+            "matricNumber": "CSC/2024/0201U",
+            "programmeCode": "BSCCSC"
+        },
+        {
+            "name": "Adewuyi Oyindamola Oluwabukola",
+            "matricNumber": "CSC/2024/0202U",
+            "programmeCode": "BEDCSC"
+        },
+        {
+            "name": "Akinwande Damola Kayode",
+            "matricNumber": "CSC/2024/0203U",
+            "programmeCode": "BSCCSC"
+        }
+    ]
+}

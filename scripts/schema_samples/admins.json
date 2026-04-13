@@ -1,0 +1,30 @@
+[
+  {
+    "_id": "690c70aa423136f152398166",
+    "admin_id": "ADM-002",
+    "name": "Mike Ross",
+    "email": "mike@school.edu",
+    "role": "admin",
+    "phone": "",
+    "department": "",
+    "token": "",
+    "last_login": null,
+    "createdAt": "2025-11-06T09:55:54.499Z",
+    "updatedAt": "2025-11-06T09:55:54.499Z",
+    "__v": 0
+  },
+  {
+    "_id": "69368da78dda387a50ede267",
+    "admin_id": "ADM-001",
+    "name": "Mike Ross",
+    "email": "mike2@school.edu",
+    "role": "admin",
+    "phone": "",
+    "department": "",
+    "token": "",
+    "last_login": null,
+    "createdAt": "2025-12-08T08:34:47.336Z",
+    "updatedAt": "2025-12-08T08:34:47.336Z",
+    "__v": 0
+  }
+]

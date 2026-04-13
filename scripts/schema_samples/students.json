@@ -1,0 +1,122 @@
+[
+  {
+    "_id": "696dfbacf32a0a1546ccff32",
+    "matricNumber": "CSC/2024/0001U",
+    "departmentId": "692857cfc3c2904e51b75554",
+    "facultyId": "68f9ecc1f6606ce32d8ddfb7",
+    "programmeId": "696a4c15adc5386e4c70fe5b",
+    "level": 100,
+    "session": "695d151800b837433ca64c0a",
+    "courses": [],
+    "gpa": null,
+    "cgpa": null,
+    "isActive": true,
+    "deletedAt": null,
+    "totalCarryovers": 0,
+    "probationStatus": "none",
+    "terminationStatus": "none",
+    "suspension": {
+      "status": false,
+      "sinceSemesterId": null
+    },
+    "createdAt": "2026-01-19T09:38:52.995Z",
+    "updatedAt": "2026-01-19T09:38:52.995Z",
+    "__v": 0
+  },
+  {
+    "_id": "696dfbadf32a0a1546ccff3c",
+    "matricNumber": "CSC/2024/0002U",
+    "departmentId": "692857cfc3c2904e51b75554",
+    "facultyId": "68f9ecc1f6606ce32d8ddfb7",
+    "programmeId": "696a4c15adc5386e4c70fe5b",
+    "level": 100,
+    "session": "695d151800b837433ca64c0a",
+    "courses": [],
+    "gpa": null,
+    "cgpa": null,
+    "isActive": true,
+    "deletedAt": null,
+    "totalCarryovers": 0,
+    "probationStatus": "none",
+    "terminationStatus": "none",
+    "suspension": {
+      "status": false,
+      "sinceSemesterId": null
+    },
+    "createdAt": "2026-01-19T09:38:53.093Z",
+    "updatedAt": "2026-01-19T09:38:53.093Z",
+    "__v": 0
+  },
+  {
+    "_id": "696dfbadf32a0a1546ccff46",
+    "matricNumber": "CSC/2024/0003U",
+    "departmentId": "692857cfc3c2904e51b75554",
+    "facultyId": "68f9ecc1f6606ce32d8ddfb7",
+    "programmeId": "696a4c15adc5386e4c70fe5b",
+    "level": 100,
+    "session": "695d151800b837433ca64c0a",
+    "courses": [],
+    "gpa": null,
+    "cgpa": null,
+    "isActive": true,
+    "deletedAt": null,
+    "totalCarryovers": 0,
+    "probationStatus": "none",
+    "terminationStatus": "none",
+    "suspension": {
+      "status": false,
+      "sinceSemesterId": null
+    },
+    "createdAt": "2026-01-19T09:38:53.197Z",
+    "updatedAt": "2026-01-19T09:38:53.197Z",
+    "__v": 0
+  },
+  {
+    "_id": "696dfbadf32a0a1546ccff50",
+    "matricNumber": "CSC/2024/0004U",
+    "departmentId": "692857cfc3c2904e51b75554",
+    "facultyId": "68f9ecc1f6606ce32d8ddfb7",
+    "programmeId": "696a4c15adc5386e4c70fe5b",
+    "level": 100,
+    "session": "695d151800b837433ca64c0a",
+    "courses": [],
+    "gpa": null,
+    "cgpa": null,
+    "isActive": true,
+    "deletedAt": null,
+    "totalCarryovers": 0,
+    "probationStatus": "none",
+    "terminationStatus": "none",
+    "suspension": {
+      "status": false,
+      "sinceSemesterId": null
+    },
+    "createdAt": "2026-01-19T09:38:53.288Z",
+    "updatedAt": "2026-01-19T09:38:53.288Z",
+    "__v": 0
+  },
+  {
+    "_id": "696dfbadf32a0a1546ccff5a",
+    "matricNumber": "CSC/2024/0005U",
+    "departmentId": "692857cfc3c2904e51b75554",
+    "facultyId": "68f9ecc1f6606ce32d8ddfb7",
+    "programmeId": "696a4c15adc5386e4c70fe5b",
+    "level": 100,
+    "session": "695d151800b837433ca64c0a",
+    "courses": [],
+    "gpa": null,
+    "cgpa": null,
+    "isActive": true,
+    "deletedAt": null,
+    "totalCarryovers": 0,
+    "probationStatus": "none",
+    "terminationStatus": "none",
+    "suspension": {
+      "status": false,
+      "sinceSemesterId": null
+    },
+    "createdAt": "2026-01-19T09:38:53.501Z",
+    "updatedAt": "2026-01-19T09:38:53.501Z",
+    "__v": 0
+  }
+]

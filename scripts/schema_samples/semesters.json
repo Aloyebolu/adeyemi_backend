@@ -1,0 +1,253 @@
+[
+  {
+    "_id": "693a35ec41d3b37602b85443",
+    "name": "first",
+    "session": "2025/2026",
+    "academicSemester": "693a35ec41d3b37602b8543f",
+    "department": "69285002c3c2904e51b75344",
+    "levelSettings": [
+      {
+        "level": 100,
+        "minUnits": 12,
+        "maxUnits": 24,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b85444"
+      },
+      {
+        "level": 200,
+        "minUnits": 12,
+        "maxUnits": 24,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b85445"
+      },
+      {
+        "level": 300,
+        "minUnits": 12,
+        "maxUnits": 24,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b85446"
+      },
+      {
+        "level": 400,
+        "minUnits": 12,
+        "maxUnits": 24,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b85447"
+      }
+    ],
+    "isActive": false,
+    "isRegistrationOpen": false,
+    "isResultsPublished": false,
+    "createdBy": "690c70aa423136f152398166",
+    "startDate": "2025-12-11T03:09:32.113Z",
+    "createdAt": "2025-12-11T03:09:32.148Z",
+    "updatedAt": "2026-01-05T13:52:44.744Z",
+    "__v": 0,
+    "endDate": "2026-01-05T13:52:44.744Z"
+  },
+  {
+    "_id": "693a35ec41d3b37602b8544d",
+    "name": "first",
+    "session": "2025/2026",
+    "academicSemester": "693a35ec41d3b37602b8543f",
+    "department": "69285043c3c2904e51b7539c",
+    "levelSettings": [
+      {
+        "level": 100,
+        "minUnits": 12,
+        "maxUnits": 24,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b8544e"
+      },
+      {
+        "level": 200,
+        "minUnits": 12,
+        "maxUnits": 24,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b8544f"
+      },
+      {
+        "level": 300,
+        "minUnits": 12,
+        "maxUnits": 24,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b85450"
+      },
+      {
+        "level": 400,
+        "minUnits": 12,
+        "maxUnits": 24,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b85451"
+      }
+    ],
+    "isActive": false,
+    "isRegistrationOpen": false,
+    "isResultsPublished": false,
+    "createdBy": "690c70aa423136f152398166",
+    "startDate": "2025-12-11T03:09:32.117Z",
+    "createdAt": "2025-12-11T03:09:32.148Z",
+    "updatedAt": "2026-01-05T13:52:44.744Z",
+    "__v": 0,
+    "endDate": "2026-01-05T13:52:44.744Z"
+  },
+  {
+    "_id": "693a35ec41d3b37602b85448",
+    "name": "first",
+    "session": "2025/2026",
+    "academicSemester": "693a35ec41d3b37602b8543f",
+    "department": "6928501dc3c2904e51b75370",
+    "levelSettings": [
+      {
+        "level": 100,
+        "minUnits": 12,
+        "maxUnits": 24,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b85449"
+      },
+      {
+        "level": 200,
+        "minUnits": 12,
+        "maxUnits": 24,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b8544a"
+      },
+      {
+        "level": 300,
+        "minUnits": 12,
+        "maxUnits": 24,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b8544b"
+      },
+      {
+        "level": 400,
+        "minUnits": 12,
+        "maxUnits": 24,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b8544c"
+      }
+    ],
+    "isActive": false,
+    "isRegistrationOpen": false,
+    "isResultsPublished": false,
+    "createdBy": "690c70aa423136f152398166",
+    "startDate": "2025-12-11T03:09:32.115Z",
+    "createdAt": "2025-12-11T03:09:32.148Z",
+    "updatedAt": "2026-01-05T13:52:44.744Z",
+    "__v": 0,
+    "endDate": "2026-01-05T13:52:44.744Z"
+  },
+  {
+    "_id": "693a35ec41d3b37602b85452",
+    "name": "first",
+    "session": "2025/2026",
+    "academicSemester": "693a35ec41d3b37602b8543f",
+    "department": "692855cec3c2904e51b75488",
+    "levelSettings": [
+      {
+        "level": 100,
+        "minUnits": 12,
+        "maxUnits": 24,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b85453"
+      },
+      {
+        "level": 200,
+        "minUnits": 12,
+        "maxUnits": 24,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b85454"
+      },
+      {
+        "level": 300,
+        "minUnits": 12,
+        "maxUnits": 24,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b85455"
+      },
+      {
+        "level": 400,
+        "minUnits": 12,
+        "maxUnits": 24,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b85456"
+      }
+    ],
+    "isActive": false,
+    "isRegistrationOpen": false,
+    "isResultsPublished": false,
+    "createdBy": "690c70aa423136f152398166",
+    "startDate": "2025-12-11T03:09:32.119Z",
+    "createdAt": "2025-12-11T03:09:32.148Z",
+    "updatedAt": "2026-01-05T13:52:44.744Z",
+    "__v": 0,
+    "endDate": "2026-01-05T13:52:44.744Z"
+  },
+  {
+    "_id": "693a35ec41d3b37602b85457",
+    "name": "first",
+    "session": "2025/2026",
+    "academicSemester": "693a35ec41d3b37602b8543f",
+    "department": "692857cfc3c2904e51b75554",
+    "levelSettings": [
+      {
+        "level": 100,
+        "minUnits": 12,
+        "maxUnits": 248,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b85458"
+      },
+      {
+        "level": 200,
+        "minUnits": 12,
+        "maxUnits": 24,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b85459"
+      },
+      {
+        "level": 300,
+        "minUnits": 12,
+        "maxUnits": 24,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b8545a"
+      },
+      {
+        "level": 400,
+        "minUnits": 12,
+        "maxUnits": 24,
+        "minCourses": 4,
+        "maxCourses": 6,
+        "_id": "693a35ec41d3b37602b8545b"
+      }
+    ],
+    "isActive": false,
+    "isRegistrationOpen": false,
+    "isResultsPublished": false,
+    "createdBy": "690c70aa423136f152398166",
+    "startDate": "2025-12-11T03:09:32.120Z",
+    "createdAt": "2025-12-11T03:09:32.148Z",
+    "updatedAt": "2026-01-05T13:52:44.744Z",
+    "__v": 0,
+    "isLocked": false,
+    "endDate": "2026-01-05T13:52:44.744Z"
+  }
+]

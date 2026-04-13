@@ -1,0 +1,174 @@
+{
+  "tools": [
+    {
+      "name": "get_user_profile",
+      "description": "Get detailed profile information for the authenticated user, including role-specific details like staff ID, matric number, department, faculty, and academic session information",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "get_user_by_id",
+      "description": "Get user information by user ID. Only accessible by admin users.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "The MongoDB ObjectId of the user to retrieve"
+          }
+        },
+        "required": ["user_id"]
+      }
+    },
+    {
+      "name": "update_user_profile",
+      "description": "Update user profile fields. Users can update their own profile. Admin can update any user. Some fields like title, department, faculty may require admin approval.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "The user ID to update. If not provided, updates the authenticated user"
+          },
+          "updates": {
+            "type": "object",
+            "description": "Fields to update with their new values",
+            "properties": {
+              "first_name": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 50,
+                "pattern": "^[a-zA-Z\\s\\-']+$"
+              },
+              "middle_name": {
+                "type": "string",
+                "maxLength": 50
+              },
+              "last_name": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 50
+              },
+              "bio": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "chat_availability": {
+                "type": "boolean"
+              },
+              "phone": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string",
+                "enum": ["mr", "mrs", "miss", "ms", "dr", "prof", "engr", "barr", "pastor", "chief", "alhaji", "alhaja", "rev"]
+              },
+              "department": {
+                "type": "string",
+                "description": "Department ID - may require admin approval"
+              }
+            }
+          }
+        },
+        "required": ["updates"]
+      }
+    },
+    {
+      "name": "upload_user_avatar",
+      "description": "Upload or update the user's profile avatar. Accepts JPG, PNG, or WEBP images.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "avatar_url": {
+            "type": "string",
+            "description": "URL of the uploaded avatar image (after upload to storage)"
+          }
+        },
+        "required": ["avatar_url"]
+      }
+    },
+    {
+      "name": "list_users",
+      "description": "List users with optional filtering, searching, and pagination. Returns user details with role-specific information.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "filters": {
+            "type": "object",
+            "description": "Filter criteria",
+            "properties": {
+              "role": {
+                "type": "string",
+                "enum": ["admin", "dean", "hod", "lecturer", "student", "applicant", "vc"]
+              },
+              "department": {
+                "type": "string",
+                "description": "Department ID"
+              },
+              "is_deleted": {
+                "type": "boolean",
+                "description": "Include soft-deleted users"
+              }
+            }
+          },
+          "search_term": {
+            "type": "string",
+            "description": "Search by name, email, matric number, or staff ID"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": ["name", "email", "role", "createdAt"],
+            "default": "createdAt"
+          },
+          "sort_order": {
+            "type": "string",
+            "enum": ["asc", "desc"],
+            "default": "desc"
+          }
+        }
+      }
+    },
+    {
+      "name": "delete_user",
+      "description": "Soft delete a user. Only accessible by admin users. System user cannot be deleted.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "The MongoDB ObjectId of the user to delete"
+          }
+        },
+        "required": ["user_id"]
+      }
+    },
+    {
+      "name": "get_profile_update_options",
+      "description": "Get information about which profile fields can be updated for a user, including validation rules and current values",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "The user ID to check options for. If not provided, uses authenticated user"
+          }
+        },
+        "required": []
+      }
+    }
+  ]
+}

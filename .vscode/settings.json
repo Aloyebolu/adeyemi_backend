@@ -1,0 +1,32 @@
+{
+  "eslint.enable": true,
+  "eslint.run": "onType",
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.workingDirectories": [
+    {"mode": "auto"}
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": "error"
+  },
+  "files.watcherExclude": {
+  "**/node_modules/*": true,
+  "**/.git/*": true,
+  "**/dist/*": true,
+  "**/build/*": true
+},
+"search.exclude": {
+  "**/node_modules": true,
+  "**/dist": true
+}
+
+}

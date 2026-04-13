@@ -1,0 +1,742 @@
+[
+  {
+    "_id": "69846eb04489dfb654290b5d",
+    "snapshotId": "snapshot_1770286768353_ztmv83biz",
+    "period": "weekly",
+    "year": 2026,
+    "week": 6,
+    "semester": null,
+    "validFrom": "2026-02-01T23:00:00.000Z",
+    "validTo": "2026-02-08T22:59:59.999Z",
+    "totalStudents": 30,
+    "totalDepartments": 3,
+    "averageScore": 4.5,
+    "globalTop": [
+      {
+        "rank": 1,
+        "studentId": "69846eb04489dfb654290afc",
+        "studentName": "Student 69846eb04489dfb654290afc",
+        "matricNo": "MAT000004",
+        "departmentId": "69846eb04489dfb654290af7",
+        "departmentName": "Department 2",
+        "totalScore": 5,
+        "gpa": 4.94,
+        "breakdown": {},
+        "_id": "69846eb04489dfb654290b5e"
+      },
+      {
+        "rank": 1,
+        "studentId": "69846eb04489dfb654290b05",
+        "studentName": "Student 69846eb04489dfb654290b05",
+        "matricNo": "MAT000013",
+        "departmentId": "69846eb04489dfb654290af7",
+        "departmentName": "Department 2",
+        "totalScore": 5,
+        "gpa": 4.11,
+        "breakdown": {},
+        "_id": "69846eb04489dfb654290b5f"
+      },
+      {
+        "rank": 1,
+        "studentId": "69846eb04489dfb654290b0b",
+        "studentName": "Student 69846eb04489dfb654290b0b",
+        "matricNo": "MAT000019",
+        "departmentId": "69846eb04489dfb654290af7",
+        "departmentName": "Department 2",
+        "totalScore": 5,
+        "gpa": 5,
+        "breakdown": {},
+        "_id": "69846eb04489dfb654290b60"
+      }
+    ],
+    "departmentRankings": [
+      {
+        "departmentId": "69846eb04489dfb654290af7",
+        "departmentName": "Department 69846eb04489dfb654290af7",
+        "topStudents": [
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290afc",
+            "studentName": "Student 69846eb04489dfb654290afc",
+            "matricNo": "MAT000004",
+            "totalScore": 5,
+            "gpa": 4.94,
+            "_id": "69846eb04489dfb654290b62"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b05",
+            "studentName": "Student 69846eb04489dfb654290b05",
+            "matricNo": "MAT000013",
+            "totalScore": 5,
+            "gpa": 4.11,
+            "_id": "69846eb04489dfb654290b63"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b0b",
+            "studentName": "Student 69846eb04489dfb654290b0b",
+            "matricNo": "MAT000019",
+            "totalScore": 5,
+            "gpa": 5,
+            "_id": "69846eb04489dfb654290b64"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b0e",
+            "studentName": "Student 69846eb04489dfb654290b0e",
+            "matricNo": "MAT000022",
+            "totalScore": 5,
+            "gpa": 4.27,
+            "_id": "69846eb04489dfb654290b65"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b11",
+            "studentName": "Student 69846eb04489dfb654290b11",
+            "matricNo": "MAT000025",
+            "totalScore": 5,
+            "gpa": 4.14,
+            "_id": "69846eb04489dfb654290b66"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b1a",
+            "studentName": "Student 69846eb04489dfb654290b1a",
+            "matricNo": "MAT000034",
+            "totalScore": 5,
+            "gpa": 4.52,
+            "_id": "69846eb04489dfb654290b67"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b23",
+            "studentName": "Student 69846eb04489dfb654290b23",
+            "matricNo": "MAT000043",
+            "totalScore": 5,
+            "gpa": 4.8,
+            "_id": "69846eb04489dfb654290b68"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b29",
+            "studentName": "Student 69846eb04489dfb654290b29",
+            "matricNo": "MAT000049",
+            "totalScore": 5,
+            "gpa": 4.03,
+            "_id": "69846eb04489dfb654290b69"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b3e",
+            "studentName": "Student 69846eb04489dfb654290b3e",
+            "matricNo": "MAT000070",
+            "totalScore": 5,
+            "gpa": 4.18,
+            "_id": "69846eb04489dfb654290b6a"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b44",
+            "studentName": "Student 69846eb04489dfb654290b44",
+            "matricNo": "MAT000076",
+            "totalScore": 5,
+            "gpa": 4.99,
+            "_id": "69846eb04489dfb654290b6b"
+          }
+        ],
+        "departmentStats": {
+          "averageScore": 2.06,
+          "totalStudents": 34,
+          "highestScore": 5,
+          "lowestScore": 0
+        },
+        "_id": "69846eb04489dfb654290b61"
+      },
+      {
+        "departmentId": "69846eb04489dfb654290af8",
+        "departmentName": "Department 69846eb04489dfb654290af8",
+        "topStudents": [
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b06",
+            "studentName": "Student 69846eb04489dfb654290b06",
+            "matricNo": "MAT000014",
+            "totalScore": 5,
+            "gpa": 4.05,
+            "_id": "69846eb04489dfb654290b6d"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b12",
+            "studentName": "Student 69846eb04489dfb654290b12",
+            "matricNo": "MAT000026",
+            "totalScore": 5,
+            "gpa": 4.7,
+            "_id": "69846eb04489dfb654290b6e"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b1b",
+            "studentName": "Student 69846eb04489dfb654290b1b",
+            "matricNo": "MAT000035",
+            "totalScore": 5,
+            "gpa": 4.05,
+            "_id": "69846eb04489dfb654290b6f"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b24",
+            "studentName": "Student 69846eb04489dfb654290b24",
+            "matricNo": "MAT000044",
+            "totalScore": 5,
+            "gpa": 4.45,
+            "_id": "69846eb04489dfb654290b70"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b2d",
+            "studentName": "Student 69846eb04489dfb654290b2d",
+            "matricNo": "MAT000053",
+            "totalScore": 5,
+            "gpa": 4.48,
+            "_id": "69846eb04489dfb654290b71"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b30",
+            "studentName": "Student 69846eb04489dfb654290b30",
+            "matricNo": "MAT000056",
+            "totalScore": 5,
+            "gpa": 4.71,
+            "_id": "69846eb04489dfb654290b72"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b4e",
+            "studentName": "Student 69846eb04489dfb654290b4e",
+            "matricNo": "MAT000086",
+            "totalScore": 5,
+            "gpa": 4.39,
+            "_id": "69846eb04489dfb654290b73"
+          },
+          {
+            "rank": 8,
+            "studentId": "69846eb04489dfb654290afa",
+            "studentName": "Student 69846eb04489dfb654290afa",
+            "matricNo": "MAT000002",
+            "totalScore": 0,
+            "gpa": 3.72,
+            "_id": "69846eb04489dfb654290b74"
+          },
+          {
+            "rank": 8,
+            "studentId": "69846eb04489dfb654290afd",
+            "studentName": "Student 69846eb04489dfb654290afd",
+            "matricNo": "MAT000005",
+            "totalScore": 0,
+            "gpa": 3.88,
+            "_id": "69846eb04489dfb654290b75"
+          },
+          {
+            "rank": 8,
+            "studentId": "69846eb04489dfb654290b00",
+            "studentName": "Student 69846eb04489dfb654290b00",
+            "matricNo": "MAT000008",
+            "totalScore": 0,
+            "gpa": 2.89,
+            "_id": "69846eb04489dfb654290b76"
+          }
+        ],
+        "departmentStats": {
+          "averageScore": 1.06,
+          "totalStudents": 33,
+          "highestScore": 5,
+          "lowestScore": 0
+        },
+        "_id": "69846eb04489dfb654290b6c"
+      },
+      {
+        "departmentId": "69846eb04489dfb654290af6",
+        "departmentName": "Department 69846eb04489dfb654290af6",
+        "topStudents": [
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290afe",
+            "studentName": "Student 69846eb04489dfb654290afe",
+            "matricNo": "MAT000006",
+            "totalScore": 5,
+            "gpa": 4.75,
+            "_id": "69846eb04489dfb654290b78"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b04",
+            "studentName": "Student 69846eb04489dfb654290b04",
+            "matricNo": "MAT000012",
+            "totalScore": 5,
+            "gpa": 4.96,
+            "_id": "69846eb04489dfb654290b79"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b10",
+            "studentName": "Student 69846eb04489dfb654290b10",
+            "matricNo": "MAT000024",
+            "totalScore": 5,
+            "gpa": 4.8,
+            "_id": "69846eb04489dfb654290b7a"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b16",
+            "studentName": "Student 69846eb04489dfb654290b16",
+            "matricNo": "MAT000030",
+            "totalScore": 5,
+            "gpa": 4.46,
+            "_id": "69846eb04489dfb654290b7b"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b25",
+            "studentName": "Student 69846eb04489dfb654290b25",
+            "matricNo": "MAT000045",
+            "totalScore": 5,
+            "gpa": 4.63,
+            "_id": "69846eb04489dfb654290b7c"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b28",
+            "studentName": "Student 69846eb04489dfb654290b28",
+            "matricNo": "MAT000048",
+            "totalScore": 5,
+            "gpa": 4.35,
+            "_id": "69846eb04489dfb654290b7d"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b2e",
+            "studentName": "Student 69846eb04489dfb654290b2e",
+            "matricNo": "MAT000054",
+            "totalScore": 5,
+            "gpa": 4.76,
+            "_id": "69846eb04489dfb654290b7e"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b34",
+            "studentName": "Student 69846eb04489dfb654290b34",
+            "matricNo": "MAT000060",
+            "totalScore": 5,
+            "gpa": 4.86,
+            "_id": "69846eb04489dfb654290b7f"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b3a",
+            "studentName": "Student 69846eb04489dfb654290b3a",
+            "matricNo": "MAT000066",
+            "totalScore": 5,
+            "gpa": 4.51,
+            "_id": "69846eb04489dfb654290b80"
+          },
+          {
+            "rank": 1,
+            "studentId": "69846eb04489dfb654290b40",
+            "studentName": "Student 69846eb04489dfb654290b40",
+            "matricNo": "MAT000072",
+            "totalScore": 5,
+            "gpa": 4.06,
+            "_id": "69846eb04489dfb654290b81"
+          }
+        ],
+        "departmentStats": {
+          "averageScore": 2.12,
+          "totalStudents": 33,
+          "highestScore": 5,
+          "lowestScore": 0
+        },
+        "_id": "69846eb04489dfb654290b77"
+      }
+    ],
+    "status": "active",
+    "generatedBy": "000000000000000000000001",
+    "generationSource": "initialization",
+    "notes": null,
+    "generatedAt": "2026-02-05T10:19:28.411Z",
+    "createdAt": "2026-02-05T10:19:28.431Z",
+    "updatedAt": "2026-02-05T10:19:28.431Z",
+    "__v": 0
+  },
+  {
+    "_id": "698b82d543452cea94ed7258",
+    "snapshotId": "snapshot_1770750677665_6vfh2yy38",
+    "period": "weekly",
+    "year": 2026,
+    "week": 7,
+    "semester": null,
+    "validFrom": "2026-02-08T23:00:00.000Z",
+    "validTo": "2026-02-15T22:59:59.999Z",
+    "totalStudents": 30,
+    "totalDepartments": 3,
+    "averageScore": 4.83,
+    "globalTop": [
+      {
+        "rank": 1,
+        "studentId": "698b82d543452cea94ed71f4",
+        "studentName": "Student 698b82d543452cea94ed71f4",
+        "matricNo": "MAT000001",
+        "departmentId": "698b82d543452cea94ed71f2",
+        "departmentName": "Department 2",
+        "totalScore": 5,
+        "gpa": 4.2,
+        "breakdown": {},
+        "_id": "698b82d543452cea94ed7259"
+      },
+      {
+        "rank": 1,
+        "studentId": "698b82d543452cea94ed71f7",
+        "studentName": "Student 698b82d543452cea94ed71f7",
+        "matricNo": "MAT000004",
+        "departmentId": "698b82d543452cea94ed71f2",
+        "departmentName": "Department 2",
+        "totalScore": 5,
+        "gpa": 4.77,
+        "breakdown": {},
+        "_id": "698b82d543452cea94ed725a"
+      },
+      {
+        "rank": 1,
+        "studentId": "698b82d543452cea94ed71fa",
+        "studentName": "Student 698b82d543452cea94ed71fa",
+        "matricNo": "MAT000007",
+        "departmentId": "698b82d543452cea94ed71f2",
+        "departmentName": "Department 2",
+        "totalScore": 5,
+        "gpa": 4.22,
+        "breakdown": {},
+        "_id": "698b82d543452cea94ed725b"
+      }
+    ],
+    "departmentRankings": [
+      {
+        "departmentId": "698b82d543452cea94ed71f2",
+        "departmentName": "Department 698b82d543452cea94ed71f2",
+        "topStudents": [
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed71f4",
+            "studentName": "Student 698b82d543452cea94ed71f4",
+            "matricNo": "MAT000001",
+            "totalScore": 5,
+            "gpa": 4.2,
+            "_id": "698b82d543452cea94ed725d"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed71f7",
+            "studentName": "Student 698b82d543452cea94ed71f7",
+            "matricNo": "MAT000004",
+            "totalScore": 5,
+            "gpa": 4.77,
+            "_id": "698b82d543452cea94ed725e"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed71fa",
+            "studentName": "Student 698b82d543452cea94ed71fa",
+            "matricNo": "MAT000007",
+            "totalScore": 5,
+            "gpa": 4.22,
+            "_id": "698b82d543452cea94ed725f"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed7203",
+            "studentName": "Student 698b82d543452cea94ed7203",
+            "matricNo": "MAT000016",
+            "totalScore": 5,
+            "gpa": 4.65,
+            "_id": "698b82d543452cea94ed7260"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed7206",
+            "studentName": "Student 698b82d543452cea94ed7206",
+            "matricNo": "MAT000019",
+            "totalScore": 5,
+            "gpa": 4.74,
+            "_id": "698b82d543452cea94ed7261"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed7212",
+            "studentName": "Student 698b82d543452cea94ed7212",
+            "matricNo": "MAT000031",
+            "totalScore": 5,
+            "gpa": 4.2,
+            "_id": "698b82d543452cea94ed7262"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed7221",
+            "studentName": "Student 698b82d543452cea94ed7221",
+            "matricNo": "MAT000046",
+            "totalScore": 5,
+            "gpa": 4.59,
+            "_id": "698b82d543452cea94ed7263"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed7224",
+            "studentName": "Student 698b82d543452cea94ed7224",
+            "matricNo": "MAT000049",
+            "totalScore": 5,
+            "gpa": 4.46,
+            "_id": "698b82d543452cea94ed7264"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed722a",
+            "studentName": "Student 698b82d543452cea94ed722a",
+            "matricNo": "MAT000055",
+            "totalScore": 5,
+            "gpa": 4.4,
+            "_id": "698b82d543452cea94ed7265"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed722d",
+            "studentName": "Student 698b82d543452cea94ed722d",
+            "matricNo": "MAT000058",
+            "totalScore": 5,
+            "gpa": 4.21,
+            "_id": "698b82d543452cea94ed7266"
+          }
+        ],
+        "departmentStats": {
+          "averageScore": 2.06,
+          "totalStudents": 34,
+          "highestScore": 5,
+          "lowestScore": 0
+        },
+        "_id": "698b82d543452cea94ed725c"
+      },
+      {
+        "departmentId": "698b82d543452cea94ed71f3",
+        "departmentName": "Department 698b82d543452cea94ed71f3",
+        "topStudents": [
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed71fb",
+            "studentName": "Student 698b82d543452cea94ed71fb",
+            "matricNo": "MAT000008",
+            "totalScore": 5,
+            "gpa": 4.82,
+            "_id": "698b82d543452cea94ed7268"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed7201",
+            "studentName": "Student 698b82d543452cea94ed7201",
+            "matricNo": "MAT000014",
+            "totalScore": 5,
+            "gpa": 4.87,
+            "_id": "698b82d543452cea94ed7269"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed7204",
+            "studentName": "Student 698b82d543452cea94ed7204",
+            "matricNo": "MAT000017",
+            "totalScore": 5,
+            "gpa": 4.4,
+            "_id": "698b82d543452cea94ed726a"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed720d",
+            "studentName": "Student 698b82d543452cea94ed720d",
+            "matricNo": "MAT000026",
+            "totalScore": 5,
+            "gpa": 4.41,
+            "_id": "698b82d543452cea94ed726b"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed7213",
+            "studentName": "Student 698b82d543452cea94ed7213",
+            "matricNo": "MAT000032",
+            "totalScore": 5,
+            "gpa": 4.49,
+            "_id": "698b82d543452cea94ed726c"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed7225",
+            "studentName": "Student 698b82d543452cea94ed7225",
+            "matricNo": "MAT000050",
+            "totalScore": 5,
+            "gpa": 4.09,
+            "_id": "698b82d543452cea94ed726d"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed7231",
+            "studentName": "Student 698b82d543452cea94ed7231",
+            "matricNo": "MAT000062",
+            "totalScore": 5,
+            "gpa": 4.04,
+            "_id": "698b82d543452cea94ed726e"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed723a",
+            "studentName": "Student 698b82d543452cea94ed723a",
+            "matricNo": "MAT000071",
+            "totalScore": 5,
+            "gpa": 4.7,
+            "_id": "698b82d543452cea94ed726f"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed7243",
+            "studentName": "Student 698b82d543452cea94ed7243",
+            "matricNo": "MAT000080",
+            "totalScore": 5,
+            "gpa": 4.64,
+            "_id": "698b82d543452cea94ed7270"
+          },
+          {
+            "rank": 10,
+            "studentId": "698b82d543452cea94ed71f5",
+            "studentName": "Student 698b82d543452cea94ed71f5",
+            "matricNo": "MAT000002",
+            "totalScore": 0,
+            "gpa": 3.59,
+            "_id": "698b82d543452cea94ed7271"
+          }
+        ],
+        "departmentStats": {
+          "averageScore": 1.36,
+          "totalStudents": 33,
+          "highestScore": 5,
+          "lowestScore": 0
+        },
+        "_id": "698b82d543452cea94ed7267"
+      },
+      {
+        "departmentId": "698b82d543452cea94ed71f1",
+        "departmentName": "Department 698b82d543452cea94ed71f1",
+        "topStudents": [
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed71f6",
+            "studentName": "Student 698b82d543452cea94ed71f6",
+            "matricNo": "MAT000003",
+            "totalScore": 5,
+            "gpa": 4.36,
+            "_id": "698b82d543452cea94ed7273"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed71ff",
+            "studentName": "Student 698b82d543452cea94ed71ff",
+            "matricNo": "MAT000012",
+            "totalScore": 5,
+            "gpa": 4.86,
+            "_id": "698b82d543452cea94ed7274"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed721d",
+            "studentName": "Student 698b82d543452cea94ed721d",
+            "matricNo": "MAT000042",
+            "totalScore": 5,
+            "gpa": 4.32,
+            "_id": "698b82d543452cea94ed7275"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed7226",
+            "studentName": "Student 698b82d543452cea94ed7226",
+            "matricNo": "MAT000051",
+            "totalScore": 5,
+            "gpa": 4.21,
+            "_id": "698b82d543452cea94ed7276"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed7232",
+            "studentName": "Student 698b82d543452cea94ed7232",
+            "matricNo": "MAT000063",
+            "totalScore": 5,
+            "gpa": 4.3,
+            "_id": "698b82d543452cea94ed7277"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed723e",
+            "studentName": "Student 698b82d543452cea94ed723e",
+            "matricNo": "MAT000075",
+            "totalScore": 5,
+            "gpa": 4.75,
+            "_id": "698b82d543452cea94ed7278"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed7241",
+            "studentName": "Student 698b82d543452cea94ed7241",
+            "matricNo": "MAT000078",
+            "totalScore": 5,
+            "gpa": 4.44,
+            "_id": "698b82d543452cea94ed7279"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed7244",
+            "studentName": "Student 698b82d543452cea94ed7244",
+            "matricNo": "MAT000081",
+            "totalScore": 5,
+            "gpa": 4.87,
+            "_id": "698b82d543452cea94ed727a"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed724a",
+            "studentName": "Student 698b82d543452cea94ed724a",
+            "matricNo": "MAT000087",
+            "totalScore": 5,
+            "gpa": 4.2,
+            "_id": "698b82d543452cea94ed727b"
+          },
+          {
+            "rank": 1,
+            "studentId": "698b82d543452cea94ed7256",
+            "studentName": "Student 698b82d543452cea94ed7256",
+            "matricNo": "MAT000099",
+            "totalScore": 5,
+            "gpa": 4.9,
+            "_id": "698b82d543452cea94ed727c"
+          }
+        ],
+        "departmentStats": {
+          "averageScore": 1.52,
+          "totalStudents": 33,
+          "highestScore": 5,
+          "lowestScore": 0
+        },
+        "_id": "698b82d543452cea94ed7272"
+      }
+    ],
+    "status": "active",
+    "generatedBy": "000000000000000000000001",
+    "generationSource": "initialization",
+    "notes": null,
+    "generatedAt": "2026-02-10T19:11:17.735Z",
+    "createdAt": "2026-02-10T19:11:17.762Z",
+    "updatedAt": "2026-02-10T19:11:17.762Z",
+    "__v": 0
+  }
+]

@@ -1,0 +1,68 @@
+[
+  {
+    "_id": "6954f2e04fd5346b97dbdc86",
+    "session_id": "6954f2e04fd5346b97dbdc83",
+    "sender_type": "system",
+    "content": "All our support agents are currently busy. Please wait, someone will be with you shortly.",
+    "message_type": "text",
+    "attachments": [],
+    "delivered": false,
+    "read_by": [],
+    "createdAt": "2025-12-31T09:54:40.653Z",
+    "updatedAt": "2025-12-31T09:54:40.653Z",
+    "__v": 0
+  },
+  {
+    "_id": "6954f31f4fd5346b97dbdc91",
+    "session_id": "6954f31f4fd5346b97dbdc8e",
+    "sender_type": "system",
+    "content": "All our support agents are currently busy. Please wait, someone will be with you shortly.",
+    "message_type": "text",
+    "attachments": [],
+    "delivered": false,
+    "read_by": [],
+    "createdAt": "2025-12-31T09:55:43.433Z",
+    "updatedAt": "2025-12-31T09:55:43.433Z",
+    "__v": 0
+  },
+  {
+    "_id": "6954f3a04fd5346b97dbdc9c",
+    "session_id": "6954f3a04fd5346b97dbdc99",
+    "sender_type": "system",
+    "content": "All our support agents are currently busy. Please wait, someone will be with you shortly.",
+    "message_type": "text",
+    "attachments": [],
+    "delivered": false,
+    "read_by": [],
+    "createdAt": "2025-12-31T09:57:52.195Z",
+    "updatedAt": "2025-12-31T09:57:52.195Z",
+    "__v": 0
+  },
+  {
+    "_id": "6954f3b24fd5346b97dbdcf4",
+    "session_id": "6954f3a04fd5346b97dbdc99",
+    "sender_type": "user",
+    "sender_id": "6928c5a475c778f1ee14c6c3",
+    "content": "uu",
+    "message_type": "text",
+    "attachments": [],
+    "delivered": false,
+    "read_by": [],
+    "createdAt": "2025-12-31T09:58:10.745Z",
+    "updatedAt": "2025-12-31T09:58:10.745Z",
+    "__v": 0
+  },
+  {
+    "_id": "695501204fd5346b97dbdd04",
+    "session_id": "695501204fd5346b97dbdd01",
+    "sender_type": "system",
+    "content": "All our support agents are currently busy. Please wait, someone will be with you shortly.",
+    "message_type": "text",
+    "attachments": [],
+    "delivered": false,
+    "read_by": [],
+    "createdAt": "2025-12-31T10:55:28.933Z",
+    "updatedAt": "2025-12-31T10:55:28.933Z",
+    "__v": 0
+  }
+]

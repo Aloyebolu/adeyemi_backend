@@ -1,0 +1,119 @@
+[
+  {
+    "version": "1.0.6",
+    "message": "Fix: handle student's double-click issue",
+    "author": "AloyeBolu",
+    "email": "aloyebolu5@gmail.com",
+    "commit": "828524b",
+    "branch": "main",
+    "timestamp": "2026-03-04T14:16:49Z"
+  },
+  {
+    "version": "1.0.7",
+    "message": "Fixed Auth failed Audit logging",
+    "author": "AloyeBolu",
+    "email": "aloyebolu5@gmail.com",
+    "commit": "5d9016f",
+    "branch": "main",
+    "timestamp": "2026-03-05T07:09:38Z"
+  },
+  {
+    "version": "1.0.8",
+    "message": "Fixed studentid required in student registration",
+    "author": "AloyeBolu",
+    "email": "aloyebolu5@gmail.com",
+    "commit": "675eee7",
+    "branch": "main",
+    "timestamp": "2026-03-05T10:06:23Z"
+  },
+  {
+    "version": "1.0.9",
+    "message": "Fixed Notifications/Updated Feedback",
+    "author": "AloyeBolu",
+    "email": "aloyebolu5@gmail.com",
+    "commit": "cccd0b3",
+    "branch": "main",
+    "timestamp": "2026-03-06T13:45:33Z"
+  },
+  {
+    "version": "1.0.10",
+    "message": "Fixed Notifications/Updated Feedback",
+    "author": "AloyeBolu",
+    "email": "aloyebolu5@gmail.com",
+    "commit": "30f1349",
+    "branch": "main",
+    "timestamp": "2026-03-06T13:57:02Z"
+  },
+  {
+    "version": "1.0.11",
+    "message": "Fixed Notifications/Updated Feedback",
+    "author": "AloyeBolu",
+    "email": "aloyebolu5@gmail.com",
+    "commit": "8c767bc",
+    "branch": "main",
+    "timestamp": "2026-03-06T14:10:06Z"
+  },
+  {
+    "version": "1.0.12",
+    "message": "Master sheet updated",
+    "author": "AloyeBolu",
+    "email": "aloyebolu5@gmail.com",
+    "commit": "f0400272",
+    "branch": "main",
+    "timestamp": "2026-03-15T15:54:37Z"
+  },
+  {
+    "version": "1.0.13",
+    "message": "sd",
+    "author": "Aloyebolu",
+    "email": "aloyebolu5@gmail.com",
+    "commit": "d0b74653",
+    "branch": "main",
+    "timestamp": "2026-03-17T07:16:43Z"
+  },
+  {
+    "version": "1.0.14",
+    "message": "Another commit",
+    "author": "Aloyebolu",
+    "email": "aloyebolu5@gmail.com",
+    "commit": "278c1602",
+    "branch": "main",
+    "timestamp": "2026-03-20T18:51:27Z"
+  },
+  {
+    "version": "1.0.15",
+    "message": "Another commit",
+    "author": "Aloyebolu",
+    "email": "aloyebolu5@gmail.com",
+    "commit": "115fed71",
+    "branch": "main",
+    "timestamp": "2026-03-24T15:54:16Z"
+  },
+  {
+    "version": "1.0.16",
+    "message": "hi",
+    "author": "Aloyebolu",
+    "email": "aloyebolu5@gmail.com",
+    "commit": "1b679852",
+    "branch": "main",
+    "timestamp": "2026-04-13T10:47:45Z"
+  },
+  {
+    "version": "1.0.17",
+    "message": "hi",
+    "author": "Aloyebolu",
+    "email": "aloyebolu5@gmail.com",
+    "commit": "1b679852",
+    "branch": "main",
+    "timestamp": "2026-04-13T10:50:24Z"
+  },
+  {
+    "version": "1.0.18",
+    "message": "hi",
+    "author": "Aloyebolu",
+    "email": "aloyebolu5@gmail.com",
+    "commit": "b9801ba1",
+    "branch": "main",
+    "timestamp": "2026-04-13T10:54:47Z"
+  }
+]

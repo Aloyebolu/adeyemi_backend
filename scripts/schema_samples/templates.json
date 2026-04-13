@@ -1,0 +1,72 @@
+[
+  {
+    "_id": "691076d65718cb3b1e7ebe72",
+    "name": "Result Announcement2",
+    "channel": [
+      "email",
+      "whatsapp",
+      "push",
+      "sms"
+    ],
+    "email_template": "<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\" />\n  <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n  <title>Result Notification</title>\n</head>\n<body style=\"margin:0;padding:0;background:#f3f6fb;font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif;\">\n  <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"min-width:320px;\">\n    <tr>\n      <td align=\"center\" style=\"padding:28px 16px;\">\n        <!-- Card -->\n        <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\" style=\"max-width:600px;background:#ffffff;border-radius:12px;box-shadow:0 8px 30px rgba(18,38,63,0.08);overflow:hidden;\">\n          <!-- Header -->\n          <tr>\n            <td style=\"background:linear-gradient(90deg,#5b9df9,#7a5cff);padding:28px 32px;color:#fff;\">\n              <h1 style=\"margin:0;font-size:20px;font-weight:700;letter-spacing:-0.2px;\">Results Available</h1>\n            </td>\n          </tr>\n\n          <!-- Body -->\n          <tr>\n            <td style=\"padding:28px 32px 20px;color:#123;line-height:1.5;\">\n              <p style=\"margin:0 0 16px;font-size:16px;\">{{timeGreeting}} <strong>{{user.name}}</strong>,</p>\n\n              <p style=\"margin:0 0 18px;font-size:15px;color:#2b3b4c;\">\n                We hope you're doing well. This is to inform you that the result for this session is now available.\n                Please log in to your portal to view your result.\n              </p>\n\n              <p style=\"margin:0 0 18px;font-size:15px;color:#2b3b4c;\">\n                If you find any mistakes, kindly report them as soon as possible so we can correct them.\n              </p>\n\n              <!-- CTA -->\n              <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" style=\"margin-top:4px;\">\n                <tr>\n                  <td align=\"left\">\n                    <a href=\"{{portal_url}}\" style=\"display:inline-block;padding:12px 18px;border-radius:8px;background:#1f6feb;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;\">\n                      Login to Portal\n                    </a>\n                  </td>\n                </tr>\n              </table>\n            </td>\n          </tr>\n\n          <!-- Footer -->\n          <tr>\n            <td style=\"background:#f7f9fc;padding:18px 32px;border-top:1px solid rgba(18,38,63,0.04);color:#6b7280;font-size:13px;\">\n              <div style=\"margin-bottom:6px;\">Need help?</div>\n              <div>If anything is unclear, reply to this email or contact support at <a href=\"mailto:support@example.com\" style=\"color:#1f6feb;text-decoration:none;\">support@example.com</a>.</div>\n            </td>\n          </tr>\n\n          <!-- Small note -->\n          <tr>\n            <td style=\"padding:14px 32px 24px;font-size:12px;color:#9aa2b2;\">\n              Please do not share your login credentials with anyone. This message was sent to the email associated with your account.\n            </td>\n          </tr>\n        </table>\n        <!-- /Card -->\n      </td>\n    </tr>\n  </table>\n</body>\n</html>\n",
+    "whatsapp_template": "{{timeGreeting}} {{user.name}}, We hope you are doing good. This is to inform you that the result for this session is currently out. Kindly login to yout portal to view yours. Report any mistakes ASAP!\n\nURL: {{portal_url}}",
+    "variables": [],
+    "created_by": null,
+    "createdAt": "2025-11-09T11:11:18.092Z",
+    "updatedAt": "2025-12-27T23:27:35.542Z",
+    "__v": 1,
+    "allowed_departments": [],
+    "allowed_roles": [
+      "hod",
+      "admin"
+    ],
+    "categories": [
+      "exam"
+    ],
+    "color": "#f73b3b",
+    "default_actions": [],
+    "description": "This is for result",
+    "display_name": "Result Announcement2",
+    "icon": "",
+    "is_active": true,
+    "push_template": "",
+    "sms_template": "",
+    "subject_template": "aloyebolu5@gmail.com",
+    "tags": [
+      "tag"
+    ],
+    "updated_by": "690c70aa423136f152398166",
+    "conditions": [],
+    "last_used": "2025-12-27T23:27:35.461Z",
+    "previous_versions": [],
+    "rich_template": {
+      "type": "simple"
+    },
+    "usage_count": 5,
+    "version": 1
+  },
+  {
+    "_id": "695ce10fdd7f8638b8085240",
+    "name": "Greet Users",
+    "channel": "both",
+    "email_template": "Hello how are you doing today",
+    "whatsapp_template": "Hello how are you doing today",
+    "variables": [],
+    "created_by": null,
+    "createdAt": "2026-01-06T10:16:47.177Z",
+    "updatedAt": "2026-01-06T10:16:47.177Z",
+    "__v": 0
+  },
+  {
+    "_id": "695ce19edd7f8638b808524d",
+    "name": "Welcome User",
+    "channel": "both",
+    "email_template": "Hello {{user.name}} ",
+    "whatsapp_template": "Hello {{user.name}} ",
+    "variables": [],
+    "created_by": null,
+    "createdAt": "2026-01-06T10:19:10.834Z",
+    "updatedAt": "2026-01-06T10:19:10.834Z",
+    "__v": 0
+  }
+]

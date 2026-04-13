@@ -1,0 +1,4 @@
+{
+  "watch": ["."],
+  "ignore": ["auth_info_baileys/*", "logs/*", "creds.json"],
+  "ext": "js,json"}

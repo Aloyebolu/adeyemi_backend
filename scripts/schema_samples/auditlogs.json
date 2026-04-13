@@ -1,0 +1,322 @@
+[
+  {
+    "_id": "695fa62e45facdc5c2183376",
+    "actor": {
+      "userId": "690c70aa423136f152398166",
+      "username": "Mike Ross",
+      "email": "mike@school.edu",
+      "role": "admin",
+      "matricNo": "",
+      "staffId": "ADM-002",
+      "ipAddress": "127.0.0.1"
+    },
+    "action": "CREATE",
+    "entity": "Department",
+    "entityId": null,
+    "entityName": "",
+    "changes": {
+      "changedFields": []
+    },
+    "context": {
+      "endpoint": "/afued/result/portal/department",
+      "method": "POST",
+      "requestId": "req_1767876142719_il9eayzrr",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "requestBody": {
+        "fields": [
+          "name",
+          "code"
+        ],
+        "search_term": "English"
+      },
+      "responseTime": 0,
+      "statusCode": 200,
+      "errorMessage": ""
+    },
+    "status": "ERROR",
+    "metadata": {
+      "reason": "Internal server error during department creation",
+      "academicYear": "",
+      "semester": "",
+      "level": "",
+      "session": "",
+      "departmentName": "",
+      "facultyName": ""
+    },
+    "severity": "CRITICAL",
+    "isSuspicious": false,
+    "requiresReview": false,
+    "tags": [
+      "department",
+      "data-modification",
+      "error"
+    ],
+    "relatedEntities": [],
+    "timestamp": "2026-01-08T12:42:22.895Z",
+    "createdAt": "2026-01-08T12:42:22.951Z",
+    "updatedAt": "2026-01-08T12:42:22.951Z",
+    "__v": 0
+  },
+  {
+    "_id": "695fa63045facdc5c218337d",
+    "actor": {
+      "userId": "690c70aa423136f152398166",
+      "username": "Mike Ross",
+      "email": "mike@school.edu",
+      "role": "admin",
+      "matricNo": "",
+      "staffId": "ADM-002",
+      "ipAddress": "127.0.0.1"
+    },
+    "action": "UPDATE",
+    "entity": "Result",
+    "entityId": "695d4b13e325197cc978919d",
+    "entityName": "",
+    "changes": {
+      "changedFields": []
+    },
+    "context": {
+      "endpoint": "/afued/result/portal/lecturers/695d4b13e325197cc978919d",
+      "method": "PATCH",
+      "requestId": "req_1767876144053_kbshrvgip",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "requestBody": {
+        "name": "Dr. Aliu Saliu",
+        "staffId": "STAFF024",
+        "rank": "lecturer_ii",
+        "department": "English"
+      },
+      "responseTime": 168,
+      "statusCode": 200
+    },
+    "status": "SUCCESS",
+    "metadata": {
+      "reason": "Lecturer updated successfully",
+      "academicYear": "",
+      "semester": "",
+      "level": "",
+      "session": "",
+      "departmentName": "",
+      "facultyName": ""
+    },
+    "severity": "LOW",
+    "isSuspicious": false,
+    "requiresReview": false,
+    "tags": [
+      "result",
+      "data-modification"
+    ],
+    "relatedEntities": [],
+    "timestamp": "2026-01-08T12:42:24.267Z",
+    "createdAt": "2026-01-08T12:42:24.274Z",
+    "updatedAt": "2026-01-08T12:42:24.274Z",
+    "__v": 0
+  },
+  {
+    "_id": "695fa6a845facdc5c21833c9",
+    "actor": {
+      "userId": "690c70aa423136f152398166",
+      "username": "Mike Ross",
+      "email": "mike@school.edu",
+      "role": "admin",
+      "matricNo": "",
+      "staffId": "ADM-002",
+      "ipAddress": "127.0.0.1"
+    },
+    "action": "UPDATE",
+    "entity": "Result",
+    "entityId": "695cf6ad208f30f3b5ebdf45",
+    "entityName": "",
+    "changes": {
+      "changedFields": []
+    },
+    "context": {
+      "endpoint": "/afued/result/portal/department/695cf6ad208f30f3b5ebdf45/remove-hod",
+      "method": "PATCH",
+      "requestId": "req_1767876264642_tsgenwv8z",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "responseTime": 304,
+      "statusCode": 200
+    },
+    "status": "SUCCESS",
+    "metadata": {
+      "reason": "HOD removed successfully",
+      "academicYear": "",
+      "semester": "",
+      "level": "",
+      "session": "",
+      "departmentName": "",
+      "facultyName": ""
+    },
+    "severity": "LOW",
+    "isSuspicious": false,
+    "requiresReview": false,
+    "tags": [
+      "result",
+      "data-modification"
+    ],
+    "relatedEntities": [],
+    "timestamp": "2026-01-08T12:44:24.986Z",
+    "createdAt": "2026-01-08T12:44:24.994Z",
+    "updatedAt": "2026-01-08T12:44:24.994Z",
+    "__v": 0
+  },
+  {
+    "_id": "695fa6bf45facdc5c2183414",
+    "actor": {
+      "userId": "690c70aa423136f152398166",
+      "username": "Mike Ross",
+      "email": "mike@school.edu",
+      "role": "admin",
+      "matricNo": "",
+      "staffId": "ADM-002",
+      "ipAddress": "127.0.0.1"
+    },
+    "action": "ASSIGN_HOD",
+    "entity": "Department",
+    "entityId": "695cf6ad208f30f3b5ebdf45",
+    "entityName": "English",
+    "changes": {
+      "before": {
+        "department": {
+          "hod": null,
+          "name": "English",
+          "code": "EGL"
+        },
+        "lecturer": {
+          "isHOD": false,
+          "staffId": "STAFF017"
+        },
+        "user": {
+          "role": "lecturer",
+          "department": "695cf6ad208f30f3b5ebdf45"
+        }
+      },
+      "after": {
+        "department": {
+          "hod": "695cf72a208f30f3b5ebdf8f",
+          "name": "English",
+          "code": "EGL"
+        },
+        "lecturer": {
+          "isHOD": true,
+          "staffId": "STAFF017"
+        },
+        "user": {
+          "role": "hod",
+          "department": "695cf6ad208f30f3b5ebdf45"
+        }
+      },
+      "changedFields": [
+        "hod",
+        "isHOD",
+        "role",
+        "department"
+      ],
+      "delta": {
+        "hod": {
+          "from": null,
+          "to": "695cf72a208f30f3b5ebdf8f"
+        },
+        "role": {
+          "from": "lecturer",
+          "to": "hod"
+        }
+      }
+    },
+    "context": {
+      "endpoint": "/afued/result/portal/department/695cf6ad208f30f3b5ebdf45/assign-hod",
+      "method": "PATCH",
+      "requestId": "req_1767876287035_hpmva8c31",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "requestBody": {
+        "lecturers": "Dr. Adhuze HI",
+        "lecturerId": "695cf72a208f30f3b5ebdf8f",
+        "hod_id": "695cf72a208f30f3b5ebdf8f",
+        "department_id": "695cf6ad208f30f3b5ebdf45"
+      },
+      "responseTime": 0,
+      "statusCode": 200,
+      "errorMessage": ""
+    },
+    "status": "SUCCESS",
+    "metadata": {
+      "reason": "HOD assigned to department",
+      "academicYear": "",
+      "semester": "",
+      "level": "",
+      "session": "",
+      "departmentName": "English",
+      "facultyName": ""
+    },
+    "severity": "HIGH",
+    "isSuspicious": false,
+    "requiresReview": false,
+    "tags": [
+      "department",
+      "hod",
+      "role_assignment",
+      "admin"
+    ],
+    "relatedEntities": [],
+    "timestamp": "2026-01-08T12:44:47.201Z",
+    "createdAt": "2026-01-08T12:44:47.208Z",
+    "updatedAt": "2026-01-08T12:44:47.208Z",
+    "__v": 0
+  },
+  {
+    "_id": "695fa6bf45facdc5c218341e",
+    "actor": {
+      "userId": "690c70aa423136f152398166",
+      "username": "Mike Ross",
+      "email": "mike@school.edu",
+      "role": "admin",
+      "matricNo": "",
+      "staffId": "ADM-002",
+      "ipAddress": "127.0.0.1"
+    },
+    "action": "UPDATE",
+    "entity": "Result",
+    "entityId": null,
+    "entityName": "",
+    "changes": {
+      "changedFields": []
+    },
+    "context": {
+      "endpoint": "/afued/result/portal/department/695cf6ad208f30f3b5ebdf45/assign-hod",
+      "method": "PATCH",
+      "requestId": "req_1767876287035_hpmva8c31",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "requestBody": {
+        "lecturers": "Dr. Adhuze HI",
+        "lecturerId": "695cf72a208f30f3b5ebdf8f",
+        "hod_id": "695cf72a208f30f3b5ebdf8f",
+        "department_id": "695cf6ad208f30f3b5ebdf45"
+      },
+      "responseTime": 352,
+      "statusCode": 500
+    },
+    "status": "FAILURE",
+    "metadata": {
+      "reason": "Cannot call abortTransaction after calling commitTransaction",
+      "academicYear": "",
+      "semester": "",
+      "level": "",
+      "session": "",
+      "departmentName": "",
+      "facultyName": ""
+    },
+    "severity": "LOW",
+    "isSuspicious": false,
+    "requiresReview": false,
+    "tags": [
+      "result",
+      "data-modification"
+    ],
+    "relatedEntities": [],
+    "timestamp": "2026-01-08T12:44:47.428Z",
+    "createdAt": "2026-01-08T12:44:47.434Z",
+    "updatedAt": "2026-01-08T12:44:47.434Z",
+    "__v": 0
+  }
+]

@@ -1,0 +1,67 @@
+[
+  {
+    "_id": "693a360e41d3b37602b85507",
+    "course": "692fb82d1cddeff2e93a34aa",
+    "lecturer": "6929538e38f46c448086933f",
+    "semester": "693a35ec41d3b37602b85443",
+    "session": "2025/2026",
+    "department": "69285002c3c2904e51b75344",
+    "assignedBy": "6928c5a475c778f1ee14c6c3",
+    "status": "Active",
+    "createdAt": "2025-12-11T03:10:06.341Z",
+    "updatedAt": "2025-12-11T03:10:06.341Z",
+    "__v": 0
+  },
+  {
+    "_id": "693a364d57f64910e56f8b4c",
+    "course": "692fb82c1cddeff2e93a32ea",
+    "lecturer": "6929538e38f46c448086933f",
+    "semester": "693a35ec41d3b37602b85457",
+    "session": "2025/2026",
+    "department": "692857cfc3c2904e51b75554",
+    "assignedBy": "6928c5a475c778f1ee14c6c3",
+    "status": "Active",
+    "createdAt": "2025-12-11T03:11:09.218Z",
+    "updatedAt": "2025-12-11T03:11:09.218Z",
+    "__v": 0
+  },
+  {
+    "_id": "693a9c89ef85ad928855bc5f",
+    "course": "692fb82c1cddeff2e93a32c9",
+    "lecturer": "6928c5a475c778f1ee14c6c3",
+    "semester": "693a35ec41d3b37602b85457",
+    "session": "2025/2026",
+    "department": "692857cfc3c2904e51b75554",
+    "assignedBy": "6928c5a475c778f1ee14c6c3",
+    "status": "Active",
+    "createdAt": "2025-12-11T10:27:21.317Z",
+    "updatedAt": "2025-12-27T07:40:31.097Z",
+    "__v": 0
+  },
+  {
+    "_id": "693acbca9d80564948ceb4e3",
+    "course": "692fb82d1cddeff2e93a3489",
+    "lecturer": "692952f838f46c448086931c",
+    "semester": "693a35ec41d3b37602b85443",
+    "session": "2025/2026",
+    "department": "69285002c3c2904e51b75344",
+    "assignedBy": "6928c5a475c778f1ee14c6c3",
+    "status": "Active",
+    "createdAt": "2025-12-11T13:48:58.879Z",
+    "updatedAt": "2025-12-11T13:48:58.879Z",
+    "__v": 0
+  },
+  {
+    "_id": "693acbcf9d80564948ceb4f2",
+    "course": "692fb82d1cddeff2e93a347a",
+    "lecturer": "6928c5a475c778f1ee14c6c3",
+    "semester": "693a35ec41d3b37602b85443",
+    "session": "2025/2026",
+    "department": "69285002c3c2904e51b75344",
+    "assignedBy": "6928c5a475c778f1ee14c6c3",
+    "status": "Active",
+    "createdAt": "2025-12-11T13:49:03.608Z",
+    "updatedAt": "2025-12-27T07:40:31.217Z",
+    "__v": 0
+  }
+]

@@ -1,0 +1,102 @@
+[
+  {
+    "_id": "69383a8742a01ebad6ec30ce",
+    "name": "heartbeat",
+    "type": "single",
+    "data": {},
+    "endDate": null,
+    "lastModifiedBy": null,
+    "nextRunAt": "2026-01-26T09:40:25.488Z",
+    "priority": 0,
+    "repeatInterval": "1000 seconds",
+    "repeatTimezone": null,
+    "shouldSaveResult": false,
+    "skipDays": null,
+    "startDate": null,
+    "lockedAt": null,
+    "lastRunAt": "2026-01-26T09:23:45.488Z",
+    "lastFinishedAt": "2026-01-26T09:23:45.552Z"
+  },
+  {
+    "_id": "69387f882bb3f859fce50bb2",
+    "name": "department-computation",
+    "data": {
+      "departmentId": "692857cfc3c2904e51b75554",
+      "masterComputationId": "69387f882bb3f859fce50bae",
+      "computedBy": "690c70aa423136f152398166",
+      "jobId": "dept-692857cfc3c2904e51b75554-69387f882bb3f859fce50bae-1765310344955-525e6241-97fa-4514-802d-288f1bc640f1",
+      "priority": 1
+    },
+    "priority": 1,
+    "shouldSaveResult": false,
+    "type": "normal",
+    "nextRunAt": null,
+    "lastModifiedBy": null,
+    "lockedAt": null,
+    "lastRunAt": "2025-12-09T19:59:05.554Z",
+    "failCount": 1,
+    "failReason": "Cannot destructure property 'departmentId' of 'job.data' as it is undefined.",
+    "failedAt": "2025-12-09T19:59:07.933Z",
+    "lastFinishedAt": "2025-12-09T19:59:07.933Z"
+  },
+  {
+    "_id": "69387f9f2bb3f859fce50bd9",
+    "name": "department-computation",
+    "data": {
+      "departmentId": "692857cfc3c2904e51b75554",
+      "masterComputationId": "69387f9f2bb3f859fce50bd6",
+      "computedBy": "690c70aa423136f152398166",
+      "jobId": "dept-692857cfc3c2904e51b75554-69387f9f2bb3f859fce50bd6-1765310367385-b624f5a7-32f4-4158-8dca-58a6bd483690",
+      "priority": 1
+    },
+    "priority": 1,
+    "shouldSaveResult": false,
+    "type": "normal",
+    "nextRunAt": null,
+    "lastModifiedBy": null,
+    "lockedAt": null,
+    "lastRunAt": "2025-12-09T19:59:27.413Z",
+    "failCount": 1,
+    "failReason": "job.progress is not a function",
+    "failedAt": "2025-12-09T19:59:30.810Z",
+    "lastFinishedAt": "2025-12-09T19:59:30.810Z"
+  },
+  {
+    "_id": "69388141380627c3f75aa8e9",
+    "name": "department-computation",
+    "data": {
+      "departmentId": "692857cfc3c2904e51b75554",
+      "masterComputationId": "69388141380627c3f75aa8e5",
+      "computedBy": "690c70aa423136f152398166",
+      "jobId": "dept-692857cfc3c2904e51b75554-69388141380627c3f75aa8e5-1765310785739-b6316098-d301-4445-a72b-c4128f35a51b",
+      "priority": 1
+    },
+    "priority": 1,
+    "shouldSaveResult": false,
+    "type": "normal",
+    "nextRunAt": null,
+    "lastModifiedBy": null,
+    "lockedAt": null,
+    "lastRunAt": "2025-12-09T20:06:25.950Z",
+    "lastFinishedAt": "2025-12-09T20:06:26.908Z"
+  },
+  {
+    "_id": "693883934b000b10015926cb",
+    "name": "department-computation",
+    "data": {
+      "departmentId": "692857cfc3c2904e51b75554",
+      "masterComputationId": "693883934b000b10015926c7",
+      "computedBy": "690c70aa423136f152398166",
+      "jobId": "dept-692857cfc3c2904e51b75554-693883934b000b10015926c7-1765311379082-3f913723-93f7-4d96-aa9a-ca9d13a01ae9",
+      "priority": 1
+    },
+    "priority": 1,
+    "shouldSaveResult": false,
+    "type": "normal",
+    "nextRunAt": null,
+    "lastModifiedBy": null,
+    "lockedAt": null,
+    "lastRunAt": "2025-12-09T20:16:21.372Z",
+    "lastFinishedAt": "2025-12-09T20:16:22.824Z"
+  }
+]

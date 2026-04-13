@@ -1,0 +1,4525 @@
+[
+  {
+    "_id": "694d290faee42ecc35bb3f69",
+    "department": "692857cfc3c2904e51b75554",
+    "departmentDetails": {
+      "name": "Computer Science",
+      "code": "CSC",
+      "faculty": {
+        "name": "Science",
+        "code": "SCI"
+      },
+      "dean": {
+        "name": "Mr. Ogundoju B.M",
+        "title": "Dean",
+        "rank": "senior_lecturer",
+        "staffId": "STAFF008",
+        "signature": "",
+        "isDean": true
+      },
+      "hod": {
+        "name": "Mrs. Iroju",
+        "title": "Head of Department",
+        "rank": "assistant_lecturer",
+        "staffId": "STAFF001",
+        "signature": "",
+        "isHOD": true
+      },
+      "academicYear": "2025/2026",
+      "semester": "first",
+      "generatedDate": "2025-12-25T12:07:46.997Z"
+    },
+    "keyToCoursesByLevel": {
+      "100": [
+        {
+          "courseId": "692fb82c1cddeff2e93a33e6",
+          "courseCode": "CHM 101",
+          "title": "General Chemistry I",
+          "unit": 2,
+          "level": 100,
+          "type": "core",
+          "isBorrowed": true
+        },
+        {
+          "courseId": "692fb82c1cddeff2e93a32c9",
+          "courseCode": "CSC 101",
+          "title": "Introduction to Computing Science",
+          "unit": 3,
+          "level": 100,
+          "type": "core",
+          "isCoreCourse": false,
+          "isBorrowed": false
+        },
+        {
+          "courseId": "692fb82c1cddeff2e93a33d6",
+          "courseCode": "EDU 101",
+          "title": "Introduction to Teaching and Foundations of Education",
+          "unit": 2,
+          "level": 100,
+          "type": "core",
+          "isBorrowed": true
+        },
+        {
+          "courseId": "692fb82c1cddeff2e93a33dc",
+          "courseCode": "MTH 101",
+          "title": "Elementary Mathematics I",
+          "unit": 2,
+          "level": 100,
+          "type": "core",
+          "isBorrowed": true
+        },
+        {
+          "courseId": "692fb82c1cddeff2e93a33df",
+          "courseCode": "PHY 101",
+          "title": "General Physics I",
+          "unit": 2,
+          "level": 100,
+          "type": "core",
+          "isBorrowed": true
+        }
+      ]
+    },
+    "semester": "693a35ec41d3b37602b85457",
+    "masterComputationId": "694d290ce82f248bac7bee69",
+    "studentSummariesByLevel": {
+      "100": [
+        {
+          "studentId": "69289f63c3c2904e51b7564a",
+          "matricNumber": "CSC/2024/0001D",
+          "name": "Adewale Ojo",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 55,
+            "tnu": 11,
+            "gpa": 5
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 5,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 55,
+            "totalTNU": 11,
+            "cgpa": 5
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 89,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 15,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4073"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 89,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4074"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 75,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4075"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 89,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4076"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 75,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4077"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "terminated",
+          "_id": "694d2913aee42ecc35bb4072"
+        },
+        {
+          "studentId": "69289f97c3c2904e51b75654",
+          "matricNumber": "CSC/2024/0002D",
+          "name": "Adegbenro Kayode",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 20,
+            "tnu": 11,
+            "gpa": 1.82
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 1.82,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 20,
+            "totalTNU": 11,
+            "cgpa": 1.82
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 34,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694d2913aee42ecc35bb4079"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 34,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694d2913aee42ecc35bb407a"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 86,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb407b"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 34,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694d2913aee42ecc35bb407c"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 86,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb407d"
+            }
+          ],
+          "outstandingCourses": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694d2913aee42ecc35bb407e"
+            },
+            {
+              "courseId": "692fb8271cddeff2e93a3270",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694d2913aee42ecc35bb407f"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a3306",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694d2913aee42ecc35bb4080"
+            }
+          ],
+          "academicStatus": "good",
+          "_id": "694d2913aee42ecc35bb4078"
+        },
+        {
+          "studentId": "6928ab56e6394a00e787def0",
+          "matricNumber": "CSC/2024/0003D",
+          "name": "Adekemi Tayo",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 41,
+            "tnu": 11,
+            "gpa": 3.73
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 3.73,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 41,
+            "totalTNU": 11,
+            "cgpa": 3.73
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 56,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 9,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4082"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 56,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4083"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 97,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4084"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 56,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4085"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 97,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4086"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694d2913aee42ecc35bb4081"
+        },
+        {
+          "studentId": "6928ab57e6394a00e787def6",
+          "matricNumber": "CSC/2024/0004D",
+          "name": "Akingade Tope",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 47,
+            "tnu": 11,
+            "gpa": 4.27
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 4.27,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 47,
+            "totalTNU": 11,
+            "cgpa": 4.27
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 99,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 15,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4088"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 99,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4089"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 57,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb408a"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 99,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb408b"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 57,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb408c"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694d2913aee42ecc35bb4087"
+        },
+        {
+          "studentId": "6928ab57e6394a00e787defc",
+          "matricNumber": "CSC/2024/0005D",
+          "name": "Akintope Femi",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 55,
+            "tnu": 11,
+            "gpa": 5
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 5,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 55,
+            "totalTNU": 11,
+            "cgpa": 5
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 79,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 15,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb408e"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 79,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb408f"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 86,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4090"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 79,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4091"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 86,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4092"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694d2913aee42ecc35bb408d"
+        },
+        {
+          "studentId": "6928ab57e6394a00e787df02",
+          "matricNumber": "CSC/2024/0006D",
+          "name": "Fakunle Yolade",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 44,
+            "tnu": 11,
+            "gpa": 4
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 4,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 44,
+            "totalTNU": 11,
+            "cgpa": 4
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 66,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 12,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4094"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 66,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4095"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 64,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4096"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 66,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4097"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 64,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb4098"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694d2913aee42ecc35bb4093"
+        },
+        {
+          "studentId": "6928ab57e6394a00e787df08",
+          "matricNumber": "CSC/2024/0007D",
+          "name": "Falope Dayo",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 16,
+            "tnu": 11,
+            "gpa": 1.45
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 1.45,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 16,
+            "totalTNU": 11,
+            "cgpa": 1.45
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 23,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694d2913aee42ecc35bb409a"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 23,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694d2913aee42ecc35bb409b"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 68,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb409c"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 23,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694d2913aee42ecc35bb409d"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 68,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb409e"
+            }
+          ],
+          "outstandingCourses": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694d2913aee42ecc35bb409f"
+            },
+            {
+              "courseId": "692fb8271cddeff2e93a3270",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694d2913aee42ecc35bb40a0"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a3306",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694d2913aee42ecc35bb40a1"
+            }
+          ],
+          "academicStatus": "probation",
+          "_id": "694d2913aee42ecc35bb4099"
+        },
+        {
+          "studentId": "6928ab57e6394a00e787df0e",
+          "matricNumber": "CSC/2024/0008D",
+          "name": "Sunday Dare",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 43,
+            "tnu": 11,
+            "gpa": 3.91
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 3.91,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 43,
+            "totalTNU": 11,
+            "cgpa": 3.91
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 95,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 15,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40a3"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 95,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40a4"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 47,
+              "grade": "D",
+              "gradePoint": 2,
+              "creditPoint": 4,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40a5"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 95,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40a6"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 47,
+              "grade": "D",
+              "gradePoint": 2,
+              "creditPoint": 4,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40a7"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694d2913aee42ecc35bb40a2"
+        },
+        {
+          "studentId": "6928ab57e6394a00e787df14",
+          "matricNumber": "CSC/2024/0009D",
+          "name": "Suzan James",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 20,
+            "tnu": 4,
+            "gpa": 5
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 5,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 20,
+            "totalTNU": 4,
+            "cgpa": 5
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 97,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40a9"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 97,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40aa"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694d2913aee42ecc35bb40a8"
+        },
+        {
+          "studentId": "6928ab57e6394a00e787df1a",
+          "matricNumber": "CSC/2024/0010D",
+          "name": "David Gbenga",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 43,
+            "tnu": 11,
+            "gpa": 3.91
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 3.91,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 43,
+            "totalTNU": 11,
+            "cgpa": 3.91
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 85,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 15,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40ac"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 85,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40ad"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 45,
+              "grade": "D",
+              "gradePoint": 2,
+              "creditPoint": 4,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40ae"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 85,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40af"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 45,
+              "grade": "D",
+              "gradePoint": 2,
+              "creditPoint": 4,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40b0"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694d2913aee42ecc35bb40ab"
+        },
+        {
+          "studentId": "6928ab58e6394a00e787df20",
+          "matricNumber": "CSC/2024/0012D",
+          "name": "Hellen John",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 37,
+            "tnu": 11,
+            "gpa": 3.36
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 3.36,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 37,
+            "totalTNU": 11,
+            "cgpa": 3.36
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 57,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 9,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40b2"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 57,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40b3"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 67,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40b4"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 57,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40b5"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 67,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40b6"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694d2913aee42ecc35bb40b1"
+        },
+        {
+          "studentId": "6928ab58e6394a00e787df26",
+          "matricNumber": "CSC/2024/0013D",
+          "name": "Kayode John",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 47,
+            "tnu": 11,
+            "gpa": 4.27
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 4.27,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 47,
+            "totalTNU": 11,
+            "cgpa": 4.27
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 74,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 15,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40b8"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 74,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40b9"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 56,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40ba"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 74,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40bb"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 56,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40bc"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694d2913aee42ecc35bb40b7"
+        },
+        {
+          "studentId": "6928ab58e6394a00e787df2c",
+          "matricNumber": "CSC/2024/0014D",
+          "name": "Queen Tayo",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 55,
+            "tnu": 11,
+            "gpa": 5
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 5,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 55,
+            "totalTNU": 11,
+            "cgpa": 5
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 84,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 15,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40be"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 84,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40bf"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 86,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40c0"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 84,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40c1"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 86,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40c2"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694d2913aee42ecc35bb40bd"
+        },
+        {
+          "studentId": "6928ab58e6394a00e787df32",
+          "matricNumber": "CSC/2024/0015D",
+          "name": "Zarah Tope",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 16,
+            "tnu": 11,
+            "gpa": 1.45
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 1.45,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 16,
+            "totalTNU": 11,
+            "cgpa": 1.45
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 37,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694d2913aee42ecc35bb40c4"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 37,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694d2913aee42ecc35bb40c5"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 65,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40c6"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 37,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694d2913aee42ecc35bb40c7"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 65,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40c8"
+            }
+          ],
+          "outstandingCourses": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694d2913aee42ecc35bb40c9"
+            },
+            {
+              "courseId": "692fb8271cddeff2e93a3270",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694d2913aee42ecc35bb40ca"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a3306",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694d2913aee42ecc35bb40cb"
+            }
+          ],
+          "academicStatus": "probation",
+          "_id": "694d2913aee42ecc35bb40c3"
+        },
+        {
+          "studentId": "6928ab58e6394a00e787df38",
+          "matricNumber": "CSC/2024/0016D",
+          "name": "Mathew Femi",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 21,
+            "tnu": 11,
+            "gpa": 1.91
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 1.91,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 21,
+            "totalTNU": 11,
+            "cgpa": 1.91
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 58,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 9,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40cd"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 58,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40ce"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 36,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694d2913aee42ecc35bb40cf"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 58,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40d0"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 36,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694d2913aee42ecc35bb40d1"
+            }
+          ],
+          "outstandingCourses": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32eb",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694d2913aee42ecc35bb40d2"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a32a5",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694d2913aee42ecc35bb40d3"
+            }
+          ],
+          "academicStatus": "good",
+          "_id": "694d2913aee42ecc35bb40cc"
+        },
+        {
+          "studentId": "6928ab58e6394a00e787df3e",
+          "matricNumber": "CSC/2024/0017D",
+          "name": "Hellen Joel",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 20,
+            "tnu": 11,
+            "gpa": 1.82
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 1.82,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 20,
+            "totalTNU": 11,
+            "cgpa": 1.82
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 25,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694d2913aee42ecc35bb40d5"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 25,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694d2913aee42ecc35bb40d6"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 97,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40d7"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 25,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694d2913aee42ecc35bb40d8"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 97,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40d9"
+            }
+          ],
+          "outstandingCourses": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694d2913aee42ecc35bb40da"
+            },
+            {
+              "courseId": "692fb8271cddeff2e93a3270",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694d2913aee42ecc35bb40db"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a3306",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694d2913aee42ecc35bb40dc"
+            }
+          ],
+          "academicStatus": "good",
+          "_id": "694d2913aee42ecc35bb40d4"
+        },
+        {
+          "studentId": "6928ab58e6394a00e787df44",
+          "matricNumber": "CSC/2024/0018D",
+          "name": "Kayode Ibrahin",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 44,
+            "tnu": 11,
+            "gpa": 4
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 4,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 44,
+            "totalTNU": 11,
+            "cgpa": 4
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 68,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 12,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40de"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 68,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40df"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 67,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40e0"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 68,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40e1"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 67,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40e2"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694d2913aee42ecc35bb40dd"
+        },
+        {
+          "studentId": "6928ab58e6394a00e787df4a",
+          "matricNumber": "CSC/2024/0019D",
+          "name": "Quidril Tayo",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 20,
+            "tnu": 11,
+            "gpa": 1.82
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 1.82,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 20,
+            "totalTNU": 11,
+            "cgpa": 1.82
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 30,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694d2913aee42ecc35bb40e4"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 30,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694d2913aee42ecc35bb40e5"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 86,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40e6"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 30,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694d2913aee42ecc35bb40e7"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 86,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40e8"
+            }
+          ],
+          "outstandingCourses": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694d2913aee42ecc35bb40e9"
+            },
+            {
+              "courseId": "692fb8271cddeff2e93a3270",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694d2913aee42ecc35bb40ea"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a3306",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694d2913aee42ecc35bb40eb"
+            }
+          ],
+          "academicStatus": "good",
+          "_id": "694d2913aee42ecc35bb40e3"
+        },
+        {
+          "studentId": "6928ab59e6394a00e787df50",
+          "matricNumber": "CSC/2024/0011D",
+          "name": "Zarubal Tope",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 30,
+            "tnu": 11,
+            "gpa": 2.73
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 2.73,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 30,
+            "totalTNU": 11,
+            "cgpa": 2.73
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 45,
+              "grade": "D",
+              "gradePoint": 2,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40ed"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 45,
+              "grade": "D",
+              "gradePoint": 2,
+              "creditPoint": 4,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40ee"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 64,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40ef"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 45,
+              "grade": "D",
+              "gradePoint": 2,
+              "creditPoint": 4,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40f0"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 64,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694d2913aee42ecc35bb40f1"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694d2913aee42ecc35bb40ec"
+        }
+      ]
+    },
+    "totalStudents": 19,
+    "studentsWithResults": 19,
+    "studentsProcessed": 19,
+    "averageGPA": 3.39,
+    "highestGPA": 5,
+    "lowestGPA": 1.45,
+    "gradeDistribution": {
+      "firstClass": 4,
+      "secondClassUpper": 7,
+      "secondClassLower": 2,
+      "thirdClass": 4,
+      "fail": 2
+    },
+    "summaryOfResultsByLevel": {
+      "100": {
+        "totalStudents": 19,
+        "studentsWithResults": 19,
+        "gpaStatistics": {
+          "average": 3.39,
+          "highest": 5,
+          "lowest": 1.45
+        },
+        "classDistribution": {
+          "firstClass": 4,
+          "secondClassUpper": 7,
+          "secondClassLower": 2,
+          "thirdClass": 4,
+          "fail": 2,
+          "pass": 0
+        },
+        "_id": "694d2913aee42ecc35bb4102"
+      }
+    },
+    "studentListsByLevel": {
+      "100": {
+        "passList": [
+          {
+            "studentId": "6928ab56e6394a00e787def0",
+            "matricNumber": "CSC/2024/0003D",
+            "name": "Adekemi Tayo",
+            "gpa": 3.73,
+            "_id": "694d2913aee42ecc35bb40f3"
+          },
+          {
+            "studentId": "6928ab57e6394a00e787def6",
+            "matricNumber": "CSC/2024/0004D",
+            "name": "Akingade Tope",
+            "gpa": 4.27,
+            "_id": "694d2913aee42ecc35bb40f4"
+          },
+          {
+            "studentId": "6928ab57e6394a00e787defc",
+            "matricNumber": "CSC/2024/0005D",
+            "name": "Akintope Femi",
+            "gpa": 5,
+            "_id": "694d2913aee42ecc35bb40f5"
+          },
+          {
+            "studentId": "6928ab57e6394a00e787df02",
+            "matricNumber": "CSC/2024/0006D",
+            "name": "Fakunle Yolade",
+            "gpa": 4,
+            "_id": "694d2913aee42ecc35bb40f6"
+          },
+          {
+            "studentId": "6928ab57e6394a00e787df0e",
+            "matricNumber": "CSC/2024/0008D",
+            "name": "Sunday Dare",
+            "gpa": 3.91,
+            "_id": "694d2913aee42ecc35bb40f7"
+          },
+          {
+            "studentId": "6928ab57e6394a00e787df14",
+            "matricNumber": "CSC/2024/0009D",
+            "name": "Suzan James",
+            "gpa": 5,
+            "_id": "694d2913aee42ecc35bb40f8"
+          },
+          {
+            "studentId": "6928ab57e6394a00e787df1a",
+            "matricNumber": "CSC/2024/0010D",
+            "name": "David Gbenga",
+            "gpa": 3.91,
+            "_id": "694d2913aee42ecc35bb40f9"
+          },
+          {
+            "studentId": "6928ab58e6394a00e787df20",
+            "matricNumber": "CSC/2024/0012D",
+            "name": "Hellen John",
+            "gpa": 3.36,
+            "_id": "694d2913aee42ecc35bb40fa"
+          },
+          {
+            "studentId": "6928ab58e6394a00e787df26",
+            "matricNumber": "CSC/2024/0013D",
+            "name": "Kayode John",
+            "gpa": 4.27,
+            "_id": "694d2913aee42ecc35bb40fb"
+          },
+          {
+            "studentId": "6928ab58e6394a00e787df2c",
+            "matricNumber": "CSC/2024/0014D",
+            "name": "Queen Tayo",
+            "gpa": 5,
+            "_id": "694d2913aee42ecc35bb40fc"
+          },
+          {
+            "studentId": "6928ab58e6394a00e787df44",
+            "matricNumber": "CSC/2024/0018D",
+            "name": "Kayode Ibrahin",
+            "gpa": 4,
+            "_id": "694d2913aee42ecc35bb40fd"
+          },
+          {
+            "studentId": "6928ab59e6394a00e787df50",
+            "matricNumber": "CSC/2024/0011D",
+            "name": "Zarubal Tope",
+            "gpa": 2.73,
+            "_id": "694d2913aee42ecc35bb40fe"
+          }
+        ],
+        "probationList": [
+          {
+            "studentId": "6928ab57e6394a00e787df08",
+            "matricNumber": "CSC/2024/0007D",
+            "name": "Falope Dayo",
+            "gpa": 1.45,
+            "remarks": "probation_continued",
+            "_id": "694d2913aee42ecc35bb40ff"
+          },
+          {
+            "studentId": "6928ab58e6394a00e787df32",
+            "matricNumber": "CSC/2024/0015D",
+            "name": "Zarah Tope",
+            "gpa": 1.45,
+            "remarks": "probation_continued",
+            "_id": "694d2913aee42ecc35bb4100"
+          }
+        ],
+        "withdrawalList": [],
+        "terminationList": [
+          {
+            "studentId": "69289f63c3c2904e51b7564a",
+            "matricNumber": "CSC/2024/0001D",
+            "name": "Adewale Ojo",
+            "gpa": 5,
+            "reason": "No Registration",
+            "remarks": "terminated_non_registration",
+            "_id": "694d2913aee42ecc35bb4101"
+          }
+        ],
+        "_id": "694d2913aee42ecc35bb40f2"
+      }
+    },
+    "status": "completed",
+    "startedAt": "2025-12-25T12:07:43.745Z",
+    "retryCount": 0,
+    "computedBy": "690c70aa423136f152398166",
+    "isFinal": false,
+    "isPreview": false,
+    "purpose": "final",
+    "masterSheetDataByLevel": {},
+    "masterSheetGenerated": false,
+    "createdAt": "2025-12-25T12:07:43.791Z",
+    "updatedAt": "2025-12-25T12:07:47.781Z",
+    "__v": 1,
+    "completedAt": "2025-12-25T12:07:47.603Z",
+    "duration": 3859
+  },
+  {
+    "_id": "694f93cdc958d9d3a5da3cf8",
+    "department": "6928501dc3c2904e51b75370",
+    "departmentDetails": {
+      "name": "Chemistry",
+      "code": "CHM",
+      "faculty": {
+        "name": "Science",
+        "code": "SCI"
+      },
+      "dean": {
+        "name": "Mr. Ogundoju B.M",
+        "title": "Dean",
+        "rank": "senior_lecturer",
+        "staffId": "STAFF008",
+        "signature": "",
+        "isDean": true
+      },
+      "hod": {
+        "name": "Dr. Adekunle A.O",
+        "title": "Head of Department",
+        "rank": "professor",
+        "staffId": "STAFF003",
+        "signature": "",
+        "isHOD": true
+      },
+      "academicYear": "2025/2026",
+      "semester": "first",
+      "generatedDate": "2025-12-27T08:07:42.069Z"
+    },
+    "keyToCoursesByLevel": {
+      "100": [
+        {
+          "courseId": "692fb82c1cddeff2e93a3390",
+          "courseCode": "CSC 101",
+          "title": "Introduction to Computing Science",
+          "unit": 3,
+          "level": 100,
+          "type": "core",
+          "isBorrowed": true
+        }
+      ]
+    },
+    "semester": "693a35ec41d3b37602b85448",
+    "masterComputationId": "694f93cb89cc19c956592d64",
+    "studentSummariesByLevel": {
+      "100": [
+        {
+          "studentId": "6928ab63e6394a00e787e136",
+          "matricNumber": "CHM/2024/0020D",
+          "name": "Khadija Usman",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 15,
+            "tnu": 3,
+            "gpa": 5
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 5,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 15,
+            "totalTNU": 3,
+            "cgpa": 5
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a3390",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 77,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 15,
+              "status": "passed",
+              "_id": "694f93cec958d9d3a5da3d1f"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694f93cec958d9d3a5da3d1e"
+        }
+      ]
+    },
+    "totalStudents": 20,
+    "studentsWithResults": 1,
+    "studentsProcessed": 1,
+    "averageGPA": 5,
+    "highestGPA": 5,
+    "lowestGPA": 5,
+    "gradeDistribution": {
+      "firstClass": 1,
+      "secondClassUpper": 0,
+      "secondClassLower": 0,
+      "thirdClass": 0,
+      "fail": 0
+    },
+    "summaryOfResultsByLevel": {
+      "100": {
+        "totalStudents": 1,
+        "studentsWithResults": 1,
+        "gpaStatistics": {
+          "average": 5,
+          "highest": 5,
+          "lowest": 5
+        },
+        "classDistribution": {
+          "firstClass": 1,
+          "secondClassUpper": 0,
+          "secondClassLower": 0,
+          "thirdClass": 0,
+          "fail": 0,
+          "pass": 0
+        },
+        "_id": "694f93cec958d9d3a5da3d22"
+      }
+    },
+    "studentListsByLevel": {
+      "100": {
+        "passList": [
+          {
+            "studentId": "6928ab63e6394a00e787e136",
+            "matricNumber": "CHM/2024/0020D",
+            "name": "Khadija Usman",
+            "gpa": 5,
+            "_id": "694f93cec958d9d3a5da3d21"
+          }
+        ],
+        "probationList": [],
+        "withdrawalList": [],
+        "terminationList": [],
+        "_id": "694f93cec958d9d3a5da3d20"
+      }
+    },
+    "status": "completed_with_errors",
+    "startedAt": "2025-12-27T08:07:41.043Z",
+    "retryCount": 0,
+    "computedBy": "690c70aa423136f152398166",
+    "isFinal": false,
+    "isPreview": true,
+    "purpose": "preview",
+    "masterSheetDataByLevel": {},
+    "masterSheetGenerated": false,
+    "createdAt": "2025-12-27T08:07:41.103Z",
+    "updatedAt": "2025-12-27T08:07:42.216Z",
+    "__v": 0,
+    "completedAt": "2025-12-27T08:07:42.096Z",
+    "duration": 1053
+  },
+  {
+    "_id": "694f93cdc958d9d3a5da3d00",
+    "department": "692857cfc3c2904e51b75554",
+    "departmentDetails": {
+      "name": "Computer Science",
+      "code": "CSC",
+      "faculty": {
+        "name": "Science",
+        "code": "SCI"
+      },
+      "dean": {
+        "name": "Mr. Ogundoju B.M",
+        "title": "Dean",
+        "rank": "senior_lecturer",
+        "staffId": "STAFF008",
+        "signature": "",
+        "isDean": true
+      },
+      "hod": {
+        "name": "Mrs. Iroju",
+        "title": "Head of Department",
+        "rank": "assistant_lecturer",
+        "staffId": "STAFF001",
+        "signature": "",
+        "isHOD": true
+      },
+      "academicYear": "2025/2026",
+      "semester": "first",
+      "generatedDate": "2025-12-27T08:07:44.007Z"
+    },
+    "keyToCoursesByLevel": {
+      "100": [
+        {
+          "courseId": "692fb82c1cddeff2e93a33e6",
+          "courseCode": "CHM 101",
+          "title": "General Chemistry I",
+          "unit": 2,
+          "level": 100,
+          "type": "core",
+          "isBorrowed": true
+        },
+        {
+          "courseId": "692fb82c1cddeff2e93a32c9",
+          "courseCode": "CSC 101",
+          "title": "Introduction to Computing Science",
+          "unit": 3,
+          "level": 100,
+          "type": "core",
+          "isCoreCourse": false,
+          "isBorrowed": false
+        },
+        {
+          "courseId": "692fb82c1cddeff2e93a33d6",
+          "courseCode": "EDU 101",
+          "title": "Introduction to Teaching and Foundations of Education",
+          "unit": 2,
+          "level": 100,
+          "type": "core",
+          "isBorrowed": true
+        },
+        {
+          "courseId": "692fb82c1cddeff2e93a33dc",
+          "courseCode": "MTH 101",
+          "title": "Elementary Mathematics I",
+          "unit": 2,
+          "level": 100,
+          "type": "core",
+          "isBorrowed": true
+        },
+        {
+          "courseId": "692fb82c1cddeff2e93a33df",
+          "courseCode": "PHY 101",
+          "title": "General Physics I",
+          "unit": 2,
+          "level": 100,
+          "type": "core",
+          "isBorrowed": true
+        }
+      ]
+    },
+    "semester": "693a35ec41d3b37602b85457",
+    "masterComputationId": "694f93cb89cc19c956592d64",
+    "studentSummariesByLevel": {
+      "100": [
+        {
+          "studentId": "69289f63c3c2904e51b7564a",
+          "matricNumber": "CSC/2024/0001D",
+          "name": "Adewale Ojo",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 55,
+            "tnu": 11,
+            "gpa": 5
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 5,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 55,
+            "totalTNU": 11,
+            "cgpa": 5
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 89,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 15,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3d94"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 89,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3d95"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 75,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3d96"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 89,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3d97"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 75,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3d98"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "terminated",
+          "_id": "694f93d0c958d9d3a5da3d93"
+        },
+        {
+          "studentId": "69289f97c3c2904e51b75654",
+          "matricNumber": "CSC/2024/0002D",
+          "name": "Adegbenro Kayode",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 20,
+            "tnu": 11,
+            "gpa": 1.82
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 1.82,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 20,
+            "totalTNU": 11,
+            "cgpa": 1.82
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 34,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694f93d0c958d9d3a5da3d9a"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 34,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694f93d0c958d9d3a5da3d9b"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 86,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3d9c"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 34,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694f93d0c958d9d3a5da3d9d"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 86,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3d9e"
+            }
+          ],
+          "outstandingCourses": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694f93d0c958d9d3a5da3d9f"
+            },
+            {
+              "courseId": "692fb8271cddeff2e93a3270",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694f93d0c958d9d3a5da3da0"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a3306",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694f93d0c958d9d3a5da3da1"
+            }
+          ],
+          "academicStatus": "good",
+          "_id": "694f93d0c958d9d3a5da3d99"
+        },
+        {
+          "studentId": "6928ab56e6394a00e787def0",
+          "matricNumber": "CSC/2024/0003D",
+          "name": "Adekemi Tayo",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 41,
+            "tnu": 11,
+            "gpa": 3.73
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 3.73,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 41,
+            "totalTNU": 11,
+            "cgpa": 3.73
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 56,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 9,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3da3"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 56,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3da4"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 97,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3da5"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 56,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3da6"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 97,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3da7"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694f93d0c958d9d3a5da3da2"
+        },
+        {
+          "studentId": "6928ab57e6394a00e787def6",
+          "matricNumber": "CSC/2024/0004D",
+          "name": "Akingade Tope",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 47,
+            "tnu": 11,
+            "gpa": 4.27
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 4.27,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 47,
+            "totalTNU": 11,
+            "cgpa": 4.27
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 99,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 15,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3da9"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 99,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3daa"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 57,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dab"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 99,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dac"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 57,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dad"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694f93d0c958d9d3a5da3da8"
+        },
+        {
+          "studentId": "6928ab57e6394a00e787defc",
+          "matricNumber": "CSC/2024/0005D",
+          "name": "Akintope Femi",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 55,
+            "tnu": 11,
+            "gpa": 5
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 5,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 55,
+            "totalTNU": 11,
+            "cgpa": 5
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 79,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 15,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3daf"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 79,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3db0"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 86,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3db1"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 79,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3db2"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 86,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3db3"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694f93d0c958d9d3a5da3dae"
+        },
+        {
+          "studentId": "6928ab57e6394a00e787df02",
+          "matricNumber": "CSC/2024/0006D",
+          "name": "Fakunle Yolade",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 44,
+            "tnu": 11,
+            "gpa": 4
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 4,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 44,
+            "totalTNU": 11,
+            "cgpa": 4
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 66,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 12,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3db5"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 66,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3db6"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 64,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3db7"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 66,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3db8"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 64,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3db9"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694f93d0c958d9d3a5da3db4"
+        },
+        {
+          "studentId": "6928ab57e6394a00e787df08",
+          "matricNumber": "CSC/2024/0007D",
+          "name": "Falope Dayo",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 16,
+            "tnu": 11,
+            "gpa": 1.45
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 1.45,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 16,
+            "totalTNU": 11,
+            "cgpa": 1.45
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 23,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694f93d0c958d9d3a5da3dbb"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 23,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694f93d0c958d9d3a5da3dbc"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 68,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dbd"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 23,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694f93d0c958d9d3a5da3dbe"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 68,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dbf"
+            }
+          ],
+          "outstandingCourses": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694f93d0c958d9d3a5da3dc0"
+            },
+            {
+              "courseId": "692fb8271cddeff2e93a3270",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694f93d0c958d9d3a5da3dc1"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a3306",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694f93d0c958d9d3a5da3dc2"
+            }
+          ],
+          "academicStatus": "probation",
+          "_id": "694f93d0c958d9d3a5da3dba"
+        },
+        {
+          "studentId": "6928ab57e6394a00e787df0e",
+          "matricNumber": "CSC/2024/0008D",
+          "name": "Sunday Dare",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 43,
+            "tnu": 11,
+            "gpa": 3.91
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 3.91,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 43,
+            "totalTNU": 11,
+            "cgpa": 3.91
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 95,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 15,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dc4"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 95,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dc5"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 47,
+              "grade": "D",
+              "gradePoint": 2,
+              "creditPoint": 4,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dc6"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 95,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dc7"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 47,
+              "grade": "D",
+              "gradePoint": 2,
+              "creditPoint": 4,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dc8"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694f93d0c958d9d3a5da3dc3"
+        },
+        {
+          "studentId": "6928ab57e6394a00e787df14",
+          "matricNumber": "CSC/2024/0009D",
+          "name": "Suzan James",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 20,
+            "tnu": 4,
+            "gpa": 5
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 5,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 20,
+            "totalTNU": 4,
+            "cgpa": 5
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 97,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dca"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 97,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dcb"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694f93d0c958d9d3a5da3dc9"
+        },
+        {
+          "studentId": "6928ab57e6394a00e787df1a",
+          "matricNumber": "CSC/2024/0010D",
+          "name": "David Gbenga",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 43,
+            "tnu": 11,
+            "gpa": 3.91
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 3.91,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 43,
+            "totalTNU": 11,
+            "cgpa": 3.91
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 85,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 15,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dcd"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 85,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dce"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 45,
+              "grade": "D",
+              "gradePoint": 2,
+              "creditPoint": 4,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dcf"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 85,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dd0"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 45,
+              "grade": "D",
+              "gradePoint": 2,
+              "creditPoint": 4,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dd1"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694f93d0c958d9d3a5da3dcc"
+        },
+        {
+          "studentId": "6928ab58e6394a00e787df20",
+          "matricNumber": "CSC/2024/0012D",
+          "name": "Hellen John",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 37,
+            "tnu": 11,
+            "gpa": 3.36
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 3.36,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 37,
+            "totalTNU": 11,
+            "cgpa": 3.36
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 57,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 9,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dd3"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 57,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dd4"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 67,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dd5"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 57,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dd6"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 67,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dd7"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694f93d0c958d9d3a5da3dd2"
+        },
+        {
+          "studentId": "6928ab58e6394a00e787df26",
+          "matricNumber": "CSC/2024/0013D",
+          "name": "Kayode John",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 47,
+            "tnu": 11,
+            "gpa": 4.27
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 4.27,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 47,
+            "totalTNU": 11,
+            "cgpa": 4.27
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 74,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 15,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dd9"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 74,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dda"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 56,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3ddb"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 74,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3ddc"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 56,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3ddd"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694f93d0c958d9d3a5da3dd8"
+        },
+        {
+          "studentId": "6928ab58e6394a00e787df2c",
+          "matricNumber": "CSC/2024/0014D",
+          "name": "Queen Tayo",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 55,
+            "tnu": 11,
+            "gpa": 5
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 5,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 55,
+            "totalTNU": 11,
+            "cgpa": 5
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 84,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 15,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3ddf"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 84,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3de0"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 86,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3de1"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 84,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3de2"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 86,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3de3"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694f93d0c958d9d3a5da3dde"
+        },
+        {
+          "studentId": "6928ab58e6394a00e787df32",
+          "matricNumber": "CSC/2024/0015D",
+          "name": "Zarah Tope",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 16,
+            "tnu": 11,
+            "gpa": 1.45
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 1.45,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 16,
+            "totalTNU": 11,
+            "cgpa": 1.45
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 37,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694f93d0c958d9d3a5da3de5"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 37,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694f93d0c958d9d3a5da3de6"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 65,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3de7"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 37,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694f93d0c958d9d3a5da3de8"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 65,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3de9"
+            }
+          ],
+          "outstandingCourses": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694f93d0c958d9d3a5da3dea"
+            },
+            {
+              "courseId": "692fb8271cddeff2e93a3270",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694f93d0c958d9d3a5da3deb"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a3306",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694f93d0c958d9d3a5da3dec"
+            }
+          ],
+          "academicStatus": "probation",
+          "_id": "694f93d0c958d9d3a5da3de4"
+        },
+        {
+          "studentId": "6928ab58e6394a00e787df38",
+          "matricNumber": "CSC/2024/0016D",
+          "name": "Mathew Femi",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 21,
+            "tnu": 11,
+            "gpa": 1.91
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 1.91,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 21,
+            "totalTNU": 11,
+            "cgpa": 1.91
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 58,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 9,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dee"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 58,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3def"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 36,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694f93d0c958d9d3a5da3df0"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 58,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3df1"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 36,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694f93d0c958d9d3a5da3df2"
+            }
+          ],
+          "outstandingCourses": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32eb",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694f93d0c958d9d3a5da3df3"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a32a5",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694f93d0c958d9d3a5da3df4"
+            }
+          ],
+          "academicStatus": "good",
+          "_id": "694f93d0c958d9d3a5da3ded"
+        },
+        {
+          "studentId": "6928ab58e6394a00e787df3e",
+          "matricNumber": "CSC/2024/0017D",
+          "name": "Hellen Joel",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 20,
+            "tnu": 11,
+            "gpa": 1.82
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 1.82,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 20,
+            "totalTNU": 11,
+            "cgpa": 1.82
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 25,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694f93d0c958d9d3a5da3df6"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 25,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694f93d0c958d9d3a5da3df7"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 97,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3df8"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 25,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694f93d0c958d9d3a5da3df9"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 97,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dfa"
+            }
+          ],
+          "outstandingCourses": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694f93d0c958d9d3a5da3dfb"
+            },
+            {
+              "courseId": "692fb8271cddeff2e93a3270",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694f93d0c958d9d3a5da3dfc"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a3306",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694f93d0c958d9d3a5da3dfd"
+            }
+          ],
+          "academicStatus": "good",
+          "_id": "694f93d0c958d9d3a5da3df5"
+        },
+        {
+          "studentId": "6928ab58e6394a00e787df44",
+          "matricNumber": "CSC/2024/0018D",
+          "name": "Kayode Ibrahin",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 44,
+            "tnu": 11,
+            "gpa": 4
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 4,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 44,
+            "totalTNU": 11,
+            "cgpa": 4
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 68,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 12,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3dff"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 68,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3e00"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 67,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3e01"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 68,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3e02"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 67,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3e03"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694f93d0c958d9d3a5da3dfe"
+        },
+        {
+          "studentId": "6928ab58e6394a00e787df4a",
+          "matricNumber": "CSC/2024/0019D",
+          "name": "Quidril Tayo",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 20,
+            "tnu": 11,
+            "gpa": 1.82
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 1.82,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 20,
+            "totalTNU": 11,
+            "cgpa": 1.82
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 30,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694f93d0c958d9d3a5da3e05"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 30,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694f93d0c958d9d3a5da3e06"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 86,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3e07"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 30,
+              "grade": "F",
+              "gradePoint": 0,
+              "creditPoint": 0,
+              "status": "failed",
+              "_id": "694f93d0c958d9d3a5da3e08"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 86,
+              "grade": "A",
+              "gradePoint": 5,
+              "creditPoint": 10,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3e09"
+            }
+          ],
+          "outstandingCourses": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694f93d0c958d9d3a5da3e0a"
+            },
+            {
+              "courseId": "692fb8271cddeff2e93a3270",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694f93d0c958d9d3a5da3e0b"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a3306",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "fromSemester": "693a35ec41d3b37602b85457",
+              "attempts": 1,
+              "_id": "694f93d0c958d9d3a5da3e0c"
+            }
+          ],
+          "academicStatus": "good",
+          "_id": "694f93d0c958d9d3a5da3e04"
+        },
+        {
+          "studentId": "6928ab59e6394a00e787df50",
+          "matricNumber": "CSC/2024/0011D",
+          "name": "Zarubal Tope",
+          "level": "100",
+          "currentSemester": {
+            "tcp": 30,
+            "tnu": 11,
+            "gpa": 2.73
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 0,
+            "cumulativeTNU": 0,
+            "cumulativeGPA": 2.73,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 30,
+            "totalTNU": 11,
+            "cgpa": 2.73
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32c9",
+              "courseCode": "CSC 101",
+              "courseTitle": "Introduction to Computing Science",
+              "unitLoad": 3,
+              "score": 45,
+              "grade": "D",
+              "gradePoint": 2,
+              "creditPoint": 6,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3e0e"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33d6",
+              "courseCode": "EDU 101",
+              "courseTitle": "Introduction to Teaching and Foundations of Education",
+              "unitLoad": 2,
+              "score": 45,
+              "grade": "D",
+              "gradePoint": 2,
+              "creditPoint": 4,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3e0f"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33dc",
+              "courseCode": "MTH 101",
+              "courseTitle": "Elementary Mathematics I",
+              "unitLoad": 2,
+              "score": 64,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3e10"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33df",
+              "courseCode": "PHY 101",
+              "courseTitle": "General Physics I",
+              "unitLoad": 2,
+              "score": 45,
+              "grade": "D",
+              "gradePoint": 2,
+              "creditPoint": 4,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3e11"
+            },
+            {
+              "courseId": "692fb82c1cddeff2e93a33e6",
+              "courseCode": "CHM 101",
+              "courseTitle": "General Chemistry I",
+              "unitLoad": 2,
+              "score": 64,
+              "grade": "B",
+              "gradePoint": 4,
+              "creditPoint": 8,
+              "status": "passed",
+              "_id": "694f93d0c958d9d3a5da3e12"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "694f93d0c958d9d3a5da3e0d"
+        }
+      ]
+    },
+    "totalStudents": 19,
+    "studentsWithResults": 19,
+    "studentsProcessed": 19,
+    "averageGPA": 3.39,
+    "highestGPA": 5,
+    "lowestGPA": 1.45,
+    "gradeDistribution": {
+      "firstClass": 4,
+      "secondClassUpper": 7,
+      "secondClassLower": 2,
+      "thirdClass": 4,
+      "fail": 2
+    },
+    "summaryOfResultsByLevel": {
+      "100": {
+        "totalStudents": 19,
+        "studentsWithResults": 19,
+        "gpaStatistics": {
+          "average": 3.39,
+          "highest": 5,
+          "lowest": 1.45
+        },
+        "classDistribution": {
+          "firstClass": 4,
+          "secondClassUpper": 7,
+          "secondClassLower": 2,
+          "thirdClass": 4,
+          "fail": 2,
+          "pass": 0
+        },
+        "_id": "694f93d0c958d9d3a5da3e23"
+      }
+    },
+    "studentListsByLevel": {
+      "100": {
+        "passList": [
+          {
+            "studentId": "6928ab56e6394a00e787def0",
+            "matricNumber": "CSC/2024/0003D",
+            "name": "Adekemi Tayo",
+            "gpa": 3.73,
+            "_id": "694f93d0c958d9d3a5da3e14"
+          },
+          {
+            "studentId": "6928ab57e6394a00e787def6",
+            "matricNumber": "CSC/2024/0004D",
+            "name": "Akingade Tope",
+            "gpa": 4.27,
+            "_id": "694f93d0c958d9d3a5da3e15"
+          },
+          {
+            "studentId": "6928ab57e6394a00e787defc",
+            "matricNumber": "CSC/2024/0005D",
+            "name": "Akintope Femi",
+            "gpa": 5,
+            "_id": "694f93d0c958d9d3a5da3e16"
+          },
+          {
+            "studentId": "6928ab57e6394a00e787df02",
+            "matricNumber": "CSC/2024/0006D",
+            "name": "Fakunle Yolade",
+            "gpa": 4,
+            "_id": "694f93d0c958d9d3a5da3e17"
+          },
+          {
+            "studentId": "6928ab57e6394a00e787df0e",
+            "matricNumber": "CSC/2024/0008D",
+            "name": "Sunday Dare",
+            "gpa": 3.91,
+            "_id": "694f93d0c958d9d3a5da3e18"
+          },
+          {
+            "studentId": "6928ab57e6394a00e787df14",
+            "matricNumber": "CSC/2024/0009D",
+            "name": "Suzan James",
+            "gpa": 5,
+            "_id": "694f93d0c958d9d3a5da3e19"
+          },
+          {
+            "studentId": "6928ab57e6394a00e787df1a",
+            "matricNumber": "CSC/2024/0010D",
+            "name": "David Gbenga",
+            "gpa": 3.91,
+            "_id": "694f93d0c958d9d3a5da3e1a"
+          },
+          {
+            "studentId": "6928ab58e6394a00e787df20",
+            "matricNumber": "CSC/2024/0012D",
+            "name": "Hellen John",
+            "gpa": 3.36,
+            "_id": "694f93d0c958d9d3a5da3e1b"
+          },
+          {
+            "studentId": "6928ab58e6394a00e787df26",
+            "matricNumber": "CSC/2024/0013D",
+            "name": "Kayode John",
+            "gpa": 4.27,
+            "_id": "694f93d0c958d9d3a5da3e1c"
+          },
+          {
+            "studentId": "6928ab58e6394a00e787df2c",
+            "matricNumber": "CSC/2024/0014D",
+            "name": "Queen Tayo",
+            "gpa": 5,
+            "_id": "694f93d0c958d9d3a5da3e1d"
+          },
+          {
+            "studentId": "6928ab58e6394a00e787df44",
+            "matricNumber": "CSC/2024/0018D",
+            "name": "Kayode Ibrahin",
+            "gpa": 4,
+            "_id": "694f93d0c958d9d3a5da3e1e"
+          },
+          {
+            "studentId": "6928ab59e6394a00e787df50",
+            "matricNumber": "CSC/2024/0011D",
+            "name": "Zarubal Tope",
+            "gpa": 2.73,
+            "_id": "694f93d0c958d9d3a5da3e1f"
+          }
+        ],
+        "probationList": [
+          {
+            "studentId": "6928ab57e6394a00e787df08",
+            "matricNumber": "CSC/2024/0007D",
+            "name": "Falope Dayo",
+            "gpa": 1.45,
+            "remarks": "probation_continued",
+            "_id": "694f93d0c958d9d3a5da3e20"
+          },
+          {
+            "studentId": "6928ab58e6394a00e787df32",
+            "matricNumber": "CSC/2024/0015D",
+            "name": "Zarah Tope",
+            "gpa": 1.45,
+            "remarks": "probation_continued",
+            "_id": "694f93d0c958d9d3a5da3e21"
+          }
+        ],
+        "withdrawalList": [],
+        "terminationList": [
+          {
+            "studentId": "69289f63c3c2904e51b7564a",
+            "matricNumber": "CSC/2024/0001D",
+            "name": "Adewale Ojo",
+            "gpa": 5,
+            "reason": "No Registration",
+            "remarks": "would_be_terminated_non_registration",
+            "_id": "694f93d0c958d9d3a5da3e22"
+          }
+        ],
+        "_id": "694f93d0c958d9d3a5da3e13"
+      }
+    },
+    "status": "completed",
+    "startedAt": "2025-12-27T08:07:41.215Z",
+    "retryCount": 0,
+    "computedBy": "690c70aa423136f152398166",
+    "isFinal": false,
+    "isPreview": true,
+    "purpose": "preview",
+    "masterSheetDataByLevel": {},
+    "masterSheetGenerated": false,
+    "createdAt": "2025-12-27T08:07:41.229Z",
+    "updatedAt": "2025-12-27T08:07:44.706Z",
+    "__v": 0,
+    "completedAt": "2025-12-27T08:07:44.150Z",
+    "duration": 2935
+  },
+  {
+    "_id": "69625af675797e9f413612e0",
+    "department": "692857cfc3c2904e51b75554",
+    "departmentDetails": {
+      "name": "Computer Science",
+      "code": "CSC",
+      "faculty": {
+        "name": "Science",
+        "code": "SCI"
+      },
+      "dean": {
+        "name": "Dr. Babajide JO",
+        "title": "Dean",
+        "rank": "associate_professor",
+        "staffId": "STAFF020",
+        "signature": "",
+        "isDean": true
+      },
+      "hod": {
+        "name": "Mrs. Iroju",
+        "title": "Head of Department",
+        "rank": "assistant_lecturer",
+        "staffId": "STAFF001",
+        "signature": "",
+        "isHOD": true
+      },
+      "academicYear": "2026/2027",
+      "semester": "first",
+      "generatedDate": "2026-01-10T13:58:14.339Z"
+    },
+    "keyToCoursesByLevel": {
+      "200": [
+        {
+          "courseId": "692fb82c1cddeff2e93a32ce",
+          "courseCode": "CSC 201",
+          "title": "Computer Programming I",
+          "unit": 3,
+          "level": 200,
+          "type": "core",
+          "isCoreCourse": false,
+          "isBorrowed": false
+        }
+      ]
+    },
+    "semester": "695d151800b837433ca64c1e",
+    "masterComputationId": "69625ac455e0dc879c7a65ae",
+    "studentSummariesByLevel": {
+      "200": [
+        {
+          "studentId": "6928ab57e6394a00e787def6",
+          "matricNumber": "CSC/2024/0004D",
+          "name": "Akingade Tope",
+          "level": "200",
+          "currentSemester": {
+            "tcp": 9,
+            "tnu": 3,
+            "gpa": 3
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 47,
+            "cumulativeTNU": 11,
+            "cumulativeGPA": 4,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 56,
+            "totalTNU": 14,
+            "cgpa": 4
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32ce",
+              "courseCode": "CSC 201",
+              "courseTitle": "Computer Programming I",
+              "unitLoad": 3,
+              "score": 57,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 9,
+              "status": "passed",
+              "_id": "69625af675797e9f413612f2"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "69625af675797e9f413612f1"
+        }
+      ]
+    },
+    "totalStudents": 19,
+    "studentsWithResults": 1,
+    "studentsProcessed": 1,
+    "averageGPA": 3,
+    "highestGPA": 3,
+    "lowestGPA": 3,
+    "gradeDistribution": {
+      "firstClass": 0,
+      "secondClassUpper": 0,
+      "secondClassLower": 1,
+      "thirdClass": 0,
+      "fail": 0
+    },
+    "summaryOfResultsByLevel": {
+      "200": {
+        "totalStudents": 1,
+        "studentsWithResults": 1,
+        "gpaStatistics": {
+          "average": 3,
+          "highest": 3,
+          "lowest": 3
+        },
+        "classDistribution": {
+          "firstClass": 0,
+          "secondClassUpper": 0,
+          "secondClassLower": 1,
+          "thirdClass": 0,
+          "fail": 0,
+          "pass": 0
+        },
+        "_id": "69625af675797e9f413612f5"
+      }
+    },
+    "studentListsByLevel": {
+      "200": {
+        "passList": [
+          {
+            "studentId": "6928ab57e6394a00e787def6",
+            "matricNumber": "CSC/2024/0004D",
+            "name": "Akingade Tope",
+            "gpa": 3,
+            "_id": "69625af675797e9f413612f4"
+          }
+        ],
+        "probationList": [],
+        "withdrawalList": [],
+        "terminationList": [],
+        "_id": "69625af675797e9f413612f3"
+      }
+    },
+    "status": "completed_with_errors",
+    "startedAt": "2026-01-10T13:58:14.125Z",
+    "retryCount": 0,
+    "computedBy": "690c70aa423136f152398166",
+    "isFinal": false,
+    "isPreview": true,
+    "purpose": "preview",
+    "masterSheetDataByLevel": {},
+    "masterSheetGenerated": false,
+    "createdAt": "2026-01-10T13:58:14.143Z",
+    "updatedAt": "2026-01-10T13:58:14.377Z",
+    "__v": 0,
+    "completedAt": "2026-01-10T13:58:14.350Z",
+    "duration": 225
+  },
+  {
+    "_id": "69627f4a75797e9f41362a74",
+    "department": "692857cfc3c2904e51b75554",
+    "departmentDetails": {
+      "name": "Computer Science",
+      "code": "CSC",
+      "faculty": {
+        "name": "Science",
+        "code": "SCI"
+      },
+      "dean": {
+        "name": "Dr. Babajide JO",
+        "title": "Dean",
+        "rank": "associate_professor",
+        "staffId": "STAFF020",
+        "signature": "",
+        "isDean": true
+      },
+      "hod": {
+        "name": "Mrs. Iroju",
+        "title": "Head of Department",
+        "rank": "assistant_lecturer",
+        "staffId": "STAFF001",
+        "signature": "",
+        "isHOD": true
+      },
+      "academicYear": "2026/2027",
+      "semester": "first",
+      "generatedDate": "2026-01-10T16:33:14.157Z"
+    },
+    "keyToCoursesByLevel": {
+      "200": [
+        {
+          "courseId": "692fb82c1cddeff2e93a32ce",
+          "courseCode": "CSC 201",
+          "title": "Computer Programming I",
+          "unit": 3,
+          "level": 200,
+          "type": "core",
+          "isCoreCourse": false,
+          "isBorrowed": false
+        }
+      ]
+    },
+    "semester": "695d151800b837433ca64c1e",
+    "masterComputationId": "69627f4793e86e96bf2f58e3",
+    "studentSummariesByLevel": {
+      "200": [
+        {
+          "studentId": "6928ab57e6394a00e787def6",
+          "matricNumber": "CSC/2024/0004D",
+          "name": "Akingade Tope",
+          "level": "200",
+          "currentSemester": {
+            "tcp": 9,
+            "tnu": 3,
+            "gpa": 3
+          },
+          "previousPerformance": {
+            "cumulativeTCP": 47,
+            "cumulativeTNU": 11,
+            "cumulativeGPA": 4,
+            "previousSemesterGPA": 0
+          },
+          "cumulativePerformance": {
+            "totalTCP": 56,
+            "totalTNU": 14,
+            "cgpa": 4
+          },
+          "courseResults": [
+            {
+              "courseId": "692fb82c1cddeff2e93a32ce",
+              "courseCode": "CSC 201",
+              "courseTitle": "Computer Programming I",
+              "unitLoad": 3,
+              "score": 57,
+              "grade": "C",
+              "gradePoint": 3,
+              "creditPoint": 9,
+              "status": "passed",
+              "_id": "69627f4a75797e9f41362a86"
+            }
+          ],
+          "outstandingCourses": [],
+          "academicStatus": "good",
+          "_id": "69627f4a75797e9f41362a85"
+        }
+      ]
+    },
+    "totalStudents": 19,
+    "studentsWithResults": 1,
+    "studentsProcessed": 1,
+    "averageGPA": 3,
+    "highestGPA": 3,
+    "lowestGPA": 3,
+    "gradeDistribution": {
+      "firstClass": 0,
+      "secondClassUpper": 0,
+      "secondClassLower": 1,
+      "thirdClass": 0,
+      "fail": 0
+    },
+    "summaryOfResultsByLevel": {
+      "200": {
+        "totalStudents": 1,
+        "studentsWithResults": 1,
+        "gpaStatistics": {
+          "average": 3,
+          "highest": 3,
+          "lowest": 3
+        },
+        "classDistribution": {
+          "firstClass": 0,
+          "secondClassUpper": 0,
+          "secondClassLower": 1,
+          "thirdClass": 0,
+          "fail": 0,
+          "pass": 0
+        },
+        "_id": "69627f4a75797e9f41362a89"
+      }
+    },
+    "studentListsByLevel": {
+      "200": {
+        "passList": [
+          {
+            "studentId": "6928ab57e6394a00e787def6",
+            "matricNumber": "CSC/2024/0004D",
+            "name": "Akingade Tope",
+            "gpa": 3,
+            "_id": "69627f4a75797e9f41362a88"
+          }
+        ],
+        "probationList": [],
+        "withdrawalList": [],
+        "terminationList": [],
+        "_id": "69627f4a75797e9f41362a87"
+      }
+    },
+    "status": "completed_with_errors",
+    "startedAt": "2026-01-10T16:33:14.099Z",
+    "retryCount": 0,
+    "computedBy": "690c70aa423136f152398166",
+    "isFinal": false,
+    "isPreview": true,
+    "purpose": "preview",
+    "masterSheetDataByLevel": {},
+    "masterSheetGenerated": false,
+    "createdAt": "2026-01-10T16:33:14.102Z",
+    "updatedAt": "2026-01-10T16:33:14.179Z",
+    "__v": 0,
+    "completedAt": "2026-01-10T16:33:14.159Z",
+    "duration": 61
+  }
+]

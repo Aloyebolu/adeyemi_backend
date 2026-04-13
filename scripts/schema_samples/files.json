@@ -1,0 +1,155 @@
+[
+  {
+    "_id": "69665c378e5ef7d624cb0955",
+    "name": "51846ffe-248c-45ad-8769-14a7cc7abfda.pptx",
+    "originalName": "PROPOSAL2-1.pptx",
+    "url": "https://iwduhrzomxjpjqfviuis.supabase.co/storage/v1/object/public/afued_storage_bucket/uploads/course/51846ffe-248c-45ad-8769-14a7cc7abfda.pptx",
+    "type": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "extension": ".pptx",
+    "size": 60453,
+    "domain": "course",
+    "domainId": null,
+    "uploadedBy": "6928c5a475c778f1ee14c6c3",
+    "isPublic": true,
+    "accessRoles": [
+      "enrolled",
+      "instructor"
+    ],
+    "accessUsers": [],
+    "metadata": {},
+    "expiresAt": null,
+    "category": "course_material",
+    "tags": [
+      null
+    ],
+    "storagePath": "uploads/course/51846ffe-248c-45ad-8769-14a7cc7abfda.pptx",
+    "bucketName": "afued_storage_bucket",
+    "createdAt": "2026-01-13T14:52:39.442Z",
+    "updatedAt": "2026-01-13T14:52:39.461Z",
+    "__v": 0
+  },
+  {
+    "_id": "69665d1e79786162885d8466",
+    "name": "9bad21dd-9131-4177-b8af-1ba93b30191a.pptx",
+    "originalName": "PROPOSAL2-1.pptx",
+    "url": "https://iwduhrzomxjpjqfviuis.supabase.co/storage/v1/object/public/afued_storage_bucket/uploads/course/9bad21dd-9131-4177-b8af-1ba93b30191a.pptx",
+    "type": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "extension": ".pptx",
+    "size": 60453,
+    "domain": "course",
+    "domainId": null,
+    "uploadedBy": "6928c5a475c778f1ee14c6c3",
+    "isPublic": true,
+    "accessRoles": [
+      "enrolled",
+      "instructor"
+    ],
+    "accessUsers": [],
+    "metadata": {},
+    "expiresAt": null,
+    "category": "course_material",
+    "tags": [
+      null
+    ],
+    "storagePath": "uploads/course/9bad21dd-9131-4177-b8af-1ba93b30191a.pptx",
+    "bucketName": "afued_storage_bucket",
+    "createdAt": "2026-01-13T14:56:30.894Z",
+    "updatedAt": "2026-01-13T14:56:30.922Z",
+    "__v": 0
+  },
+  {
+    "_id": "69665d2379786162885d8472",
+    "name": "6a17b310-4d83-4ac2-9204-a92fe22db914.pptx",
+    "originalName": "PROPOSAL2-1.pptx",
+    "url": "https://iwduhrzomxjpjqfviuis.supabase.co/storage/v1/object/public/afued_storage_bucket/uploads/course/6a17b310-4d83-4ac2-9204-a92fe22db914.pptx",
+    "type": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "extension": ".pptx",
+    "size": 60453,
+    "domain": "course",
+    "domainId": null,
+    "uploadedBy": "6928c5a475c778f1ee14c6c3",
+    "isPublic": true,
+    "accessRoles": [
+      "enrolled",
+      "instructor"
+    ],
+    "accessUsers": [],
+    "metadata": {},
+    "expiresAt": null,
+    "category": "course_material",
+    "tags": [
+      null
+    ],
+    "storagePath": "uploads/course/6a17b310-4d83-4ac2-9204-a92fe22db914.pptx",
+    "bucketName": "afued_storage_bucket",
+    "createdAt": "2026-01-13T14:56:35.396Z",
+    "updatedAt": "2026-01-13T14:56:35.405Z",
+    "__v": 0
+  },
+  {
+    "_id": "6966a00c270f6337bcb332c8",
+    "name": "564bcdb9-fd5a-474c-8349-f5641fec4ab8.docx",
+    "originalName": "Breakthrough Project.docx",
+    "url": "https://iwduhrzomxjpjqfviuis.supabase.co/storage/v1/object/public/afued_storage_bucket/uploads/course/564bcdb9-fd5a-474c-8349-f5641fec4ab8.docx",
+    "type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "extension": ".docx",
+    "size": 1493023,
+    "domain": "course",
+    "domainId": "6960da1405f5a9dde8d4c6da",
+    "uploadedBy": "6928c5a475c778f1ee14c6c3",
+    "isPublic": true,
+    "accessRoles": [
+      "enrolled",
+      "instructor"
+    ],
+    "accessUsers": [],
+    "metadata": {
+      "materialType": null,
+      "week": null,
+      "originalFileName": "Breakthrough Project.docx"
+    },
+    "expiresAt": null,
+    "category": "course_material",
+    "tags": [
+      null
+    ],
+    "storagePath": "uploads/course/564bcdb9-fd5a-474c-8349-f5641fec4ab8.docx",
+    "bucketName": "afued_storage_bucket",
+    "createdAt": "2026-01-13T19:42:04.521Z",
+    "updatedAt": "2026-01-13T19:42:04.547Z",
+    "__v": 0
+  },
+  {
+    "_id": "6966a443e7ff0f802203af49",
+    "name": "f472d6d4-7f44-4d2a-90b0-94d9888b8323.pptx",
+    "originalName": "51846ffe-248c-45ad-8769-14a7cc7abfda.pptx",
+    "url": "https://iwduhrzomxjpjqfviuis.supabase.co/storage/v1/object/public/afued_storage_bucket/uploads/course/f472d6d4-7f44-4d2a-90b0-94d9888b8323.pptx",
+    "type": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "extension": ".pptx",
+    "size": 60453,
+    "domain": "course",
+    "domainId": "6960da1405f5a9dde8d4c6da",
+    "uploadedBy": "6928c5a475c778f1ee14c6c3",
+    "isPublic": true,
+    "accessRoles": [
+      "enrolled",
+      "instructor"
+    ],
+    "accessUsers": [],
+    "metadata": {
+      "materialType": null,
+      "week": null,
+      "originalFileName": "51846ffe-248c-45ad-8769-14a7cc7abfda.pptx"
+    },
+    "expiresAt": null,
+    "category": "course_material",
+    "tags": [
+      null
+    ],
+    "storagePath": "uploads/course/f472d6d4-7f44-4d2a-90b0-94d9888b8323.pptx",
+    "bucketName": "afued_storage_bucket",
+    "createdAt": "2026-01-13T20:00:03.587Z",
+    "updatedAt": "2026-01-13T20:00:03.625Z",
+    "__v": 0
+  }
+]

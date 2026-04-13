@@ -1,0 +1,36 @@
+[
+  {
+    "_id": "6966a00c270f6337bcb332ca",
+    "courseAssignment": "6960da1405f5a9dde8d4c6da",
+    "file": "6966a00c270f6337bcb332c8",
+    "title": "Breakthrough Project.docx",
+    "order": 0,
+    "materialType": "resource",
+    "isPreview": false,
+    "isPublished": true,
+    "viewsCount": 0,
+    "downloadCount": 0,
+    "tags": [],
+    "uploadedBy": "6928c5a475c778f1ee14c6c3",
+    "createdAt": "2026-01-13T19:42:04.660Z",
+    "updatedAt": "2026-01-13T19:42:04.660Z",
+    "__v": 0
+  },
+  {
+    "_id": "6966a443e7ff0f802203af4b",
+    "courseAssignment": "6960da1405f5a9dde8d4c6da",
+    "file": "6966a443e7ff0f802203af49",
+    "title": "51846ffe-248c-45ad-8769-14a7cc7abfda.pptx",
+    "order": 1,
+    "materialType": "resource",
+    "isPreview": false,
+    "isPublished": true,
+    "viewsCount": 0,
+    "downloadCount": 0,
+    "tags": [],
+    "uploadedBy": "6928c5a475c778f1ee14c6c3",
+    "createdAt": "2026-01-13T20:00:03.743Z",
+    "updatedAt": "2026-01-13T20:00:03.743Z",
+    "__v": 0
+  }
+]

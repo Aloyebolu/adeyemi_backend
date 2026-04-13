@@ -1,0 +1,42 @@
+[
+  {
+    "_id": "696a4c15adc5386e4c70fe5b",
+    "name": "Computer Science",
+    "code": "BSCCSC",
+    "department": "692857cfc3c2904e51b75554",
+    "faculty": "68f9ecc1f6606ce32d8ddfb7",
+    "duration": 4,
+    "degreeType": "BACHELOR",
+    "programmeType": "BSCED",
+    "description": "This is a programme",
+    "accreditationStatus": "PENDING",
+    "accreditationExpiry": "2026-01-31T00:00:00.000Z",
+    "isActive": true,
+    "intakeCapacity": 5000,
+    "createdBy": "690c70aa423136f152398166",
+    "createdAt": "2026-01-16T14:32:53.209Z",
+    "updatedAt": "2026-01-26T07:19:33.007Z",
+    "__v": 0,
+    "lastUpdatedBy": "690c70aa423136f152398166"
+  },
+  {
+    "_id": "696def10744d99cb22659d41",
+    "name": "Computer Science",
+    "code": "BEDCSC",
+    "department": "692857cfc3c2904e51b75554",
+    "faculty": "68f9ecc1f6606ce32d8ddfb7",
+    "duration": 4,
+    "degreeType": "BACHELOR",
+    "programmeType": "BSC",
+    "description": "CO",
+    "accreditationStatus": "PENDING",
+    "accreditationExpiry": "2026-04-24T00:00:00.000Z",
+    "isActive": true,
+    "intakeCapacity": 5000,
+    "createdBy": "690c70aa423136f152398166",
+    "createdAt": "2026-01-19T08:45:04.860Z",
+    "updatedAt": "2026-01-26T07:19:05.422Z",
+    "__v": 0,
+    "lastUpdatedBy": "690c70aa423136f152398166"
+  }
+]

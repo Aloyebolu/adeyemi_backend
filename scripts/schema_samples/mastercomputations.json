@@ -1,0 +1,66 @@
+[
+  {
+    "_id": "6977128e0c933e18e6f40de3",
+    "semester": "695d151800b837433ca64c06",
+    "totalDepartments": 0,
+    "departmentsProcessed": 2,
+    "totalStudents": 186,
+    "overallAverageGPA": 2.77,
+    "totalCarryovers": 0,
+    "totalFailedStudents": 3,
+    "departmentsLocked": 0,
+    "status": "completed_with_errors",
+    "startedAt": "2026-01-26T07:06:54.118Z",
+    "computedBy": "690c70aa423136f152398166",
+    "semesterLocked": false,
+    "metadata": {
+      "scope": "programme",
+      "initiatedBy": {
+        "userId": "690c70aa423136f152398166",
+        "timestamp": "2026-01-26T07:06:54.118Z"
+      }
+    },
+    "isFinal": false,
+    "purpose": "final",
+    "isPreview": false,
+    "notifications": [],
+    "createdAt": "2026-01-26T07:06:54.125Z",
+    "updatedAt": "2026-01-26T07:07:29.435Z",
+    "__v": 0,
+    "completedAt": "2026-01-26T07:07:29.430Z",
+    "departmentSummaries": {},
+    "duration": 35312
+  },
+  {
+    "_id": "69771e31ce736de98227ccad",
+    "semester": "695d151800b837433ca64c06",
+    "totalDepartments": 0,
+    "departmentsProcessed": 2,
+    "totalStudents": 186,
+    "overallAverageGPA": 2.77,
+    "totalCarryovers": 0,
+    "totalFailedStudents": 3,
+    "departmentsLocked": 0,
+    "status": "completed_with_errors",
+    "startedAt": "2026-01-26T07:56:33.122Z",
+    "computedBy": "690c70aa423136f152398166",
+    "semesterLocked": false,
+    "metadata": {
+      "scope": "programme",
+      "initiatedBy": {
+        "userId": "690c70aa423136f152398166",
+        "timestamp": "2026-01-26T07:56:33.122Z"
+      }
+    },
+    "isFinal": false,
+    "purpose": "final",
+    "isPreview": false,
+    "notifications": [],
+    "createdAt": "2026-01-26T07:56:33.123Z",
+    "updatedAt": "2026-01-26T07:56:39.224Z",
+    "__v": 0,
+    "completedAt": "2026-01-26T07:56:39.223Z",
+    "departmentSummaries": {},
+    "duration": 6101
+  }
+]

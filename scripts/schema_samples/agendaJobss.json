@@ -1,0 +1,20 @@
+[
+  {
+    "_id": "69383aa942a01ebad6ec3143",
+    "name": "heartbeat",
+    "type": "single",
+    "data": {},
+    "endDate": null,
+    "lastModifiedBy": null,
+    "nextRunAt": "2025-12-09T15:14:15.671Z",
+    "priority": 0,
+    "repeatInterval": "10 seconds",
+    "repeatTimezone": null,
+    "shouldSaveResult": false,
+    "skipDays": null,
+    "startDate": null,
+    "lockedAt": null,
+    "lastRunAt": "2025-12-09T15:14:05.671Z",
+    "lastFinishedAt": "2025-12-09T15:14:05.682Z"
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "_id": "69285002c3c2904e51b75344",
+    "name": "Physics",
+    "code": "PHY",
+    "faculty": "68f9ecc1f6606ce32d8ddfb7",
+    "hod": "692949fa93d1e94430470346",
+    "createdAt": "2025-11-27T13:20:03.003Z",
+    "updatedAt": "2025-12-02T22:17:41.088Z",
+    "__v": 0
+  },
+  {
+    "_id": "6928501dc3c2904e51b75370",
+    "name": "Chemistry",
+    "code": "CHM",
+    "faculty": "68f9ecc1f6606ce32d8ddfb7",
+    "hod": "69294871fb08f50f100a8033",
+    "createdAt": "2025-11-27T13:20:29.954Z",
+    "updatedAt": "2025-12-02T22:16:22.561Z",
+    "__v": 0
+  },
+  {
+    "_id": "69285043c3c2904e51b7539c",
+    "name": "Mathematics",
+    "code": "MTH",
+    "faculty": "68f9ecc1f6606ce32d8ddfb7",
+    "hod": "694acee195f13ff7fcd87e49",
+    "createdAt": "2025-11-27T13:21:07.378Z",
+    "updatedAt": "2025-12-30T03:28:18.170Z",
+    "__v": 0
+  },
+  {
+    "_id": "692855cec3c2904e51b75488",
+    "name": "Biology",
+    "code": "BIO",
+    "faculty": "68f9ecc1f6606ce32d8ddfb7",
+    "hod": "695cf4c4208f30f3b5ebde23",
+    "createdAt": "2025-11-27T13:44:46.433Z",
+    "updatedAt": "2026-01-06T11:41:05.051Z",
+    "__v": 0
+  },
+  {
+    "_id": "692857cfc3c2904e51b75554",
+    "name": "Computer Science",
+    "code": "CSC",
+    "faculty": "68f9ecc1f6606ce32d8ddfb7",
+    "hod": "6928c5a475c778f1ee14c6c3",
+    "createdAt": "2025-11-27T13:53:19.710Z",
+    "updatedAt": "2026-01-17T21:30:21.135Z",
+    "__v": 0
+  }
+]

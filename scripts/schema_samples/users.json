@@ -1,0 +1,132 @@
+[
+  {
+    "_id": "690c70aa423136f152398166",
+    "email": "mike@school.edu",
+    "password": "$2b$10$ZC32YC9mQA6/3RDvo3uheeoaVl5xdANhOzFliSHpGwWCDktS8/bO.",
+    "role": "admin",
+    "department": null,
+    "staffId": "ADM-002",
+    "createdAt": "2025-11-06T09:55:54.476Z",
+    "updatedAt": "2026-02-12T08:49:59.834Z",
+    "__v": 2,
+    "lastPasswordChange": "2025-12-25T22:38:10.202Z",
+    "passwordExpiryDays": 90,
+    "passwordHistory": [
+      {
+        "password": "$2b$10$ATspj9OKL9A4kROKYg1JlO95ABtzhKdtFVDHQVUp7H6LoPKRXf70a",
+        "changedAt": "2025-12-25T22:36:50.583Z",
+        "_id": "694dbc82a2025500a5fbd808"
+      },
+      {
+        "password": "$2b$10$ZC32YC9mQA6/3RDvo3uheeoaVl5xdANhOzFliSHpGwWCDktS8/bO.",
+        "changedAt": "2025-12-25T22:38:10.202Z",
+        "_id": "694dbcd2a2025500a5fbd82b"
+      }
+    ],
+    "last_seen": "2025-12-31T16:57:31.486Z",
+    "first_name": "Mike",
+    "last_name": "Ross",
+    "middle_name": null,
+    "title": null,
+    "recentDevices": [
+      {
+        "ip": "127.0.0.1",
+        "deviceType": "desktop",
+        "browser": "unknown",
+        "os": "unknown",
+        "loginTime": "2026-02-12T08:49:59.682Z",
+        "sessionToken": null,
+        "_id": "698d94378d7268a663954b0f"
+      }
+    ]
+  },
+  {
+    "_id": "6928c5a475c778f1ee14c6c3",
+    "email": "iroju@gmail.com",
+    "password": "$2b$10$5rCtBZDn1uK3C6Vk3Vz6fePsa6ouuEBcbDY66NI5ao8MbqCzy/IGC",
+    "role": "hod",
+    "department": "692857cfc3c2904e51b75554",
+    "createdAt": "2025-11-27T21:41:56.401Z",
+    "updatedAt": "2026-02-05T12:17:14.628Z",
+    "__v": 5,
+    "lastPasswordChange": "2026-01-14T13:14:26.959Z",
+    "passwordExpiryDays": 90,
+    "passwordHistory": [
+      {
+        "password": "$2b$10$CxjV.VFZrJWHMySdaXblY.kWpYDby8hbtB2qvg0OoLqFcx0sq2Vle",
+        "changedAt": "2026-01-14T13:13:14.880Z",
+        "_id": "6967966a257c4f35aa9a1291"
+      },
+      {
+        "password": "$2b$10$AsQLpVGfYZj8PNFoFK6xGep28WQA0C4BGNIR1xUMnqmCTht76713G",
+        "changedAt": "2026-01-14T13:13:46.380Z",
+        "_id": "6967968a257c4f35aa9a129e"
+      },
+      {
+        "password": "$2b$10$5rCtBZDn1uK3C6Vk3Vz6fePsa6ouuEBcbDY66NI5ao8MbqCzy/IGC",
+        "changedAt": "2026-01-14T13:14:26.959Z",
+        "_id": "696796b2257c4f35aa9a12b5"
+      }
+    ],
+    "last_seen": "2025-12-31T11:33:34.352Z",
+    "chat_availability": false,
+    "extra_roles": [],
+    "first_name": "Iroju",
+    "last_name": "I",
+    "middle_name": "I",
+    "title": "mrs",
+    "recentDevices": [
+      {
+        "ip": "127.0.0.1",
+        "deviceType": "desktop",
+        "browser": "unknown",
+        "os": "unknown",
+        "loginTime": "2026-02-05T12:17:14.389Z",
+        "sessionToken": null,
+        "_id": "69848a4a5510a072ba33dcdb"
+      }
+    ]
+  },
+  {
+    "_id": "69294871fb08f50f100a8033",
+    "email": "adekunle@gmail.com",
+    "password": "$2b$10$t2QrRQvWFJvyCGgRhsE1qOQkvPIoaf/70SInNlddAmTpWa4FvD8H.",
+    "role": "hod",
+    "department": "6928501dc3c2904e51b75370",
+    "createdAt": "2025-11-28T07:00:01.676Z",
+    "updatedAt": "2026-01-09T08:20:05.268Z",
+    "__v": 0,
+    "first_name": "Adekunle",
+    "last_name": "A.O",
+    "middle_name": null,
+    "title": "dr"
+  },
+  {
+    "_id": "692949fa93d1e94430470346",
+    "email": "olaleke@gmail.com",
+    "password": "$2b$10$i/Go073tpIphlgWOMJ5ZRe9Rl3yga4RNHVdXC3P4UhBaV4ZBm9u3y",
+    "role": "hod",
+    "department": "69285002c3c2904e51b75344",
+    "createdAt": "2025-11-28T07:06:34.506Z",
+    "updatedAt": "2026-01-09T08:20:05.274Z",
+    "__v": 0,
+    "first_name": "Olaleke",
+    "last_name": "J.O",
+    "middle_name": null,
+    "title": "dr"
+  },
+  {
+    "_id": "69294a2b93d1e94430470351",
+    "email": "olajide@gmail.com",
+    "password": "$2b$10$V7vdlgg7kRnhoPNx2rGTp.ro3DEjiMrjdFcrPvGIlMeTEtc.2cQ4W",
+    "role": "lecturer",
+    "department": null,
+    "createdAt": "2025-11-28T07:07:23.744Z",
+    "updatedAt": "2026-01-09T08:20:05.279Z",
+    "__v": 0,
+    "first_name": "Olajide",
+    "last_name": "M.S",
+    "middle_name": null,
+    "title": "dr"
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "_id": "68ea02aec77762d79ffa194c",
+    "universityName": "Adeyemi Federal University of Education",
+    "currentSession": "2025/2026",
+    "currentSemester": "second",
+    "gradingSystem": {
+      "A": 70,
+      "B": 60,
+      "C": 50,
+      "D": 45,
+      "E": 40,
+      "F": 0
+    },
+    "cgpaScale": 5,
+    "registrationOpen": false,
+    "resultPublicationOpen": false,
+    "maxCreditUnitsPerSemester": 24,
+    "createdAt": "2025-10-11T07:09:34.600Z",
+    "updatedAt": "2026-01-06T13:58:48.413Z",
+    "__v": 0,
+    "activeSemesterId": null,
+    "updatedBy": "690c70aa423136f152398166",
+    "websiteUrl": "https://afued.portal.com/dashboard/"
+  }
+]

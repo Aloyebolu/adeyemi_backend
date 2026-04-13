@@ -1,0 +1,102 @@
+[
+  {
+    "_id": "6954f2e04fd5346b97dbdc83",
+    "session_id": "chat_1767174880490_55ae07eb4924905f",
+    "user_id": "6928c5a475c778f1ee14c6c3",
+    "status": "closed",
+    "department": "general",
+    "metadata": {
+      "page_url": "http://localhost:3000/chat",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "os": "Linux x86_64",
+      "device": "desktop"
+    },
+    "last_message_at": "2025-12-31T19:59:27.975Z",
+    "created_at": "2025-12-31T09:54:40.513Z",
+    "createdAt": "2025-12-31T09:54:40.530Z",
+    "updatedAt": "2025-12-31T19:59:27.976Z",
+    "__v": 0,
+    "assigned_to": "69289f63c3c2904e51b7564a",
+    "closed_at": "2025-12-31T19:59:27.942Z"
+  },
+  {
+    "_id": "6954f31f4fd5346b97dbdc8e",
+    "session_id": "chat_1767174943360_0e651f495707dfce",
+    "user_id": "6928c5a475c778f1ee14c6c3",
+    "status": "closed",
+    "department": "general",
+    "metadata": {
+      "page_url": "http://localhost:3000/chat",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "os": "Linux x86_64",
+      "device": "desktop"
+    },
+    "last_message_at": "2025-12-31T19:59:27.929Z",
+    "created_at": "2025-12-31T09:55:43.370Z",
+    "createdAt": "2025-12-31T09:55:43.378Z",
+    "updatedAt": "2025-12-31T19:59:27.929Z",
+    "__v": 0,
+    "assigned_to": "69289f63c3c2904e51b7564a",
+    "closed_at": "2025-12-31T19:59:27.892Z"
+  },
+  {
+    "_id": "6954f3a04fd5346b97dbdc99",
+    "session_id": "chat_1767175072088_a6a6819b8d1432b2",
+    "user_id": "6928c5a475c778f1ee14c6c3",
+    "status": "closed",
+    "department": "general",
+    "metadata": {
+      "page_url": "http://localhost:3000/chat",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "os": "Linux x86_64",
+      "device": "desktop"
+    },
+    "last_message_at": "2025-12-31T19:59:27.871Z",
+    "created_at": "2025-12-31T09:57:52.094Z",
+    "createdAt": "2025-12-31T09:57:52.100Z",
+    "updatedAt": "2025-12-31T19:59:27.872Z",
+    "__v": 0,
+    "assigned_to": "69289f63c3c2904e51b7564a",
+    "closed_at": "2025-12-31T19:59:27.839Z"
+  },
+  {
+    "_id": "695501204fd5346b97dbdd01",
+    "session_id": "chat_1767178528804_9eb87ce5ff39219d",
+    "user_id": "6928c5a475c778f1ee14c6c3",
+    "status": "closed",
+    "department": "general",
+    "metadata": {
+      "page_url": "http://localhost:3000/chat",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "os": "Linux x86_64",
+      "device": "desktop"
+    },
+    "last_message_at": "2025-12-31T19:59:27.819Z",
+    "created_at": "2025-12-31T10:55:28.811Z",
+    "createdAt": "2025-12-31T10:55:28.816Z",
+    "updatedAt": "2025-12-31T19:59:27.823Z",
+    "__v": 0,
+    "assigned_to": "69289f63c3c2904e51b7564a",
+    "closed_at": "2025-12-31T19:59:27.777Z"
+  },
+  {
+    "_id": "695569f9209c810cf5ee5f3c",
+    "session_id": "chat_1767205369100_ebe2558e9478f66b",
+    "user_id": "69289f63c3c2904e51b7564a",
+    "status": "resolved",
+    "department": "general",
+    "created_at": "2025-12-31T18:22:49.100Z",
+    "metadata": {
+      "page_url": "http://localhost:3000/chat",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "os": "Linux x86_64",
+      "device": "desktop"
+    },
+    "last_message_at": "2025-12-31T18:29:16.176Z",
+    "createdAt": "2025-12-31T18:22:49.104Z",
+    "updatedAt": "2025-12-31T18:29:16.185Z",
+    "__v": 0,
+    "assigned_to": "69289f63c3c2904e51b7564a",
+    "closed_at": "2025-12-31T18:25:54.872Z"
+  }
+]
