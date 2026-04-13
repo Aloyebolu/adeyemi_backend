@@ -13,11 +13,12 @@
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
     "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "dev": "nodemon --env-file=.env index.js --ignore auth_info_baileys --ignore logs --ignore backups",
+    "start": "node index.js",
     "create-admin": "node scripts/devTool.js create-admin",
     "version:bump": "npm version patch -m 'Bump version to %s [ci skip]'",
-    "socket-server": "node server.js",
-    "worker": "nodemon /home/breakthrough/Documents/afued/AFUED-result-processing-package/backend/workers/run.department.worker.js",
-    "test-whatsapp": "nodemon /home/breakthrough/Documents/afued/AFUED-result-processing-package/backend/domain/notification/tests/whatsappSimulator/whatsapp-mock-server.js"
+    "worker": "node workers/run.department.worker.js",
+    "dev:worker": "nodemon workers/run.department.worker.js",
+    "test-whatsapp": "nodemon domain/notification/tests/whatsappSimulator/whatsapp-mock-server.js"
   },
   "author": "AFUED-Comp Sci.",
   "license": "ISC",

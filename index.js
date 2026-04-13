@@ -6,7 +6,8 @@ import userService from "./domain/user/user.service.js";
 import { SYSTEM_USER_ID } from "./config/system.js";
 import { Perf } from "./utils/performanceMonitor.js";
 // import { setupSocketServer } from "./domain/chat/chat.socket.js";
-
+import dotenv from "dotenv";
+dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 const HOST = "0.0.0.0";
