@@ -16,6 +16,7 @@
     "create-admin": "node scripts/devTool.js create-admin",
     "version:bump": "npm version patch -m 'Bump version to %s [ci skip]'",
     "socket-server": "node server.js",
+    "worker": "nodemon /home/breakthrough/Documents/afued/AFUED-result-processing-package/backend/workers/run.department.worker.js",
     "test-whatsapp": "nodemon /home/breakthrough/Documents/afued/AFUED-result-processing-package/backend/domain/notification/tests/whatsappSimulator/whatsapp-mock-server.js"
   },
   "author": "AFUED-Comp Sci.",
