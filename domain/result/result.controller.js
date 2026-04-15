@@ -1,5 +1,5 @@
 import XLSX from "xlsx";
-import fs from "fs";
+// import fs from "fs";
 import mongoose from "mongoose";
 import Result from "./result.model.js";
 import buildResponse from "../../utils/responseBuilder.js";
@@ -46,7 +46,7 @@ const processBulkResults = async (rows, { actor, courseId }) => {
   const errors = [];
   
   // Configuration flag
-  const AUTO_CREATE_REGISTRATIONS = process.env.AUTO_CREATE_REGISTRATIONS === 'true' || false;
+  const AUTO_CREATE_REGISTRATIONS = process.env.AUTO_CREATE_REGISTRATIONS === 'true' || true;
   
   // 🔥 Normalize matric numbers consistently
   const normalizeMatric = (m) => m?.trim().toUpperCase();
@@ -927,3 +927,173 @@ export const deleteResult = async (req, res, next) => {
     next(error)
   }
 };
+
+
+
+import fs from "fs/promises";
+import { createReadStream } from "fs";
+
+/**
+ * Download student semester result as PDF
+ */
+export const downloadStudentResult = catchAsync(async (req, res, next) => {
+  const { studentId, semesterId, level } = req.params;
+  const { preview = "false" } = req.query;
+  
+  const isPreview = preview === "true";
+  
+  // Check permissions if not preview
+  // if (!isPreview) {
+  //   // Verify user has permission to download official results
+  //   const hasPermission = await checkDownloadPermission(req.user, studentId);
+  //   if (!hasPermission) {
+  //     throw new AppError("You don't have permission to download official results", 403);
+  //   }
+  // }
+
+  // Generate PDF
+  const result = await ResultService.generateStudentResultPDF(
+    studentId,
+    semesterId,
+    level,
+    isPreview
+  );
+
+  // Send file
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename="${result.filename}"`
+  );
+  
+  // ✅ CORRECTED: Use createReadStream and pipe to response
+  const fileStream = createReadStream(result.filePath);
+  
+  // Pipe the stream to response
+  fileStream.pipe(res);
+  
+  // Handle stream errors
+  fileStream.on("error", (error) => {
+    console.error("Stream error:", error);
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Failed to stream file" });
+    }
+  });
+  
+  // Clean up temp file after streaming completes
+  fileStream.on("close", async () => {
+    try {
+      await fs.unlink(result.filePath);
+      // console.log(`Cleaned up temp file: ${result.filePath}`);
+    } catch (error) {
+      console.error("Failed to delete temp file:", error);
+    }
+  });
+});
+
+/**
+ * Download academic transcript as PDF
+ */
+export const downloadTranscript = catchAsync(async (req, res, next) => {
+  const { studentId } = req.params;
+  const { preview = "false" } = req.query;
+  
+  const isPreview = preview === "true";
+  
+  // Check permissions
+  if (!isPreview) {
+    // const hasPermission = await checkTranscriptPermission(req.user, studentId);
+    // if (!hasPermission) {
+    //   throw new AppError("You don't have permission to download official transcripts", 403);
+    // }
+  }
+
+  // Generate transcript PDF
+  const transcript = await ResultService.generateTranscriptPDF(
+    studentId,
+    isPreview
+  );
+
+  // Send file
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename="${transcript.filename}"`
+  );
+  console.log(transcript);
+  
+  // ✅ CORRECTED: Use createReadStream and pipe to response
+  const fileStream = createReadStream(transcript.filePath);
+  
+  // Pipe the stream to response
+  fileStream.pipe(res);
+  
+  // Handle stream errors
+  fileStream.on("error", (error) => {
+    console.error("Stream error:", error);
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Failed to stream file" });
+    }
+  });
+  
+  // Clean up after streaming completes
+  fileStream.on("close", async () => {
+    try {
+      await fs.unlink(transcript.filePath);
+      // console.log(`Cleaned up temp file: ${transcript.filePath}`);
+    } catch (error) {
+      console.error("Failed to delete temp file:", error);
+    }
+  });
+});
+
+/**
+ * Preview student result as HTML
+ */
+export const previewStudentResult = catchAsync(async (req, res, next) => {
+  const { studentId, semesterId, level } = req.params;
+  
+  const html = await ResultService.getStudentResultHTML(
+    studentId,
+    semesterId,
+    level,
+    true
+  );
+
+  res.send(html);
+});
+
+/**
+ * Preview transcript as HTML
+ */
+export const previewTranscript = catchAsync(async (req, res, next) => {
+  const { studentId } = req.params;
+  
+  const html = await ResultService.getTranscriptHTML(studentId, true);
+
+  res.send(html);
+});
+
+// Helper function for permission checking
+async function checkDownloadPermission(user, studentId) {
+  if (!user) return false;
+  
+  // Admin and HOD can download any result
+  if (["admin", "hod"].includes(user.role)) {
+    return true;
+  }
+  
+  // Students can only download their own results
+  if (user.role === "student" && user.studentId) {
+    return user.studentId.toString() === studentId;
+  }
+  
+  // Staff can download results for students in their department
+  if (user.role === "staff" && user.departmentId) {
+    const Student = (await import("../models/Student.js")).default;
+    const student = await Student.findById(studentId).select("departmentId");
+    return student && student.departmentId.toString() === user.departmentId.toString();
+  }
+  
+  return false;
+}

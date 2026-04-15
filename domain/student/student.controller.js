@@ -419,7 +419,7 @@ export const getAllStudents = async (req, res) => {
       },
     ],
     custom_fields: {
-      first_name: '_id.first_name',
+      first_name: 'queryKey.full_name',
       middle_name: '_id.middle_name',
       last_name: '_id.last_name',
     },
@@ -607,7 +607,10 @@ export const createStudent = async (req, res, next) => {
         facultyId: faculty?._id || null,
         level,
         session: session?._id || null,
-        programmeId
+        programmeId,
+        query: {
+          full_name: name
+        }
       });
 
       // Set audit context for successful student creation

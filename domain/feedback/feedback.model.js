@@ -39,19 +39,19 @@ const feedbackSchema = new mongoose.Schema({
   
   category: {
     type: String,
-    enum: [
-      'user_interface',
-      'user_experience',
-      'performance',
-      'functionality',
-      'billing',
-      'security',
-      'documentation',
-      'customer_service',
-      'mobile_app',
-      'api',
-      'other'
-    ],
+    // enum: [
+    //   'user_interface',
+    //   'user_experience',
+    //   'performance',
+    //   'functionality',
+    //   'billing',
+    //   'security',
+    //   'documentation',
+    //   'customer_service',
+    //   'mobile_app',
+    //   'api',
+    //   'other'
+    // ],
     default: 'other'
   },
   
@@ -222,8 +222,25 @@ feedbackSchema.virtual('response_time', {
 // Pre-save middleware
 feedbackSchema.pre('save', function(next) {
   this.last_updated = new Date();
+  // Normalize type field to match enum values
+  if (this.type === 'bugreport') {
+    this.type = 'bug_report';
+  } else if (this.type === 'featurerequest') {
+    this.type = 'feature_request';
+  }
   next();
 });
+
+// Pre-validate middleware to normalize type before validation
+feedbackSchema.pre('validate', function(next) {
+  if (this.type === 'bugreport') {
+    this.type = 'bug_report';
+  } else if (this.type === 'featurerequest') {
+    this.type = 'feature_request';
+  }
+  next();
+});
+
 
 const Feedback = mongoose.model("Feedback", feedbackSchema);
 export default Feedback;

@@ -13,41 +13,54 @@ import programmeService from "../../programme/programme.service.js";
 import facultyModel from "../../faculty/faculty.model.js";
 import lecturerModel from "../../lecturer/lecturer.model.js";
 import userModel from "../../user/user.model.js";
+import departmentService from "../../department/department.service.js";
 
 /**
  * Get department leadership details (Dean and HOD)
  */
 export async function getDepartmentLeadershipDetails(department, activeSemester, programme) {
   try {
-    
+
+    if (mongoose.Types.ObjectId.isValid(department)) {
+      department = await departmentService.getDepartmentById(department);
+    }
+
+    if (mongoose.Types.ObjectId.isValid(activeSemester)) {
+      activeSemester = await SemesterService.getAcademicSemesterById(activeSemester);
+    }
+
+    if (mongoose.Types.ObjectId.isValid(programme)) {
+      programme = await programmeService.getProgrammeById(programme);
+    }
+
 
     // 2. Get active semester with active department Semester
     const activeDepartmentSemester = await SemesterService.getDepartmentSemester(department._id)
-    
+
     // 3. Get faculty using raw query
     let faculty = null;
     if (department.faculty) {
-      faculty = await facultyModel.findOne({ 
-        _id: new mongoose.Types.ObjectId(department.faculty) 
+      faculty = await facultyModel.findOne({
+        _id: new mongoose.Types.ObjectId(department.faculty)
       });
-      
+
       console.log(`✅ Found faculty: ${faculty?.name || 'Unknown'}`);
     }
-    
+
     // 4. Get HOD details using raw queries
     let hodDetails = null;
     if (department.hod) {
-      const hodLecturer = await lecturerModel.findOne({ 
-        _id: new mongoose.Types.ObjectId(department.hod) 
+      const hodLecturer = await lecturerModel.findOne({
+        _id: new mongoose.Types.ObjectId(department.hod)
       });
-      
+
       if (hodLecturer) {
         // Get user details for HOD
-        const hodUser = await userModel.findOne({ 
-          _id: new mongoose.Types.ObjectId(hodLecturer._id) 
+        const hodUser = await userModel.findOne({
+          _id: new mongoose.Types.ObjectId(hodLecturer._id)
         });
         hodDetails = {
-          name: resolveUserName(hodUser, "getDepartmentLeadershipDetails.hod") || resolveUserName(hodLecturer, "getDepartmentLeadershipDetails.hod")  || 'Undefined',
+          name: resolveUserName(hodUser, "getDepartmentLeadershipDetails.hod") || resolveUserName(hodLecturer, "getDepartmentLeadershipDetails.hod") || 'Undefined',
           first_name: hodUser.first_name,
           middle_name: hodUser.middle_name,
           last_name: hodUser.last_name,
@@ -60,20 +73,20 @@ export async function getDepartmentLeadershipDetails(department, activeSemester,
         console.log(`✅ Found HOD: ${hodDetails.name}`);
       }
     }
-    
+
     // 5. Get Dean details using raw queries
     let deanDetails = null;
     if (faculty && faculty.dean) {
-      const deanLecturer = await lecturerModel.findOne({ 
-        _id: new mongoose.Types.ObjectId(faculty.dean) 
+      const deanLecturer = await lecturerModel.findOne({
+        _id: new mongoose.Types.ObjectId(faculty.dean)
       });
-      
+
       if (deanLecturer) {
         // Get user details for Dean
-        const deanUser = await userModel.findOne({ 
-          _id: new mongoose.Types.ObjectId(deanLecturer._id) 
+        const deanUser = await userModel.findOne({
+          _id: new mongoose.Types.ObjectId(deanLecturer._id)
         });
-        
+
         deanDetails = {
           name: resolveUserName(deanUser, "getDepartmentLeadershipDetails.dean") || resolveUserName(deanLecturer, "getDepartmentLeadershipDetails.dean") || 'Undefined',
           first_name: deanUser.first_name,
@@ -88,7 +101,7 @@ export async function getDepartmentLeadershipDetails(department, activeSemester,
         console.log(`✅ Found Dean: ${deanDetails.name}`);
       }
     }
-    
+
     // 6. Build department details
     const departmentDetails = buildDepartmentDetails(
       department,
@@ -99,14 +112,14 @@ export async function getDepartmentLeadershipDetails(department, activeSemester,
       activeSemester,
       activeDepartmentSemester
     );
-    
+
     console.log(`✅ Department details built successfully for ${department.name}`);
     return departmentDetails;
-    
+
   } catch (error) {
     console.error('❌ Error in getDepartmentLeadershipDetails:', error.message);
     console.error('Stack:', error.stack);
-    
+
     return getDefaultDepartmentDetails();
   }
 }
@@ -146,7 +159,7 @@ function buildDepartmentDetails(department, programme, faculty, hodDetails, dean
 function getDefaultDepartmentDetails() {
   const currentYear = new Date().getFullYear();
   const nextYear = currentYear + 1;
-  
+
   return {
     name: '',
     code: '',

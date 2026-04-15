@@ -73,6 +73,14 @@ const studentSchema = new mongoose.Schema(
       enum: ["none", "withdrawn", "terminated", "expelled"],
       default: "none"
     },
+    queryKey: {
+      type: {
+        full_name: String,
+        email: String,
+        phone: String
+      },
+      default: {}
+    },
     suspension: {
       type: [
         {

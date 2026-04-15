@@ -189,19 +189,19 @@ export const getAllLecturers = async (req, res, next) => {
         middle_name: '_id.middle_name',
         last_name: '_id.last_name',
       },
-      populate: [
-      {
-        path: "programmeId",
-        populate: [
-          {
-            path: "department",
-            select: "name code"
-          }
-        ]
-      }, {
-        path: "_id",
-      },
-    ],
+    //   populate: [
+    //   {
+    //     path: "programmeId",
+    //     populate: [
+    //       {
+    //         path: "department",
+    //         select: "name code"
+    //       }
+    //     ]
+    //   }, {
+    //     path: "_id",
+    //   },
+    // ],
     });
   } catch (error) {
     throw error

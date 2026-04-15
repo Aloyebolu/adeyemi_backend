@@ -23,6 +23,7 @@ import { setIO, setupFeedbackSocketServer } from "./domain/feedback/feedback.soc
 import { register, httpRequestDuration } from "./metrics.js";
 import { detect_honeytoken } from "./domain/auth/services/token/HoneyToken.js";
 import { setupSocketServer } from "./domain/chat/chat.socket.js";
+import { detectRequestIntent } from "./domain/auditlog/auditlog.middleware.js";
 // import { setupSocketServer } from "./domain/chat/chat.socket.js";
 
 export const allowedOrigins = [
@@ -126,6 +127,7 @@ app.get("/health", (req, res) => {
     requestId: req.requestId
   });
 });
+app.use(detectRequestIntent) //attaches req._intent
 app.use(authenticate()); // attaches req.user
 app.use(blockWritesForReadOnly);
 app.use(resolveArchiveMode); // to handle archive mode if needed

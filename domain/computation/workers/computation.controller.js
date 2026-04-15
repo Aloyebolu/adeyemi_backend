@@ -23,18 +23,21 @@ import programmeModel from "../../programme/programme.model.js";
 import AppError from "../../errors/AppError.js";
 import { logger } from "../../../utils/logger.js";
 import { validateObjectId } from "../../../utils/validator.js";
+import ComputationReportService from "../services/master-sheet/ComputationReportService.js";
+import catchAsync from "../../../utils/catchAsync.js";
+import { createReadStream } from "fs";
+import ComputationSummary from "../models/computation.model.js";
 
 /**
  * Unified department job processor - routes to appropriate handler
  */
 export const processDepartmentJob = async (job) => {
   const {
-    departmentId,
-    masterComputationId,
-    computedBy,
     jobId,
     purpose = 'preview',
   } = job.data;
+
+
 
   const isPreview = purpose === 'preview'
   const isFinal = purpose === 'final';
@@ -724,5 +727,191 @@ export async function handleJobFailure(computationSummary, department, activeSem
     );
   }
 }
+
+
+
+
+
+// MASTERSHEET RENDER TRANSPORT LAYER
+/**
+ * Generate and download master sheet report
+ */
+export const downloadMasterSheet = catchAsync(async (req, res, next) => {
+  const { summaryId, level, type } = req.params;
+  const outputType = (type || "html").toLowerCase();
+  
+  // Validate level
+  const validLevels = ["100", "200", "300", "400", "500", "600", "700"];
+  if (!validLevels.includes(level)) {
+    throw new AppError(`Invalid level: ${level}`, 400);
+  }
+
+  // Handle different output types
+  switch (outputType) {
+    case "pdf":
+      return handlePDFOutput(req, res, summaryId, level);
+    
+    case "docx":
+    case "doc":
+    case "word":
+      return handleDOCXOutput(req, res, summaryId, level);
+    
+    case "json":
+      return handleJSONOutput(req, res, summaryId, level);
+    
+    case "html":
+    default:
+      return handleHTMLOutput(req, res, summaryId, level);
+  }
+});
+
+/**
+ * Handle PDF output with caching
+ */
+async function handlePDFOutput(req, res, summaryId, level) {
+  const result = await ComputationReportService.generateMasterSheetPDF(
+    summaryId,
+    level,
+    req.query
+  );
+
+  // Set response headers
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename="${result.filename}"`
+  );
+
+  // Stream the file
+  const fileStream = createReadStream(result.filePath);
+  
+  fileStream.pipe(res);
+  
+  fileStream.on("error", (error) => {
+    console.error("Stream error:", error);
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Failed to stream file" });
+    }
+  });
+
+  // Add cache header if served from cache
+  if (result.fromCache) {
+    res.setHeader("X-Cache", "HIT");
+  }
+}
+
+/**
+ * Handle DOCX output
+ */
+async function handleDOCXOutput(req, res, summaryId, level) {
+  const docxBuffer = await ComputationReportService.generateMasterSheetDOCX(
+    summaryId,
+    level,
+    req.query
+  );
+
+  const filename = `MasterSheet_Level_${level}_${new Date().toISOString().split("T")[0]}.docx`;
+  
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  );
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename="${filename}"`
+  );
+  res.setHeader("Content-Length", docxBuffer.length);
+  
+  res.send(docxBuffer);
+}
+
+/**
+ * Handle JSON output
+ */
+async function handleJSONOutput(req, res, summaryId, level) {
+  const data = await ComputationReportService.generateMasterSheetJSON(
+    summaryId,
+    level,
+    req.query
+  );
+
+  res.status(200).json({
+    success: true,
+    data
+  });
+}
+
+/**
+ * Handle HTML output
+ */
+async function handleHTMLOutput(req, res, summaryId, level) {
+  const html = await ComputationReportService.generateMasterSheetHTML(
+    summaryId,
+    level,
+    req.query
+  );
+
+  res.setHeader("Content-Type", "text/html");
+  res.send(html);
+}
+
+/**
+ * Preview master sheet (always HTML)
+ */
+export const previewMasterSheet = catchAsync(async (req, res, next) => {
+  const { summaryId, level } = req.params;
+  
+  const html = await ComputationReportService.generateMasterSheetHTML(
+    summaryId,
+    level,
+    { ...req.query, preview: true }
+  );
+
+  res.setHeader("Content-Type", "text/html");
+  res.send(html);
+});
+
+/**
+ * Clear cache for a summary
+ */
+export const clearMasterSheetCache = catchAsync(async (req, res, next) => {
+  const { summaryId } = req.params;
+  
+  // Check admin permission
+  if (!["admin", "hod"].includes(req.user?.role)) {
+    throw new AppError("Unauthorized to clear cache", 403);
+  }
+
+  const result = await ComputationReportService.clearSummaryCache(summaryId);
+
+  res.status(200).json({
+    success: true,
+    message: `Cleared ${result.cleared} cache files`,
+    data: result
+  });
+});
+
+/**
+ * Get available levels for a summary
+ */
+export const getAvailableLevels = catchAsync(async (req, res, next) => {
+  const { summaryId } = req.params;
+  
+  const { summary } = await ComputationReportService.prepareMasterSheetData(
+    summaryId,
+    "100",
+    req.query
+  );
+
+  const levels = Object.keys(summary.studentSummariesByLevel || {})
+    .map(Number)
+    .sort((a, b) => a - b);
+
+  res.status(200).json({
+    success: true,
+    data: { levels }
+  });
+});
+
 // Re-export preview functions
 export { computePreviewResults } from './previewComputation.controller.js';

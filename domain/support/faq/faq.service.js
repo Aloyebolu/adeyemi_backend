@@ -2,9 +2,8 @@
 
 import crypto from "crypto";
 import mongoose from "mongoose";
-import FAQ from "./faq.model";
-import AppError from "../../errors/AppError";
-
+import FAQ from "./faq.model.js";
+import AppError from "../../errors/AppError.js";
 
 class FAQService {
     constructor() {
@@ -77,14 +76,12 @@ class FAQService {
      */
     async createFAQ(faqData) {
         try {
-            const faqId = this.generateFaqId();
             
             const faq = new FAQ({
-                faq_id: faqId,
                 category: faqData.category,
                 question: faqData.question,
                 answer: faqData.answer,
-                keywords: this.extractKeywords(faqData.question + ' ' + (faqData.keywords || '')),
+                // keywords: this.extractKeywords(faqData.question + ' ' + (faqData.keywords || '')),
                 tags: faqData.tags || [],
                 is_active: faqData.is_active !== false,
                 is_featured: faqData.is_featured || false,
@@ -232,7 +229,7 @@ class FAQService {
      */
     async getFAQ(faqId, incrementView = false) {
         try {
-            const faq = await FAQ.findOne({ faq_id: faqId })
+            const faq = await FAQ.findOne({ _id: faqId })
                 .populate('created_by', 'first_name last_name email')
                 .populate('last_updated_by', 'first_name last_name email');
             
@@ -267,7 +264,7 @@ class FAQService {
             updateData.last_updated_at = new Date();
             
             const faq = await FAQ.findOneAndUpdate(
-                { faq_id: faqId },
+                { _id: faqId },
                 { $set: updateData },
                 { new: true }
             );
@@ -290,7 +287,7 @@ class FAQService {
      */
     async deleteFAQ(faqId) {
         try {
-            const faq = await FAQ.findOneAndDelete({ faq_id: faqId });
+            const faq = await FAQ.findOneAndDelete({ _id: faqId });
             
             if (!faq) {
                 throw new AppError('FAQ not found', 404);
@@ -310,7 +307,7 @@ class FAQService {
      */
     async markHelpful(faqId, isHelpful, userId = null) {
         try {
-            const faq = await FAQ.findOne({ faq_id: faqId });
+            const faq = await FAQ.findOne({ _id: faqId });
             
             if (!faq) {
                 throw new AppError('FAQ not found', 404);

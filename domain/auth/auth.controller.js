@@ -122,6 +122,14 @@ const shadowLogin = catchAsync(async (req, res) => {
     action: `VC ${decoded._id} performed shadow login for HOD of department ${departmentId}`,
     resource: "Auth"
   }
+  // 🍪 Set secure cookie
+  res.cookie("access_token", shadowToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    maxAge: 1000 * 60 * 60 * 24,
+  });
+  console.log(shadowToken)
   return buildResponse.success(res, "Shadow login successful", {
     token: shadowToken,
     shadowRole: shadowPayload.view_context.role,

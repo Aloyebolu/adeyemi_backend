@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import buildResponse from "../utils/responseBuilder.js";
 import { auditLogger } from "../middlewares/auditLogger.js";
+import { detectRequestIntent, REQUEST_INTENT } from "../domain/auditlog/auditlog.middleware.js";
 
 // System-wide authorized roles
 const AUTHORIZED_ROLES = ["admin", "hod", "lecturer", "student", "dean", "vc"];
@@ -81,12 +82,13 @@ const authenticate = (roles = []) => {
       if (decoded.role === "vc" && decoded.view_context) {
         req.context = {
           actor_id: decoded._id,             // real VC
-          role: "vc",                        // still VC
+          role: "hod",                        // still VC
           department_id: decoded.view_context.department_id,
           acting_role: "HOD",                // so routes think HOD context
-          read_only: true                     // enforce read-only
+          read_only: req._intent != REQUEST_INTENT.READ// enforce read-only
         };
         req.user._id = decoded.view_context.hod_id;
+        req.user.role = 'hod'
       } else {
         req.context = {
           actor_id: decoded._id,
@@ -140,7 +142,7 @@ const authenticate = (roles = []) => {
 
 export default authenticate;
 export function blockWritesForReadOnly(req, res, next) {
-  if (req.context?.read_only && req.method !== "GET") {
+  if (req.context?.read_only) {
     return buildResponse(res, 403, "Read-only oversight mode", null, true);
   }
   next();

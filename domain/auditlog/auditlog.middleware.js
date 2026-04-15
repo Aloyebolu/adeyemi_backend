@@ -109,7 +109,108 @@ async function registerViolation({ userId, ip, intent }) {
     return 1;
   }
 }
+export async function detectRequestIntent(req, res, next) {
+  // Default intent based on HTTP method
+  req._intent = req.method === "GET" ? REQUEST_INTENT.READ : REQUEST_INTENT.WRITE;
 
+  // Enhanced intent detection for POST requests with body
+  if (req.method === "POST" && req.body && Object.keys(req.body).length > 0) {
+    // Check for mixed intent (security violation)
+    if (detectMixedIntent(req.body)) {
+      req._intent = REQUEST_INTENT.BLOCKED;
+
+      const violationCount = await registerViolation({
+        userId: req.user?._id,
+        ip: req.ip,
+        intent: "MIXED_INTENT"
+      });
+
+      await AuditLogService.logOperation({
+        userId: req.user?._id || "anonymous",
+        action: "SUSPICIOUS_REQUEST",
+        severity: "CRITICAL",
+        entity: "HTTP",
+        reason: "Mixed read/write request payload detected",
+        context: {
+          endpoint: req.originalUrl,
+          method: req.method,
+          requestId: req.requestId,
+          bodyKeys: Object.keys(req.body),
+          ip: req.ip,
+          violationCount
+        },
+        status: "BLOCKED"
+      });
+
+      return res.status(400).json({
+        success: false,
+        error: "INVALID_REQUEST_STRUCTURE",
+        message: "Cannot mix read parameters (filters, fields) with write parameters in same request",
+        requestId: req.requestId
+      });
+
+    }
+
+    const keys = Object.keys(req.body);
+    const hasRead = keys.some(k => READ_KEYS.includes(k));
+    const hasOther = keys.some(k => !READ_KEYS.includes(k));
+
+    if (hasRead && !hasOther) {
+      req._intent = REQUEST_INTENT.READ;
+      req._skipAuditLog = true;
+
+      const rateLimitKey = req.user?._id ? `read:user:${req.user._id}` : `read:ip:${req.ip}`;
+      const rateLimitResult = await checkRateLimit(rateLimitKey, RATE_LIMITS.READ);
+
+      if (!rateLimitResult.allowed) {
+        await AuditLogService.logOperation({
+          userId: req.user?._id || "anonymous",
+          action: "RATE_LIMIT_EXCEEDED",
+          severity: "HIGH",
+          entity: "HTTP",
+          reason: `READ intent rate limit exceeded (${rateLimitResult.count} requests)`,
+          context: {
+            endpoint: req.originalUrl,
+            method: req.method,
+            requestId: req.requestId,
+            ip: req.ip,
+            count: rateLimitResult.count
+          },
+          status: "BLOCKED"
+        });
+
+        return res.status(429).json({
+          success: false,
+          error: "RATE_LIMIT_EXCEEDED",
+          message: "Too many read requests",
+          retryAfter: Math.ceil(RATE_LIMITS.READ.windowMs / 1000),
+          requestId: req.requestId
+        });
+
+      }
+
+      if (rateLimitResult.count >= RATE_LIMITS.READ.softBlockThreshold) {
+        await AuditLogService.logOperation({
+          userId: req.user?._id || "anonymous",
+          action: "RATE_LIMIT_WARNING",
+          severity: "MEDIUM",
+          entity: "HTTP",
+          reason: `Approaching READ intent rate limit (${rateLimitResult.count}/${RATE_LIMITS.READ.maxRequests})`,
+          context: {
+            endpoint: req.originalUrl,
+            method: req.method,
+            requestId: req.requestId,
+            ip: req.ip,
+            count: rateLimitResult.count,
+            remaining: rateLimitResult.remaining
+          }
+        });
+      }
+    }
+  }
+
+  return next()
+}
 /**
  * Main audit middleware that auto-captures ALL HTTP requests
  * with security-first intent detection
@@ -141,105 +242,6 @@ const auditMiddleware = (options = {}) => {
     }
 
     // 🔐 STEP 1: ALWAYS DETECT INTENT (Security comes first)
-    // Default intent based on HTTP method
-    req._intent = req.method === "GET" ? REQUEST_INTENT.READ : REQUEST_INTENT.WRITE;
-
-    // Enhanced intent detection for POST requests with body
-    if (req.method === "POST" && req.body && Object.keys(req.body).length > 0) {
-      // Check for mixed intent (security violation)
-      if (detectMixedIntent(req.body)) {
-        req._intent = REQUEST_INTENT.BLOCKED;
-
-        const violationCount = await registerViolation({
-          userId: req.user?._id,
-          ip: req.ip,
-          intent: "MIXED_INTENT"
-        });
-
-        // Log the violation
-        await AuditLogService.logOperation({
-          userId: req.user?._id || "anonymous",
-          action: "SUSPICIOUS_REQUEST",
-          severity: "CRITICAL",
-          entity: "HTTP",
-          reason: "Mixed read/write request payload detected",
-          context: {
-            endpoint: req.originalUrl,
-            method: req.method,
-            requestId: req.requestId,
-            bodyKeys: Object.keys(req.body),
-            ip: req.ip,
-            violationCount
-          },
-          status: "BLOCKED"
-        });
-
-        return res.status(400).json({
-          success: false,
-          error: "INVALID_REQUEST_STRUCTURE",
-          message: "Cannot mix read parameters (filters, fields) with write parameters in same request",
-          requestId: req.requestId
-        });
-      }
-
-      // Check for pure read intent in POST body
-      const keys = Object.keys(req.body);
-      const hasRead = keys.some(k => READ_KEYS.includes(k));
-      const hasOther = keys.some(k => !READ_KEYS.includes(k));
-
-      if (hasRead && !hasOther) {
-        req._intent = REQUEST_INTENT.READ;
-        req._skipAuditLog = true;
-        // 🔐 Apply rate limiting for READ intents
-        const rateLimitKey = req.user?._id ? `read:user:${req.user._id}` : `read:ip:${req.ip}`;
-        const rateLimitResult = await checkRateLimit(rateLimitKey, RATE_LIMITS.READ);
-
-        if (!rateLimitResult.allowed) {
-          await AuditLogService.logOperation({
-            userId: req.user?._id || "anonymous",
-            action: "RATE_LIMIT_EXCEEDED",
-            severity: "HIGH",
-            entity: "HTTP",
-            reason: `READ intent rate limit exceeded (${rateLimitResult.count} requests)`,
-            context: {
-              endpoint: req.originalUrl,
-              method: req.method,
-              requestId: req.requestId,
-              ip: req.ip,
-              count: rateLimitResult.count
-            },
-            status: "BLOCKED"
-          });
-
-          return res.status(429).json({
-            success: false,
-            error: "RATE_LIMIT_EXCEEDED",
-            message: "Too many read requests",
-            retryAfter: Math.ceil(RATE_LIMITS.READ.windowMs / 1000),
-            requestId: req.requestId
-          });
-        }
-
-        // Soft block warning
-        if (rateLimitResult.count >= RATE_LIMITS.READ.softBlockThreshold) {
-          await AuditLogService.logOperation({
-            userId: req.user?._id || "anonymous",
-            action: "RATE_LIMIT_WARNING",
-            severity: "MEDIUM",
-            entity: "HTTP",
-            reason: `Approaching READ intent rate limit (${rateLimitResult.count}/${RATE_LIMITS.READ.maxRequests})`,
-            context: {
-              endpoint: req.originalUrl,
-              method: req.method,
-              requestId: req.requestId,
-              ip: req.ip,
-              count: rateLimitResult.count,
-              remaining: rateLimitResult.remaining
-            }
-          });
-        }
-      }
-    }
 
     // 🔐 Store intent in AsyncLocalStorage for DB hooks
     const storeContext = {

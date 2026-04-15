@@ -4,8 +4,14 @@ const warn = (message) => {
 export function resolveUserName(user, context = "UnknownContext", options = {}) {
 
   // throw JSON.stringify(options)
-  const clean = (v) =>
-    typeof v === "string" && v.trim() ? v.trim() : null;
+  const clean = (v) => {
+    if (typeof v !== "string") return null;
+
+    const trimmed = v.trim();
+    if (!trimmed) return null;
+
+    return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+  };
 
   const normalizeTitle = (title) => {
     if (!title) return null;

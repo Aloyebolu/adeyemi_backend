@@ -344,27 +344,27 @@ class MasterSheetHtmlRenderer {
 </table>
 `;
 
-    return `<!DOCTYPE html>
+ return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <title>MASTER SHEET – ${level} LEVEL</title>
+  // In MasterSheetHtmlRenderer.js - render() method
+// Replace the entire <style>...</style> section with this:
+
   <style>
-    /* ================= BASE PRINT STYLING ================= */
-    @page {
-      size: A4 portrait;
-      margin: 10mm 10mm 10mm 10mm;
-
-
-    }
-    @top-right {
-        content: "Page " counter(page);
-        font-size: 9pt;
-      }
+    /* ================= CRITICAL PAGE BREAK FIXES ================= */
+    
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+    }
+    
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
     }
     
     body {
@@ -374,13 +374,71 @@ class MasterSheetHtmlRenderer {
       color: #000;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
-      margin: 0;
-      padding: 0;
       position: relative;
-      counter-reset: page 1;
     }
     
-    /* ================= WATERMARK (unchanged) ================= */
+    /* CRITICAL: Make page breaks work */
+    .page-break {
+      page-break-before: always !important;
+      page-break-after: always !important;
+      display: block !important;
+      clear: both !important;
+    }
+    
+    .page-break-before {
+      page-break-before: always !important;
+    }
+    
+    .page-break-after {
+      page-break-after: always !important;
+    }
+    
+    .avoid-break,
+    .no-break,
+    .keep-together {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    
+    table {
+      page-break-inside: auto !important;
+      break-inside: auto !important;
+    }
+    
+    tr {
+      page-break-inside: avoid !important;
+      page-break-after: auto !important;
+      break-inside: avoid !important;
+    }
+    
+    thead {
+      display: table-header-group !important;
+    }
+    
+    tfoot {
+      display: table-footer-group !important;
+    }
+    
+    .section-break,
+    .force-page-break {
+      page-break-before: always !important;
+      break-before: page !important;
+      display: block !important;
+    }
+    
+    .section-title-row,
+    .section-header {
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+    
+    /* ================= PAGE SETTINGS ================= */
+    @page {
+      size: A4 portrait;
+      margin: 15mm 10mm 15mm 10mm;
+    }
+    
+    /* ================= WATERMARK ================= */
     .watermark {
       position: fixed;
       top: 0;
@@ -391,15 +449,18 @@ class MasterSheetHtmlRenderer {
       z-index: 1000;
       opacity: 0.15;
     }
-    .flex-box{
-    display: flex;
-    flex-direction: column;
+    
+    .flex-box {
+      display: flex;
+      flex-direction: column;
     }
-    .flex-row{
-        display: flex;
-    flex-direction: row;
-    gap: 3px
+    
+    .flex-row {
+      display: flex;
+      flex-direction: row;
+      gap: 3px;
     }
+    
     .preview-watermark {
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='40' font-weight='bold' fill='%23990000' text-anchor='middle' dominant-baseline='middle' transform='rotate(-45 200 150)' opacity='0.7'%3EPREVIEW%3C/text%3E%3Ctext x='50%25' y='60%25' font-family='Arial' font-size='20' fill='%23990000' text-anchor='middle' dominant-baseline='middle' transform='rotate(-45 200 150)' opacity='0.7'%3ENOT FOR OFFICIAL USE%3C/text%3E%3C/svg%3E");
       background-repeat: no-repeat;
@@ -415,30 +476,21 @@ class MasterSheetHtmlRenderer {
       background-size: 200px 200px;
     }
     
-    /* ================= MASTER TABLE CONTAINER ================= */
-    .master-container {
-      width: 100%;
-      position: relative;
-      z-index: 1;
-    }
-    
-    /* ================= SEPARATE TABLE ================= */
-    .separate-table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-      margin-bottom: 10mm;
-      page-break-after: always;
-    }
-    
-    /* ================= MASTER TABLE ================= */
+    /* ================= TABLES ================= */
+    .separate-table,
     .master-table {
       width: 100%;
       border-collapse: collapse;
       table-layout: fixed;
+      page-break-inside: auto !important;
     }
     
-    /* ================= HEADER ROW (unchanged) ================= */
+    .separate-table {
+      margin-bottom: 10mm;
+      page-break-after: always !important;
+    }
+    
+    /* ================= HEADER ================= */
     .header-row {
       page-break-before: always;
       page-break-after: avoid;
@@ -549,13 +601,13 @@ class MasterSheetHtmlRenderer {
       text-align: left;
     }
     
-    /* ================= DATA TABLES - now full width ================= */
+    /* ================= DATA TABLES ================= */
     .data-table {
       border-collapse: collapse;
       margin: 3mm 0 5mm 0;
       font-size: 10pt;
       table-layout: auto;
-      width: 100%;               /* force table to full container width */
+      width: 100%;
       max-width: 100%;
     }
     
@@ -585,27 +637,29 @@ class MasterSheetHtmlRenderer {
       margin-bottom: 8mm;
     }
     
-    .no-border td{
-    border: none;
-    } 
-    .no-border th{
-    border: none;
-    } 
-
-    /* ================= PAGE HEADER ROW (for repeating section titles) ================= */
+    .no-border td {
+      border: none;
+    }
+    
+    .no-border th {
+      border: none;
+    }
+    
+    /* ================= PAGE HEADER ROW ================= */
     .page-header-row th {
       border: none;
       border-bottom: 1px solid #000;
       background: none;
       padding: 2mm 0 1mm 0;
-      text-align: center;        /* center the title across full width */
+      text-align: center;
       font-size: 12pt;
       font-weight: bold;
     }
+    
     .page-header-row .header-programme {
       font-size: 10pt;
       font-weight: normal;
-      text-align: left;          /* keep programme left-aligned if desired */
+      text-align: left;
     }
     
     /* ================= COURSE HEADER TABLE ================= */
@@ -671,7 +725,7 @@ class MasterSheetHtmlRenderer {
       padding: 4mm;
     }
     
-    /* ================= SUMMARY AND SIGNATURES CONTAINER ================= */
+    /* ================= SUMMARY AND SIGNATURES ================= */
     .summary-signatures-container {
       margin-top: 5mm;
     }
@@ -684,7 +738,7 @@ class MasterSheetHtmlRenderer {
     
     .summary-table td {
       padding: 2mm 1.5mm;
-      border: 0.75pt solid #ffffffff;
+      border: 0.75pt solid #ffffff;
       text-align: center;
     }
     
@@ -723,7 +777,7 @@ class MasterSheetHtmlRenderer {
       margin-top: 1mm;
     }
     
-    /* ================= KEY TO COURSES TABLE ================= */
+    /* ================= KEY TO COURSES ================= */
     .key-table {
       width: 100%;
       border-collapse: collapse;
@@ -771,13 +825,35 @@ class MasterSheetHtmlRenderer {
       vertical-align: top;
     }
     
-    /* ================= PAGE BREAK CONTROL ================= */
-    .force-page-break {
-      page-break-before: always;
+    /* ================= EMPTY CELL STYLING ================= */
+    .empty-cell {
+      color: #666;
+      font-style: italic;
     }
     
-    .avoid-break {
-      page-break-inside: avoid;
+    .list-nil {
+      color: #666;
+      font-style: italic;
+      text-align: center;
+      padding: 2mm;
+      border: 0.75pt solid #000;
+    }
+    
+    .report-list {
+      counter-reset: item;
+      padding-left: 0;
+    }
+
+    .report-list li {
+      display: block;
+      margin-left: 20px;
+    }
+
+    .report-list li::before {
+      counter-increment: item;
+      content: counter(item) ". ";
+      font-weight: bold;
+      margin-left: -20px;
     }
     
     /* ================= PRINT OPTIMIZATION ================= */
@@ -807,61 +883,22 @@ class MasterSheetHtmlRenderer {
       }
     }
     
-    /* ================= EMPTY CELL STYLING ================= */
-    .empty-cell {
-      color: #666;
-      font-style: italic;
-    }
-    
-    .list-nil {
-      color: #666;
-      font-style: italic;
-      text-align: center;
-      padding: 2mm;
-      border: 0.75pt solid #000;
-    }
-    .report-list {
-      counter-reset: item;
-      padding-left: 0;
-    }
-
-    .report-list li {
-      display: block;
-      margin-left: 20px;
-    }
-
-    .report-list li::before {
-      counter-increment: item;
-      content: counter(item) ". ";
-      font-weight: bold;
-      margin-left: -20px;
-    }
-
-    /* ======= MMS 2 AREA ======== */
-    
   </style>
 </head>
 <body>
-  <!-- Force page break BEFORE main table -->
-  <div style="page-break-before: always;"></div>
-  <!-- Hidden data for JS processing -->
-  <div id="programme-data" style="display:none">
-    ${this.formatMasterSheetKey(summary, level)}
-  </div>
-
-  <!-- Watermark overlay (absolute ok) -->
   ${isPreview
         ? '<div class="watermark preview-watermark"></div>'
         : '<div class="watermark final-watermark"></div>'}
 
-  <!-- Section 1 -->
+  <!-- ✅ Section 1 - Separate Table -->
   <div class="section">
     ${separateSection}
   </div>
 
+  <!-- ✅ CRITICAL: Explicit page break div between sections -->
+  <div class="page-break"></div>
 
-
-  <!-- Section 2 -->
+  <!-- ✅ Section 2 - Main Table -->
   <div class="section">
     ${mainTable}
   </div>

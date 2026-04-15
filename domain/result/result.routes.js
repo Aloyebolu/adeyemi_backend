@@ -10,6 +10,10 @@ import {
   getResultAnalytics,
   deleteResult,
   getResultsForStudent,
+  previewStudentResult,
+  previewTranscript,
+  downloadTranscript,
+  downloadStudentResult,
 } from "./result.controller.js";
 
 import authenticate from "../../middlewares/authenticate.js";
@@ -115,6 +119,55 @@ router.delete(
   authenticate("admin"),
   deleteResult
 );
+
+
+
+/**
+ * @route   GET /api/student-results/download/:studentId/:semesterId/:level
+ * @desc    Download student semester result as PDF
+ * @access  Private (Student, Staff, Admin, HOD)
+ */
+router.get(
+  "/download/:studentId/",
+  authenticate(),
+  downloadStudentResult
+);
+
+/**
+ * @route   GET /api/student-results/transcript/:studentId
+ * @desc    Download academic transcript as PDF
+ * @access  Private (Student, Admin, Registrar)
+ */
+router.get(
+  "/transcript/:studentId",
+  authenticate(),
+  downloadTranscript
+);
+
+// ==================== PREVIEW ROUTES (HTML) ====================
+
+/**
+ * @route   GET /api/student-results/preview/:studentId/:semesterId/:level
+ * @desc    Preview student result as HTML
+ * @access  Private (Student, Staff, Admin, HOD)
+ */
+router.get(
+  "/preview/:studentId/",
+  authenticate(),
+  previewStudentResult
+);
+
+/**
+ * @route   GET /api/student-results/transcript/preview/:studentId
+ * @desc    Preview transcript as HTML
+ * @access  Private (Student, Staff, Admin, Registrar)
+ */
+router.get(
+  "/transcript/preview/:studentId",
+  authenticate(),
+  previewTranscript
+);
+
 
 
 router.get('/stats/lecturers', authenticate('hod', 'admin'), getLecturerStats);

@@ -26,3 +26,4 @@ export const SYSTEM_USER_ID = new Types.ObjectId(
 export const SYSTEM_USER_EMAIL = "system@internal";
 export const SYSTEM_USER_FULL_NAME = "System User";
 export const FRONTEND_URL = 'http://localhost:3000'
+export const BACKEND_URL = 'http://localhost:5000/afued/result/portal'

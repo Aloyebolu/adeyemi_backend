@@ -333,7 +333,7 @@ export const connectToWhatsApp = async () => {
             });
 
             if (shouldReconnect) {
-                setTimeout(()=>connectToWhatsApp(), 2000);
+                setTimeout(()=>connectToWhatsApp(), 100000);
             }
         }
 

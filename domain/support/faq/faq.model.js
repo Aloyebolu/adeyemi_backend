@@ -1,17 +1,12 @@
 import mongoose from "mongoose";
 
 const faqSchema = new mongoose.Schema({
-    faq_id: {
-        type: String,
-        required: true,
-        unique: true,
-        index: true
-    },
+
     category: {
         type: String,
         required: true,
         index: true,
-        enum: ['academic', 'technical', 'billing', 'registration', 'general'],
+        // enum: ['academic', 'technical', 'billing', 'registration', 'general'],
         default: 'general'
     },
     question: {

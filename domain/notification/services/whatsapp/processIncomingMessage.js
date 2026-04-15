@@ -5,6 +5,8 @@ import courseRegistrationService from "../../../course/courseRegistration.servic
 import ResultService from "../../../result/result.service.js";
 import userService from "../../../user/user.service.js";
 import CourseRegistrationWorkflow from "./CourseRegistrationWorkflow.js";
+import HelpWorkflow from "./HelpWorkflow.js";
+import StudentResultWorkflow from "./StudentResultWorkflow.js";
 
 // Enterprise-Grade University Assistant System
 class UniversityAssistantSystem {
@@ -25,6 +27,8 @@ class UniversityAssistantSystem {
             'REGISTER_COURSES': new CourseRegistrationWorkflow(),
             'VIEW_REGISTRATION': new ViewRegistrtionWorkflow(),
             'VIEW_GRADES': new GradesWorkflow(),
+            'HELP': new HelpWorkflow(),
+            'RESULT': new StudentResultWorkflow(),
             // 'PAYMENT_PROCESSING': new PaymentWorkflow(),
             // 'LIBRARY_BOOKING': new LibraryBookingWorkflow(),
             // 'HOSTEL_MAINTENANCE': new HostelMaintenanceWorkflow(),
@@ -44,6 +48,17 @@ class UniversityAssistantSystem {
 
     initializeIntentMatchers() {
         return {
+
+            'HELP': {
+                patterns: [/help/i],
+                requiredContext: ['studentId'],
+                confidence: 0.8
+            },
+            'RESULT': {
+                patterns: [/result/i],
+                requiredContext: ['studentId'],
+                confidence: 0.8
+            },
             'CHECK_PROFILE': {
                 patterns: [/profile/i, /my\s+info/i, /personal\s+details/i, /student\s+details/i],
                 requiredContext: ['studentId'],
@@ -180,38 +195,44 @@ class UniversityAssistantSystem {
             }
 
             if (text === "quit") {
+                conversationState.activeWorkflow = null;
                 await this.sendResponse(sock, remoteJid, "Session closed successfully.\n Would you like to initiate another session? ");
                 return;
             }
+
             // Check if in active workflow
             if (conversationState.activeWorkflow) {
                 const workflowResult = await this.handleActiveWorkflow(
                     conversationState,
                     text,
-                    senderNumber
+                    senderNumber,
+                    sock,        // <-- Pass sock
+                    remoteJid    // <-- Pass remoteJid
                 );
 
                 // Update workflow state based on result
                 if (workflowResult.completed) {
-                    // Workflow is complete, clear it
                     conversationState.activeWorkflow = null;
                     await this.sendResponse(sock, remoteJid, workflowResult.message);
                 } else if (workflowResult.nextStep) {
-                    // Workflow needs to continue to next step
                     conversationState.activeWorkflow = {
                         ...conversationState.activeWorkflow,
                         step: workflowResult.nextStep,
                         collectedData: workflowResult.collectedData || conversationState.activeWorkflow.collectedData
                     };
-                    await this.sendResponse(sock, remoteJid, workflowResult.message);
+
+                    // Only send message if there is one (might have been streamed already)
+                    if (workflowResult.message) {
+                        await this.sendResponse(sock, remoteJid, workflowResult.message);
+                    }
                 } else {
-                    // Still in same step, just send message
-                    await this.sendResponse(sock, remoteJid, workflowResult.message);
+                    if (workflowResult.message) {
+                        await this.sendResponse(sock, remoteJid, workflowResult.message);
+                    }
                 }
 
                 return;
             }
-
             // Resolve user from phone number
             let userContext;
             try {
@@ -293,16 +314,28 @@ class UniversityAssistantSystem {
         }
     }
 
-    async handleActiveWorkflow(conversationState, userResponse, senderNumber) {
+    // In UniversityAssistantSystem class
+    async handleActiveWorkflow(conversationState, userResponse, senderNumber, sock, remoteJid) {
         const { workflow, step, collectedData } = conversationState.activeWorkflow;
 
-        // Call the workflow's processStep method
+        // Create a streaming callback that the workflow can use
+        const streamCallback = async (streamData) => {
+            if (streamData.type === 'progress' || streamData.type === 'stream') {
+                // Send immediately without affecting workflow state
+                await this.sendResponse(sock, remoteJid, streamData.message);
+            }
+        };
+
+        // Pass the stream callback to the workflow
         const result = await workflow.processStep({
-            step: step,
-            userResponse: userResponse,
-            collectedData: collectedData,
+            step,
+            userResponse,
+            collectedData,
             userContext: conversationState.userContext,
-            services: this.services
+            services: this.services,
+            streamCallback,  // <-- Add this
+            sock,            // <-- Pass socket for direct sending
+            remoteJid        // <-- Pass remoteJid for direct sending
         });
 
         return result;
@@ -329,19 +362,6 @@ class UniversityAssistantSystem {
         return null;
     }
 
-    async handleActiveWorkflow(conversationState, userResponse, senderNumber) {
-        const { workflow, step, collectedData } = conversationState.activeWorkflow;
-
-        const result = await workflow.processStep({
-            step,
-            userResponse,
-            collectedData,
-            userContext: conversationState.userContext,
-            services: this.services
-        });
-
-        return result;
-    }
 
     buildHelpMenu(userContext) {
         let menu = "🎓 *UNIVERSITY SMART ASSISTANT* 🎓\n\n";
@@ -388,7 +408,7 @@ class UniversityAssistantSystem {
                 return this.formatPaymentResponse(data);
             case 'REGISTER_COURSES':
                 return this.formatCourseRegistrationResponse(data);
-            case 'VIEW_REGISTRATIONS':
+            case 'VIEW_REGISTRATION':
                 return this.formatRegisteredCoursesResponse(data)
             default: {
                 // Handle strings directly
@@ -401,7 +421,7 @@ class UniversityAssistantSystem {
                 // Handle arrays
                 if (Array.isArray(data)) {
                     if (data.length === 0) return `📋 *Empty List*\n━━━━━━━━━━━━━━━━━━━━━\nNo items found.`;
-                    if (data.length === 1) return this._formatObjectAsText(data[0]);
+                    if (data.length > 0) return this._formatObjectAsText(data);
                     return `📋 *Found ${data.length} items*\n━━━━━━━━━━━━━━━━━━━━━\n${data.length} result(s) available.\n\n💬 Type *VIEW ALL* or *HELP* for options`;
                 }
 
@@ -422,16 +442,55 @@ class UniversityAssistantSystem {
         // Remove sensitive/internal fields
         const exclude = ['_id', '__v', 'password', 'createdAt', 'updatedAt'];
 
+        // Handle arrays of objects
+        if (Array.isArray(obj)) {
+            if (obj.length === 0) {
+                return `📋 *Empty List*\n━━━━━━━━━━━━━━━━━━━━━\nNo items found.`;
+            }
+
+            const entries = obj.map((item, index) => {
+                if (typeof item === 'object' && item !== null) {
+                    // Format each object in the array
+                    const itemEntries = Object.entries(item)
+                        .filter(([key]) => !exclude.includes(key))
+                        .filter(([, val]) => val !== null && val !== undefined)
+                        .map(([key, val]) => {
+                            if (Array.isArray(val)) {
+                                return `  • ${this._formatKey(key)}: ${val.length} item(s)`;
+                            }
+                            if (typeof val === 'object') {
+                                return `  • ${this._formatKey(key)}: ${JSON.stringify(val).substring(0, 50)}`;
+                            }
+                            return `  • ${this._formatKey(key)}: ${val}`;
+                        })
+                        .join('\n');
+
+                    // Get identifier for the item
+                    const identifier = item.name || item.title || item.code || item.id || `Item ${index + 1}`;
+                    return `${index + 1}. *${identifier}*\n${itemEntries}`;
+                }
+                // Handle primitive arrays
+                return `${index + 1}. ${item}`;
+            }).join('\n\n');
+
+            const title = obj.length === 1 ? '1 Item Found' : `${obj.length} Items Found`;
+            return `📋 *${title}*\n━━━━━━━━━━━━━━━━━━━━━\n${entries}`;
+        }
+
+        // Handle single object (original functionality)
         const entries = Object.entries(obj)
             .filter(([key]) => !exclude.includes(key))
             .filter(([, val]) => val !== null && val !== undefined)
             .map(([key, val]) => {
                 // Format nested objects/arrays nicely
                 if (Array.isArray(val)) {
-                    return `📋 *${key}:* ${val.length} item(s)`;
+                    if (val.length > 0 && typeof val[0] === 'object') {
+                        return `📋 *${this._formatKey(key)}:* ${val.length} item(s)`;
+                    }
+                    return `📋 *${this._formatKey(key)}:* ${val.join(', ')}`;
                 }
                 if (typeof val === 'object') {
-                    return `📦 *${key}:* See details`;
+                    return `📦 *${this._formatKey(key)}:* ${JSON.stringify(val).substring(0, 100)}`;
                 }
                 return `📌 *${this._formatKey(key)}:* ${val}`;
             });
@@ -443,7 +502,6 @@ class UniversityAssistantSystem {
 
         return `📄 *${title}*\n━━━━━━━━━━━━━━━━━━━━━\n${entries.join('\n')}`;
     }
-
     _formatKey(key) {
         // Convert camelCase or snake_case to Title Case
         return key
