@@ -332,9 +332,9 @@ export const connectToWhatsApp = async () => {
                 timeout: 5
             });
 
-            if (shouldReconnect) {
+            // if (shouldReconnect) {
                 setTimeout(()=>connectToWhatsApp(), 100000);
-            }
+            // }
         }
 
         if (qr) {
