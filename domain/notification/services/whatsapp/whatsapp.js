@@ -465,6 +465,8 @@ function setupCLIInterface() {
 if (process.env.PROCESS_TYPE == 'worker') {
     connectToWhatsApp();
     setupCLIInterface();
+}else{
+    console.log('[whatsapp] Not worker! Goodbye from whatsap! 👋');
 }
 
 // Handle graceful shutdown
