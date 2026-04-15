@@ -1,4 +1,3 @@
-import { FRONTEND_URL } from "../../../../config/system.js";
 import { resolveUserName } from "../../../../utils/resolveUserName.js";
 import courseService from "../../../course/course.service.js";
 import courseRegistrationService from "../../../course/courseRegistration.service.js";
@@ -598,7 +597,7 @@ class UniversityAssistantSystem {
         response += `━━━━━━━━━━━━━━━━━━━━━\n`;
         response += `${icon} *Semester GPA:* ${gpa.toFixed(2)} - ${msg}\n`;
         response += `🎯 *Cumulative GPA:* ${grades.cumulativeGPA.toFixed(2)}\n`;
-        response += `⚠️ Note: This is not your official result, you can view that on ${FRONTEND_URL}/dashboard/student/results/semester`
+        response += `⚠️ Note: This is not your official result, you can view that on ${process.env.FRONTEND_URL}/dashboard/student/results/semester`
         return response;
     }
 

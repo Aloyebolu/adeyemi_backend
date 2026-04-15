@@ -1,4 +1,3 @@
-import { FRONTEND_URL } from "../../../../config/system.js";
 import feedbackService from "../../../feedback/feedback.service.js";
 import faqService from "../../../support/faq/faq.service.js";
 
@@ -224,7 +223,7 @@ class HelpWorkflow {
         message += "• Check our knowledge base for more solutions\n";
         message += "• Rate other FAQs to help fellow students\n\n";
         message += "📚 *Browse More FAQs:*\n";
-        message += `${FRONTEND_URL}/support/faq\n\n`;
+        message += `${process.env.FRONTEND_URL}/support/faq\n\n`;
         message += "Need further assistance? Just type *HELP* anytime!\n\n";
         message += "✨ *Thank you for using our support system!*";
 
@@ -698,7 +697,7 @@ class HelpWorkflow {
         message += `*Created:* ${new Date(feedback.createdAt).toLocaleString()}\n\n`;
         message += `Our support team will review your feedback and respond shortly.\n\n`;
         message += `*📱 Track Feedback:*\n`;
-        message += `${FRONTEND_URL}/dashboard/support/feedback/${feedback.feedbackId}\n`;
+        message += `${process.env.FRONTEND_URL}/dashboard/support/feedback/${feedback.feedbackId}\n`;
         message += `_Check status and add updates_`;
 
         return message;
@@ -708,7 +707,7 @@ class HelpWorkflow {
         return "❌ *Help Request Cancelled*\n━━━━━━━━━━━━━━━━\n\n" +
             "Your support request has been cancelled.\n\n" +
             "Type *HELP* to start over or visit our FAQ page:\n" +
-            `${FRONTEND_URL}/support/faq`;
+            `${process.env.FRONTEND_URL}/support/faq`;
     }
 
     buildModifyPrompt() {

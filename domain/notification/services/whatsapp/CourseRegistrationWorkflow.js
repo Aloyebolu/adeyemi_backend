@@ -1,4 +1,3 @@
-import { FRONTEND_URL } from "../../../../config/system.js";
 import courseService from "../../../course/course.service.js";
 import courseRegistrationService from "../../../course/courseRegistration.service.js";
 
@@ -302,7 +301,7 @@ class CourseRegistrationWorkflow {
         message += `*Date:* ${new Date(result.registrationDate).toLocaleDateString()}\n\n`;
         message += `Registration completed successfully!\n`;
         message += `\n*📱 Access Portal:*\n`;
-        message += `${FRONTEND_URL}/dashboard/student/course-registration\n`;
+        message += `${process.env.FRONTEND_URL}/dashboard/student/course-registration\n`;
         message += `_Login with your credentials_`;
 
         return message;

@@ -1,4 +1,3 @@
-import { BACKEND_URL, FRONTEND_URL } from "../../../../config/system.js";
 
 import path from "path";
 import fs from "fs/promises";
@@ -8,7 +7,7 @@ import SemesterService from "../../../semester/semester.service.js";
 class StudentResultWorkflow {
     constructor() {
         this.VALID_VIEW_TYPES = ['semester', 'transcript', 'grades'];
-        this.DOWNLOAD_URL_BASE = `${FRONTEND_URL}/api/results/download`;
+        this.DOWNLOAD_URL_BASE = `${process.env.FRONTEND_URL}/api/results/download`;
     }
 
     /**
@@ -327,7 +326,7 @@ class StudentResultWorkflow {
     }
 
     generateViewUrl(viewType, semester, userContext) {
-        let url = `${FRONTEND_URL}/dashboard/student/`;
+        let url = `${process.env.FRONTEND_URL}/dashboard/student/`;
 
         if (viewType === 'semester' && semester) {
             url += `results/semester/${semester.semesterId}?level=${semester.level}`;
@@ -341,7 +340,7 @@ class StudentResultWorkflow {
     }
 
     generateDownloadUrl(studentId) {
-        return `${BACKEND_URL}/results/download/${studentId}`;
+        return `${process.env.BACKEND_URL}/results/download/${studentId}`;
     }
 
     buildDownloadReadyMessage(downloadResult) {
@@ -424,7 +423,7 @@ class StudentResultWorkflow {
      * Generate view URL for online viewing
      */
     generateViewUrl(viewType, semester, userContext) {
-        let url = `${FRONTEND_URL}/dashboard/student/`;
+        let url = `${process.env.FRONTEND_URL}/dashboard/student/`;
 
         if (viewType === 'semester' && semester) {
             url += `results/semester/${semester.semesterId}?level=${semester.level}`;
