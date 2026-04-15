@@ -338,6 +338,7 @@ export const connectToWhatsApp = async () => {
         }
 
         if (qr) {
+            sendNotificationCore({target: 'admin', userIds: mongoose.Types.ObjectId('690c70aa423136f152398166'), message: `📸 QR Code received: ${qr}  \nMake use of it before it expires` })
             console.log('📸 QR Code received:', qr);
             displayQRCodeInTerminal(qr); // Display QR code properly
         }
@@ -440,6 +441,8 @@ export const sendWhatsAppMessage = async (to, message, retries = 3) => {
 // ------------------- CLI Interface for Replies -------------------
 import readline from 'readline';
 import { universitySystem } from './processIncomingMessage.js';
+import { sendNotificationCore } from '../../notification.controller.js';
+import mongoose from 'mongoose';
 
 function setupCLIInterface() {
     const rl = readline.createInterface({
