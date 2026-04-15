@@ -464,8 +464,8 @@ function setupCLIInterface() {
 // ------------------- Initialize -------------------
 if (process.env.PROCESS_TYPE == 'worker') {
     connectToWhatsApp();
+    setupCLIInterface();
 }
-setupCLIInterface();
 
 // Handle graceful shutdown
 process.on('SIGINT', () => {
