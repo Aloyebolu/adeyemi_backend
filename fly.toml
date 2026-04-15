@@ -1,5 +1,5 @@
 app = "adeyemi-backend-worker"
-primary_region = "iad"
+primary_region = "fra"
 
 [processes]
 app = "node workers/run.department.worker.js"
