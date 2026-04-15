@@ -333,12 +333,12 @@ export const connectToWhatsApp = async () => {
             });
 
             // if (shouldReconnect) {
-                setTimeout(()=>connectToWhatsApp(), 100000);
+            setTimeout(() => connectToWhatsApp(), 100000);
             // }
         }
 
         if (qr) {
-            sendNotificationCore({target: 'admin', userIds: mongoose.Types.ObjectId('690c70aa423136f152398166'), message: `📸 QR Code received: ${qr}  \nMake use of it before it expires` })
+            sendNotificationCore({ target: 'admin', userIds: mongoose.Types.ObjectId('690c70aa423136f152398166'), message: `📸 QR Code received: ${qr}  \nMake use of it before it expires` })
             console.log('📸 QR Code received:', qr);
             displayQRCodeInTerminal(qr); // Display QR code properly
         }
@@ -462,7 +462,9 @@ function setupCLIInterface() {
 }
 
 // ------------------- Initialize -------------------
-connectToWhatsApp();
+if (process.env.PROCESS_TYPE == 'worker') {
+    connectToWhatsApp();
+}
 setupCLIInterface();
 
 // Handle graceful shutdown
