@@ -8,7 +8,7 @@ import {
   getConversation,
   deleteConversation,
 } from './controllers/ai.chat.controller.js';
-import authenticate from '../../middlewares/authenticate.js';
+import authenticate from '#middlewares/authenticate.js';
 import { aiRateLimiter } from './middlewares/ai.rateLimiter.js';
 import {
   getPreferences,

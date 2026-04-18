@@ -4,7 +4,7 @@
  * All scoring rules are configurable and extensible
  */
 
-import AppError from '../errors/AppError.js';
+import AppError from '#shared/errors/AppError.js';
 import { RANKING_CONSTANTS } from './ranking.constants.js';
 
 class RankingRules {

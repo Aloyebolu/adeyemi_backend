@@ -8,7 +8,7 @@ import {
   assignHOD, getAllDepartment, getDepartmentStats, removeHOD
 } from "./department.controller.js";
 
-import authenticate from "../../middlewares/authenticate.js";
+import authenticate from "#middlewares/authenticate.js";
 
 const router = express.Router();
 

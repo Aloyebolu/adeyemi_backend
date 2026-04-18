@@ -1,7 +1,7 @@
 // src/modules/ai/services/ai.session.service.js
 
 import mongoose from 'mongoose';
-import Conversation from '../models/conversation.model.js';
+import Conversation from '#domain/ai/models/conversation.model.js';
 
 /**
  * Manages streaming sessions and message buffering

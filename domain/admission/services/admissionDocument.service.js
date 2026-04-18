@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import { DOCUMENT_STATUS, AUDIT_ACTIONS, DOCUMENT_CATEGORIES } from "../constants/admission.constants.js";
-import AdmissionDocument from "../models/admissionDocument.model.js";
-import FileService from "../../files/files.service.js";
-import FileUtils from "../../files/file.utils.js";
+import { DOCUMENT_STATUS, AUDIT_ACTIONS, DOCUMENT_CATEGORIES } from "#domain/admission/constants/admission.constants.js";
+import AdmissionDocument from "#domain/admission/models/admissionDocument.model.js";
+import FileService from "#domain/files/files.service.js";
+import FileUtils from "#domain/files/file.utils.js";
 
 export class AdmissionDocumentService {
   /**

@@ -1,6 +1,6 @@
 // controllers/payment.controller.js
 import PaymentService from "./payment.service.js";
-import buildResponse from "../../utils/responseBuilder.js";
+import buildResponse from "#utils/responseBuilder.js";
 
 export class PaymentController {
   /**

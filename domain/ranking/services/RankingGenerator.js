@@ -3,13 +3,13 @@
  * Orchestrates the complete ranking generation process
  */
 
-import AppError from '../../errors/AppError.js';
-import RankingSnapshot from '../models/RankingSnapshot.model.js';
+import AppError from '#shared/errors/AppError.js';
+import RankingSnapshot from '#domain/ranking/models/RankingSnapshot.model.js';
 import ScoreCalculator from './ScoreCalculator.js';
 import DepartmentRanker from './DepartmentRanker.js';
 import GlobalRanker from './GlobalRanker.js';
-import { RANKING_CONSTANTS } from '../ranking.constants.js';
-import { SYSTEM_USER_ID } from '../../../config/system.js';
+import { RANKING_CONSTANTS } from '#domain/ranking/ranking.constants.js';
+import { SYSTEM_USER_ID } from '#config/system.js';
 import mongoose from 'mongoose';
 
 class RankingGenerator {

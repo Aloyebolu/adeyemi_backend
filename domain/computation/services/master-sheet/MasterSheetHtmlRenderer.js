@@ -1,14 +1,13 @@
 // MasterSheetHtmlRenderer.js
 // PROFESSIONAL UNIVERSITY MASTER SHEET - ENHANCED VERSION WITH WORD EXPORT
 
-import { formatDateWithOrdinal, semesterNameToSeason, toProfessionalAbbreviation } from "../../../../utils/helpers.js";
-import { convertToPart } from "../../../../utils/levelConverter.js";
-import { DEGREE_CLASS, STUDENT_STATUS, SUSPENSION_REASONS } from "../../utils/computationConstants.js";
+import { formatDateWithOrdinal, semesterNameToSeason, toProfessionalAbbreviation } from "#utils/helpers.js";
+import { convertToPart } from "#utils/levelConverter.js";
+import { DEGREE_CLASS, STUDENT_STATUS, SUSPENSION_REASONS } from "#domain/computation/utils/computationConstants.js";
 import config from "./MasterSheetConfig.js";
-import { processPreviewDepartmentJob } from "../../workers/previewComputation.controller.js";
-import { capitalizeFirstLetter } from "../../../../utils/StringUtils.js";
-import { formatMatricNumber, resolveUserName, splitName } from "../../../../utils/resolveUserName.js";
-import AppError from "../../../errors/AppError.js";
+import { capitalizeFirstLetter } from "#utils/StringUtils.js";
+import { formatMatricNumber, resolveUserName, splitName } from "#utils/resolveUserName.js";
+import AppError from "#shared/errors/AppError.js";
 
 class MasterSheetHtmlRenderer {
   // Format a date to "18th February 2026"

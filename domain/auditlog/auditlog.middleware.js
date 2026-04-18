@@ -27,18 +27,7 @@ const RATE_LIMITS = {
 // AsyncLocalStorage for thread-safe request context
 export const auditStore = new AsyncLocalStorage();
 
-// Helper function to detect mixed intent in request body
-function detectMixedIntent(body = {}) {
-  if (!body || typeof body !== 'object') return false;
 
-  const keys = Object.keys(body);
-  if (keys.length === 0) return false;
-
-  const hasRead = keys.some(k => READ_KEYS.includes(k));
-  const hasOther = keys.some(k => !READ_KEYS.includes(k));
-
-  return hasRead && hasOther;
-}
 
 // Rate limiting helper with Redis
 async function checkRateLimit(key, limitConfig) {
@@ -109,107 +98,98 @@ async function registerViolation({ userId, ip, intent }) {
     return 1;
   }
 }
-export async function detectRequestIntent(req, res, next) {
-  // Default intent based on HTTP method
-  req._intent = req.method === "GET" ? REQUEST_INTENT.READ : REQUEST_INTENT.WRITE;
+export async function enforceRequestIntent(req, res, next) {
+  // 🚫 BLOCK mixed intent
+  if (req._intent === REQUEST_INTENT.BLOCKED) {
+    const violationCount = await registerViolation({
+      userId: req.user?._id,
+      ip: req.ip,
+      intent: "MIXED_INTENT"
+    });
 
-  // Enhanced intent detection for POST requests with body
-  if (req.method === "POST" && req.body && Object.keys(req.body).length > 0) {
-    // Check for mixed intent (security violation)
-    if (detectMixedIntent(req.body)) {
-      req._intent = REQUEST_INTENT.BLOCKED;
-
-      const violationCount = await registerViolation({
-        userId: req.user?._id,
+    await AuditLogService.logOperation({
+      userId: req.user?._id || "anonymous",
+      action: "SUSPICIOUS_REQUEST",
+      severity: "CRITICAL",
+      entity: "HTTP",
+      reason: "Mixed read/write request payload detected",
+      context: {
+        endpoint: req.originalUrl,
+        method: req.method,
+        requestId: req.requestId,
+        bodyKeys: Object.keys(req.body || {}),
         ip: req.ip,
-        intent: "MIXED_INTENT"
-      });
+        violationCount
+      },
+      status: "BLOCKED"
+    });
 
+    return res.status(400).json({
+      success: false,
+      error: "INVALID_REQUEST_STRUCTURE",
+      message:
+        "Cannot mix read parameters with write parameters in same request",
+      requestId: req.requestId
+    });
+  }
+
+  // 📖 READ rate limiting
+  if (req._intent === REQUEST_INTENT.READ) {
+    const rateLimitKey = req.user?._id
+      ? `read:user:${req.user._id}`
+      : `read:ip:${req.ip}`;
+
+    const rateLimitResult = await checkRateLimit(
+      rateLimitKey,
+      RATE_LIMITS.READ
+    );
+
+    if (!rateLimitResult.allowed) {
       await AuditLogService.logOperation({
         userId: req.user?._id || "anonymous",
-        action: "SUSPICIOUS_REQUEST",
-        severity: "CRITICAL",
+        action: "RATE_LIMIT_EXCEEDED",
+        severity: "HIGH",
         entity: "HTTP",
-        reason: "Mixed read/write request payload detected",
+        reason: `READ limit exceeded (${rateLimitResult.count})`,
         context: {
           endpoint: req.originalUrl,
           method: req.method,
           requestId: req.requestId,
-          bodyKeys: Object.keys(req.body),
           ip: req.ip,
-          violationCount
+          count: rateLimitResult.count
         },
         status: "BLOCKED"
       });
 
-      return res.status(400).json({
+      return res.status(429).json({
         success: false,
-        error: "INVALID_REQUEST_STRUCTURE",
-        message: "Cannot mix read parameters (filters, fields) with write parameters in same request",
+        error: "RATE_LIMIT_EXCEEDED",
+        message: "Too many read requests",
+        retryAfter: Math.ceil(RATE_LIMITS.READ.windowMs / 1000),
         requestId: req.requestId
       });
-
     }
 
-    const keys = Object.keys(req.body);
-    const hasRead = keys.some(k => READ_KEYS.includes(k));
-    const hasOther = keys.some(k => !READ_KEYS.includes(k));
-
-    if (hasRead && !hasOther) {
-      req._intent = REQUEST_INTENT.READ;
-      req._skipAuditLog = true;
-
-      const rateLimitKey = req.user?._id ? `read:user:${req.user._id}` : `read:ip:${req.ip}`;
-      const rateLimitResult = await checkRateLimit(rateLimitKey, RATE_LIMITS.READ);
-
-      if (!rateLimitResult.allowed) {
-        await AuditLogService.logOperation({
-          userId: req.user?._id || "anonymous",
-          action: "RATE_LIMIT_EXCEEDED",
-          severity: "HIGH",
-          entity: "HTTP",
-          reason: `READ intent rate limit exceeded (${rateLimitResult.count} requests)`,
-          context: {
-            endpoint: req.originalUrl,
-            method: req.method,
-            requestId: req.requestId,
-            ip: req.ip,
-            count: rateLimitResult.count
-          },
-          status: "BLOCKED"
-        });
-
-        return res.status(429).json({
-          success: false,
-          error: "RATE_LIMIT_EXCEEDED",
-          message: "Too many read requests",
-          retryAfter: Math.ceil(RATE_LIMITS.READ.windowMs / 1000),
-          requestId: req.requestId
-        });
-
-      }
-
-      if (rateLimitResult.count >= RATE_LIMITS.READ.softBlockThreshold) {
-        await AuditLogService.logOperation({
-          userId: req.user?._id || "anonymous",
-          action: "RATE_LIMIT_WARNING",
-          severity: "MEDIUM",
-          entity: "HTTP",
-          reason: `Approaching READ intent rate limit (${rateLimitResult.count}/${RATE_LIMITS.READ.maxRequests})`,
-          context: {
-            endpoint: req.originalUrl,
-            method: req.method,
-            requestId: req.requestId,
-            ip: req.ip,
-            count: rateLimitResult.count,
-            remaining: rateLimitResult.remaining
-          }
-        });
-      }
+    if (rateLimitResult.count >= RATE_LIMITS.READ.softBlockThreshold) {
+      await AuditLogService.logOperation({
+        userId: req.user?._id || "anonymous",
+        action: "RATE_LIMIT_WARNING",
+        severity: "MEDIUM",
+        entity: "HTTP",
+        reason: `Approaching limit (${rateLimitResult.count}/${RATE_LIMITS.READ.maxRequests})`,
+        context: {
+          endpoint: req.originalUrl,
+          method: req.method,
+          requestId: req.requestId,
+          ip: req.ip,
+          count: rateLimitResult.count,
+          remaining: rateLimitResult.remaining
+        }
+      });
     }
   }
 
-  return next()
+  next();
 }
 /**
  * Main audit middleware that auto-captures ALL HTTP requests
@@ -257,12 +237,12 @@ const auditMiddleware = (options = {}) => {
     return auditStore.run(storeContext, async () => {
       // 📊 STEP 2: SKIP LOGGING FOR CERTAIN METHODS/PATHS (Logging only)
       if (!config.enabled) return next();
-      
+
       // Skip logging for specified HTTP methods
       if (config.skipMethods.includes(req.method)) {
         return next();
       }
-      
+
       // Skip logging for specified paths
       if (config.skipPaths.some(path => req.originalUrl.includes(path))) {
         return next();
@@ -285,7 +265,7 @@ const auditMiddleware = (options = {}) => {
       // Capture response completion for logging
       res.on("finish", async () => {
         try {
-           if (req._skipAuditLog) {
+          if (req._skipAuditLog) {
             // NOTE
             // console.log("Skipping audit log")
             return
@@ -359,8 +339,8 @@ export const authAuditMiddleware = (req, res, next) => {
         } else if (parsedResponse?.data?.user?.id) {
           userId = parsedResponse.data.user.id;
           action = req.originalUrl.includes("/signup") || req.originalUrl.includes("/register")
-          ? "CREATE"
-          : "LOGIN";
+            ? "CREATE"
+            : "LOGIN";
           reason = action === "CREATE" ? "User registered" : "Login successful";
         } else if (parsedResponse?.data?.user?.access_token || parsedResponse?.user?.access_token) {
           action = "LOGIN";
@@ -385,7 +365,7 @@ export const authAuditMiddleware = (req, res, next) => {
 
       // Log the auth event
       await AuditLogService.logAuthEvent({
-        userId : userId || req.auditContext.userId,
+        userId: userId || req.auditContext.userId,
         action,
         ipAddress: req.ip,
         userAgent: req.headers["user-agent"],

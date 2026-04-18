@@ -1,25 +1,25 @@
 import mongoose from "mongoose";
-import { mapResults } from "../course/course.dto.js";
-import { normalizeCourse } from "../course/course.normallizer.js";
-import courseRegistrationModel from "../course/courseRegistration.model.js";
-import AppError from "../errors/AppError.js";
-import SemesterService from "../semester/semester.service.js";
-import StudentService from "../student/student.service.js";
-import GPACalculator from "../computation/services/GPACalculator.js";
-import studentSemesterResultModel from "../student/student.semseterResult.model.js";
-import studentModel from "../student/student.model.js";
+import { mapResults } from "#domain/course/course.dto.js";
+import { normalizeCourse, normalizeCourses } from "#domain/course/course.normallizer.js";
+import courseRegistrationModel from "#domain/course/courseRegistration.model.js";
+import AppError from "#shared/errors/AppError.js";
+import SemesterService from "#domain/semester/semester.service.js";
+import StudentService from "#domain/user/student/student.service.js";
+import GPACalculator from "#domain/computation/services/GPACalculator.js";
+import studentSemesterResultModel from "#domain/user/student/student.semseterResult.model.js";
+import studentModel from "#domain/user/student/student.model.js";
 import puppeteer from "puppeteer";
 import path from "path";
 import fs from "fs/promises";
 import { fileURLToPath } from "url";
 import StudentResultHtmlRenderer from "./services/StudentResultHtmlRenderer.js";
 import ResultTranscriptHtmlRenderer from "./services/ResultTranscriptHtmlRenderer.js";
-import { getProgrammeById } from "../programme/programme.controller.js";
-import { getDepartmentById } from "../department/department.controller.js";
-import { getDepartmentLeadershipDetails } from "../computation/services/helpers.js";
-import departmentService from "../department/department.service.js";
-import programmeService from "../programme/programme.service.js";
-import { resolveUserName } from "../../utils/resolveUserName.js";
+import { getProgrammeById } from "#domain/programme/programme.controller.js";
+import { getDepartmentById } from "#domain/department/department.controller.js";
+import { getDepartmentLeadershipDetails } from "#domain/computation/services/helpers.js";
+import departmentService from "#domain/department/department.service.js";
+import programmeService from "#domain/programme/programme.service.js";
+import { resolveUserName } from "#utils/resolveUserName.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -375,7 +375,7 @@ const ResultService = {
     const student = result.studentId;
     const name = `${student.lastName} ${student.firstName} ${student.middleName || ""}`.trim();
 
-    const departmentDetails =await getDepartmentLeadershipDetails(student.departmentId, semesterId, student.programmeId)
+    const departmentDetails = await getDepartmentLeadershipDetails(student.departmentId, semesterId, student.programmeId)
 
     // Format semester info
     const semesterInfo = {
@@ -403,6 +403,12 @@ const ResultService = {
       .populate({
         path: "semesterId",
         select: "session name"
+      })
+      .populate({
+        path: "courses.courseId",
+        populate: {
+          path: "borrowedId",   // 👈 nested populate
+        }
       })
       .sort({ session: 1, level: 1 })
       .lean();
@@ -442,7 +448,8 @@ const ResultService = {
       tnu: result.currentTNU || result.totalUnits || 0,
       gpa: result.gpa || 0,
       cgpa: result.cgpa || 0,
-      remark: result.academicStatus || result.remark || "good"
+      remark: result.academicStatus || result.remark || "good",
+      courses: normalizeCourses(result.courses)
     }));
 
     // Calculate final statistics
@@ -461,7 +468,7 @@ const ResultService = {
       graduationDate: eligibleForGraduation ? new Date() : null
     };
 
-    const departmentDetails =await getDepartmentLeadershipDetails(student.departmentId, null, student.programmeId)
+    const departmentDetails = await getDepartmentLeadershipDetails(student.departmentId, null, student.programmeId)
 
 
     return {

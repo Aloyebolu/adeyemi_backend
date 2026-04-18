@@ -11,7 +11,7 @@ import {
   rollbackSemester,
   canRollbackSemester,
 } from "./semester.controller.js";
-import authenticate from "../../middlewares/authenticate.js";
+import authenticate from "#middlewares/authenticate.js";
 
 const router = express.Router();
 

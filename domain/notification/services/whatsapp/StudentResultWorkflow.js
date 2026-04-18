@@ -1,8 +1,8 @@
 
 import path from "path";
 import fs from "fs/promises";
-import ResultService from "../../../result/result.service.js";
-import SemesterService from "../../../semester/semester.service.js";
+import ResultService from "#domain/result/result.service.js";
+import SemesterService from "#domain/semester/semester.service.js";
 
 class StudentResultWorkflow {
     constructor() {
@@ -182,13 +182,7 @@ class StudentResultWorkflow {
                     }
                 };
             } catch (error) {
-                console.error('PDF generation failed:', error);
-
-                return {
-                    completed: true,
-                    message: this.buildDownloadErrorMessage(error),
-                    requiresMoreInfo: false
-                };
+                throw error
             }
         }
 
@@ -326,12 +320,12 @@ class StudentResultWorkflow {
     }
 
     generateViewUrl(viewType, semester, userContext) {
-        let url = `${process.env.FRONTEND_URL}/dashboard/student/`;
+        let url = `${process.env.BACKEND_URL}/results/`;
 
         if (viewType === 'semester' && semester) {
-            url += `results/semester/${semester.semesterId}?level=${semester.level}`;
+            url += `preview/${userContext._id}`;
         } else if (viewType === 'transcript') {
-            url += 'transcript';
+            url += `transcript/preview/${userContext._id}`;
         } else if (viewType === 'grades') {
             url += 'grades';
         }
@@ -339,7 +333,8 @@ class StudentResultWorkflow {
         return url;
     }
 
-    generateDownloadUrl(studentId) {
+    generateDownloadUrl(studentId, type) {
+        if(type == 'transcript') return `${process.env.BACKEND_URL}/results/transcript/${studentId}`;
         return `${process.env.BACKEND_URL}/results/download/${studentId}`;
     }
 
@@ -355,12 +350,6 @@ class StudentResultWorkflow {
         return message;
     }
 
-    buildDownloadErrorMessage(error) {
-        return "❌ *DOWNLOAD FAILED*\n━━━━━━━━━━━━━━━━\n\n" +
-            "Unable to generate your document at this time.\n\n" +
-            `*Error:* ${error.message || 'Unknown error'}\n\n` +
-            "Please try again later or contact support.";
-    }
 
     buildResultLinkMessage(viewType, semester, userContext, viewUrl) {
         let message = "🔗 *VIEW RESULT ONLINE*\n━━━━━━━━━━━━━━━━\n\n";
@@ -407,7 +396,7 @@ class StudentResultWorkflow {
             }
 
             // Generate download URL
-            const downloadUrl = this.generateDownloadUrl(studentId);
+            const downloadUrl = this.generateDownloadUrl(studentId, "transcript");
 
             return {
                 ...result,
@@ -419,22 +408,6 @@ class StudentResultWorkflow {
         }
     }
 
-    /**
-     * Generate view URL for online viewing
-     */
-    generateViewUrl(viewType, semester, userContext) {
-        let url = `${process.env.FRONTEND_URL}/dashboard/student/`;
-
-        if (viewType === 'semester' && semester) {
-            url += `results/semester/${semester.semesterId}?level=${semester.level}`;
-        } else if (viewType === 'transcript') {
-            url += 'transcript';
-        } else if (viewType === 'grades') {
-            url += 'grades';
-        }
-
-        return url;
-    }
 
     /**
      * Fetch student results

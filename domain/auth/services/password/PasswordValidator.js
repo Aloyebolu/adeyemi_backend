@@ -3,8 +3,8 @@
  * On no occassion should this file interract directly with database or external services
  * 
  */
-import { hashData, verifyHashedData } from '../../../../utils/hashData.js';
-import AppError from '../../../errors/AppError.js';
+import { hashData, verifyHashedData } from '#utils/hashData.js';
+import AppError from '#shared/errors/AppError.js';
 
 // Load environment variables
 class PasswordValidator {
@@ -24,29 +24,21 @@ class PasswordValidator {
         // SECURITY: This is a known insecure pattern but required for migration
         const expectedDefault = `AFUED@${userDetails.staffId || userDetails.matricNumber || ''}`;
 
-        // Case 1: No password stored in User document
-        if (!userDoc.password) {
-            // LEGACY: Allow default pattern for first-time or migrated users
-            if (password === expectedDefault) {
-                authenticated = true;
-                usedLegacyAuth = true;
-                console.warn(`[AuthService] User ${userDoc._id} authenticated using legacy default pattern`);
-            }
-        } else {
+        if (userDoc.password){
             // Case 2: Primary path - verify hashed password
             const passwordMatch = await verifyHashedData(password, userDoc.password);
             if (passwordMatch) {
                 authenticated = true;
             } else {
+                
                 // LEGACY: Support raw ID as password for backward compatibility
                 // SECURITY: This is insecure but required during migration
                 // KNOWN RISK – acceptable due to legacy constraints
                 if (
                     // (role === 'lecturer' && password === userDetails.staffId) ||
                     // (role === 'student' && password === userDetails.matricNumber)
-                    // process.env.NODE_ENV == "development"
-                    true
-                    // BYPASS: RISKY
+                    process.env.NODE_ENV == "development"
+                    // BYPASS: RISKY - THIS WHOLE ELSE BLOCK SHOULD BE REMOVED
                 ) {
                     authenticated = true;
                     usedLegacyAuth = true;

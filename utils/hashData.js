@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import AppError from "../domain/errors/AppError.js";
+import AppError from "../shared/errors/AppError.js";
 
 
 export const verifyHashedData = async (unhashed, hashed) => {

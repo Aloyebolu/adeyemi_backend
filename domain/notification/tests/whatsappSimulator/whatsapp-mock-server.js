@@ -4,8 +4,8 @@ import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
-import { universitySystem } from '../../services/whatsapp/processIncomingMessage.js';
-import connectToDB from '../../../../config/db.js';
+import { universitySystem } from '#domain/notification/services/whatsapp/processIncomingMessage.js';
+import connectToDB from '#config/db.js';
 connectToDB()
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

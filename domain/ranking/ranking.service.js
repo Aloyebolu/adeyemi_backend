@@ -3,7 +3,7 @@
  * Main service layer for ranking domain
  */
 
-import AppError from '../errors/AppError.js';
+import AppError from '#shared/errors/AppError.js';
 import RankingGenerator from './services/RankingGenerator.js';
 import HistoryReader from './services/HistoryReader.js';
 import RankingSnapshot from './models/RankingSnapshot.model.js';

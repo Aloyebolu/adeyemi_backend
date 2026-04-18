@@ -1,5 +1,5 @@
-import { AdmissionService } from "../services/admission.service.js";
-import { validateApplicationSubmission, validatePostUTMESchedule, validatePostUTMEScore, validateAdmissionDecision } from "../validators/admission.validator.js";
+import { AdmissionService } from "#domain/admission/services/admission.service.js";
+import { validateApplicationSubmission, validatePostUTMESchedule, validatePostUTMEScore, validateAdmissionDecision } from "#domain/admission/validators/admission.validator.js";
 
 export class AdmissionController {
   /**

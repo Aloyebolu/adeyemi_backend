@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import AppError from "../domain/errors/AppError.js";
+import AppError from "../shared/errors/AppError.js";
 
 export const validateObjectId = (objectId, strict = true) => {
     const ids = Array.isArray(objectId) ? objectId : [objectId];

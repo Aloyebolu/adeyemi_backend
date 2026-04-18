@@ -3,8 +3,8 @@
  * Handles university-wide ranking logic
  */
 
-import AppError from '../../errors/AppError.js';
-import { RANKING_CONSTANTS } from '../ranking.constants.js';
+import AppError from '#shared/errors/AppError.js';
+import { RANKING_CONSTANTS } from '#domain/ranking/ranking.constants.js';
 
 class GlobalRanker {
   constructor() {

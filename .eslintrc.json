@@ -19,5 +19,12 @@
   },
   "plugins": [
     "prettier"
-  ]
+  ], "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["."],
+        "extensions": [".js"]
+      }
+    }
+  }
 }

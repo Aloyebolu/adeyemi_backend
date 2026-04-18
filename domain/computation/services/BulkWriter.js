@@ -1,13 +1,13 @@
 // computation/services/BulkWriter.js
 import mongoose from "mongoose";
-import studentModel from "../../student/student.model.js";
-import CarryoverCourse from "../../carryover/carryover.model.js";
-import studentSemseterResultModel from "../../student/student.semseterResult.model.js";
-import ComputationSummary from "../models/computation.model.js";
+import studentModel from "#domain/user/student/student.model.js";
+import CarryoverCourse from "#domain/user/student/carryover/carryover.model.js";
+import studentSemseterResultModel from "#domain/user/student/student.semseterResult.model.js";
+import ComputationSummary from "#domain/computation/models/computation.model.js";
 import SummaryListBuilder from "./SummaryListBuilder.js";
-import AppError from "../../errors/AppError.js";
-import { captureConsoleLogs } from "../../../utils/consoleCapture.js";
-import AuditLog from "../../auditlog/auditlog.model.js";
+import AppError from "#shared/errors/AppError.js";
+import { captureConsoleLogs } from "#utils/consoleCapture.js";
+import AuditLog from "#domain/auditlog/auditlog.model.js";
 
 class BulkWriter {
   constructor() {

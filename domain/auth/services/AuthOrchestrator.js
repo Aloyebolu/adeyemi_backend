@@ -4,9 +4,9 @@ import StudentAuthenticator from './authenticators/StudentAuthenticator.js';
 import PasswordManager from './password/PasswordManager.js';
 import TokenBuilder from './token/TokenBuilder.js';
 import AuthAuditor from './audit/AuthAuditor.js';
-import AppError from '../../errors/AppError.js';
-import { validRoles } from '../../user/user.constants.js';
-import { resolveUserName } from '../../../utils/resolveUserName.js';
+import AppError from '#shared/errors/AppError.js';
+import { validRoles } from '#domain/user/user.constants.js';
+import { resolveUserName } from '#utils/resolveUserName.js';
 
 class AuthOrchestrator {
   // AUDIT: Internal security counters (in-memory, production would use Redis)

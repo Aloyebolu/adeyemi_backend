@@ -7,8 +7,8 @@ import {
   deleteAnnouncement,
   getCategories
 } from './announcement.controller.js';
-import authenticate from '../../middlewares/authenticate.js';
-import validate from '../../middlewares/validate.js';
+import authenticate from '#middlewares/authenticate.js';
+import validate from '#middlewares/validate.js';
 import announcementValidation from './announcement.validation.js'; // Create this
 
 const router = Router();

@@ -1,7 +1,7 @@
 import authService from './auth.service.js';
-import catchAsync from '../../utils/catchAsync.js';
-import buildResponse from '../../utils/responseBuilder.js';
-import { extractDeviceInfo } from '../../utils/deviceLogger.js';
+import catchAsync from '#utils/catchAsync.js';
+import buildResponse from '#utils/responseBuilder.js';
+import { extractDeviceInfo } from '#utils/deviceLogger.js';
 import jwt from "jsonwebtoken";
 
 // ==================== NEW SECURITY SERVICE IMPORTS ====================
@@ -12,9 +12,9 @@ import SessionService from './services/session/SessionManager.js';
 import DeviceService from './services/device/DeviceManager.js';
 import PrivacyService from './services/privacy/PrivacyManager.js';
 import RecoveryService from './services/recovery/AccountRecoveryService.js';
-import AppError from '../errors/AppError.js';
-import departmentService from '../department/department.service.js';
-import { generate_honeytoken } from '../../utils/createToken.js';
+import AppError from '#shared/errors/AppError.js';
+import departmentService from '#domain/department/department.service.js';
+import { generate_honeytoken } from '#utils/createToken.js';
 // ======================================================================
 
 /** 

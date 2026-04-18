@@ -10,10 +10,6 @@
     "dev": "nodemon --env-file=.env index.js --ignore auth_info_baileys --ignore logs --ignore backups",
     "worker": "node workers/run.department.worker.js",
     "dev:worker": "nodemon workers/run.department.worker.js",
-
-
-
-    
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "test:payment": "NODE_OPTIONS=--experimental-vm-modules jest test/domain/payment/",
     "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest test/domain/",
@@ -26,6 +22,15 @@
   },
   "author": "AFUED-Comp Sci.",
   "license": "ISC",
+  "imports": {
+    "#domain/*": "./domain/*",
+    "#shared/*": "./shared/*",
+    "#system/*": "./system/*",
+    "#utils/*": "./utils/*",
+    "#config/*": "./config/*",
+    "#workers/*": "./workers/*",
+    "#middlewares/*": "./middlewares/*"
+  },
   "dependencies": {
     "@bull-board/express": "^6.15.0",
     "@faker-js/faker": "^10.4.0",
@@ -55,9 +60,11 @@
     "helmet": "^8.1.0",
     "html-pdf-node": "^1.0.8",
     "html-to-docx": "^1.8.0",
+    "install": "^0.13.0",
     "joi": "^18.0.1",
     "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.2",
+    "module-alias": "^2.3.4",
     "mongoose": "^6.13.8",
     "multer": "^2.0.2",
     "natural": "^8.1.0",
@@ -66,20 +73,23 @@
     "node-notifier": "^10.0.1",
     "nodemailer": "^7.0.6",
     "nodemon": "^3.1.10",
+    "npm": "^11.12.1",
     "openai": "^6.32.0",
     "pdfkit": "^0.17.2",
     "pino": "^10.1.0",
     "prom-client": "^15.1.3",
     "qrcode": "^1.5.4",
+    "rate-limiter-flexible": "^11.0.0",
     "socket.io": "^4.8.3",
     "socket.io-client": "^4.8.3",
     "speakeasy": "^2.0.0",
     "stripe": "^19.1.0",
     "ua-parser-js": "^2.0.9",
     "uuid": "^9.0.1",
-    "validator": "^13.15.26",
+    "validator": "^13.15.35",
     "winston": "^3.19.0",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "xss": "^1.0.15"
   },
   "devDependencies": {
     "@babel/core": "^7.28.5",
@@ -90,6 +100,7 @@
     "@typescript-eslint/parser": "^8.49.0",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-alias": "^1.1.2",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.5",
     "jest": "^30.2.0",

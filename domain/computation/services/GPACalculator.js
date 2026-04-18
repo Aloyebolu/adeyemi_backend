@@ -1,8 +1,8 @@
 // services/GPACalculator.js
-import { GRADE_POINTS, GRADE_BOUNDARIES, PASSING_GRADES, FAILING_GRADE } from "../utils/computationConstants.js";
-import AppError from "../../errors/AppError.js";
-import { isBorrowedDoc, normalizeCourse } from "../../course/course.normallizer.js";
-import { SYSTEM_USER_ID } from "../../../config/system.js";
+import { GRADE_POINTS, GRADE_BOUNDARIES, PASSING_GRADES, FAILING_GRADE } from "#domain/computation/utils/computationConstants.js";
+import AppError from "#shared/errors/AppError.js";
+import { isBorrowedDoc, normalizeCourse } from "#domain/course/course.normallizer.js";
+import { SYSTEM_USER_ID } from "#config/system.js";
 
 class GPACalculator {
   /**

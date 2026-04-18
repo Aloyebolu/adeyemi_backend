@@ -3,11 +3,10 @@
 import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
 import chatService from "./chat.service.js";
-import User from "../user/user.model.js";
-import AppError from "../errors/AppError.js";
-import { setSocketInstance } from "../computation/realtime/socketGateway.js";
+import User from "#domain/user/user.model.js";
+import AppError from "#shared/errors/AppError.js";
+import { setSocketInstance } from "#domain/computation/realtime/socketGateway.js";
 import { cookie } from "express-validator";
-import { allowedOrigins } from "../../app.js";
 // import { cookie } from "cookie";
 
 // Store active socket connections

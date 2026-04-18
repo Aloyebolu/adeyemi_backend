@@ -1,10 +1,10 @@
-import buildResponse from "../../utils/responseBuilder.js";
+import buildResponse from "#utils/responseBuilder.js";
 import Feedback from "./feedback.model.js";
 import FeedbackResponse from "./feedback.response.model.js";
 import feedbackService from "./feedback.service.js";
-import User from "../user/user.model.js";
-import AppError from "../errors/AppError.js";
-import { resolveUserName } from "../../utils/resolveUserName.js";
+import User from "#domain/user/user.model.js";
+import AppError from "#shared/errors/AppError.js";
+import { resolveUserName } from "#utils/resolveUserName.js";
 
 export const feedbackController = {
 

@@ -2,7 +2,7 @@ import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
 import feedbackService from "./feedback.service.js";
 import Feedback from "./feedback.model.js";
-import AppError from "../errors/AppError.js";
+import AppError from "#shared/errors/AppError.js";
 
 // Store active connections
 const activeConnections = new Map(); // userId -> socketId

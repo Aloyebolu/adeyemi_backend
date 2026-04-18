@@ -1,6 +1,6 @@
 // courseMaterial.service.js
-import AppError from "../../errors/AppError.js";
-import FileService from "../../files/files.service.js";
+import AppError from "#shared/errors/AppError.js";
+import FileService from "#domain/files/files.service.js";
 import CourseMaterial from "./courseMaterial.model.js";
 
 class CourseMaterialService {

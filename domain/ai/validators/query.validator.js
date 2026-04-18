@@ -1,6 +1,6 @@
 // src/modules/ai/validators/query.validator.js
 
-import AI_CONFIG from '../config/ai.config.js';
+import AI_CONFIG from '#domain/ai/config/ai.config.js';
 
 class QueryValidator {
   /**

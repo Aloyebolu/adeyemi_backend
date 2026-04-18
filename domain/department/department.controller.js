@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
-import buildResponse from "../../utils/responseBuilder.js";
-import { fetchDataHelper } from "../../utils/fetchDataHelper.js";
-import { dataMaps } from "../../config/dataMap.js";
-import facultyModel from "../faculty/faculty.model.js";
+import buildResponse from "#utils/responseBuilder.js";
+import { fetchDataHelper } from "#utils/fetchDataHelper.js";
+import { dataMaps } from "#config/dataMap.js";
+import facultyModel from "#domain/faculty/faculty.model.js";
 import departmentModel from "./department.model.js";
 import DepartmentService from "./department.service.js";
 import { getDepartmentById as getDepartmentByIdHandler } from "./department.controller.js";
-import AppError from "../errors/AppError.js";
-import FacultyService from "../faculty/faculty.service.js";
+import AppError from "#shared/errors/AppError.js";
+import FacultyService from "#domain/faculty/faculty.service.js";
 
 // Common configuration for fetchDataHelper
 const DEPARTMENT_FETCH_CONFIG = {

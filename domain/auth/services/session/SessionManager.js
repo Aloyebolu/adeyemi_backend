@@ -1,5 +1,5 @@
 // auth/services/session/SessionManager.js
-import AppError from '../../../errors/AppError.js';
+import AppError from '#shared/errors/AppError.js';
 
 class SessionManager {
   constructor() {

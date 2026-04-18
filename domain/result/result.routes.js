@@ -16,9 +16,9 @@ import {
   downloadStudentResult,
 } from "./result.controller.js";
 
-import authenticate from "../../middlewares/authenticate.js";
-import { fileHandler } from "../../middlewares/fileHandler.js";
-import { auditLogger } from "../../middlewares/auditLogger.js";
+import authenticate from "#middlewares/authenticate.js";
+import { fileHandler } from "#middlewares/fileHandler.js";
+import { auditLogger } from "#middlewares/auditLogger.js";
 import { getCourseResultStats, getLecturerStats, getResultStats } from "./resultStats.controller.js";
 
 const router = express.Router();

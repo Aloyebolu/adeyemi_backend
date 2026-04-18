@@ -1,12 +1,12 @@
 import userService from './user.service.js';
-import authService from '../auth/auth.service.js';
-import catchAsync from '../../utils/catchAsync.js';
-import AppError from '../errors/AppError.js';
-import buildResponse from '../../utils/responseBuilder.js';
+import authService from '#domain/auth/auth.service.js';
+import catchAsync from '#utils/catchAsync.js';
+import AppError from '#shared/errors/AppError.js';
+import buildResponse from '#utils/responseBuilder.js';
 import userModel from './user.model.js';
-import FileService from '../files/files.service.js';
-import fetchDataHelper, { fetchData } from '../../utils/fetchDataHelper.js';
-import { resolveUserName } from '../../utils/resolveUserName.js';
+import FileService from '#domain/files/files.service.js';
+import fetchDataHelper, { fetchData } from '#utils/fetchDataHelper.js';
+import { resolveUserName } from '#utils/resolveUserName.js';
 
 /**
  * 
@@ -142,12 +142,14 @@ async function getUsers(req, res, next) {
             },
             populate: [
                 { path: "lecturer" },
-                { path: "student" }
+                { path: "student" },
+                { path: "staff" },
             ],
             configMap: {
                 "name": (user) => resolveUserName(user),
                 "_id": (user) => user._id,
                 "avatar": (user) => user.avatar,
+                "institutionId": (user) => user?.lecturer?.staffId || user?.staff?.staffId || user?.student?.matricNumber 
 
             }
         });

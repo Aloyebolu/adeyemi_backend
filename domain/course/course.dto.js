@@ -1,4 +1,4 @@
-import { resolveUserName } from "../../utils/resolveUserName.js";
+import { resolveUserName } from "#utils/resolveUserName.js";
 
 export const mapResults = (input) => {
     // Condider making sure to send document that has course.borrowedId well populated for borrowed courses and then call the normalizeCourse functino to normalize the course

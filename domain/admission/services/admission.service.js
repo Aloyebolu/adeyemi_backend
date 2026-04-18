@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
-import { APPLICATION_STATUS, AUDIT_ACTIONS, AGGREGATE_WEIGHTS } from "../constants/admission.constants.js";
-import AdmissionApplication from "../models/admissionApplication.model.js";
-import AdmissionDocument from "../models/admissionDocument.model.js";
-import AdmissionDecision from "../models/admissionDecision.model.js";
-import AdmissionAcceptance from "../models/admissionAcceptance.model.js";
-import AdmissionSettings from "../models/admissionSettings.model.js";
-import FileService from "../../files/files.service.js";
+import { APPLICATION_STATUS, AUDIT_ACTIONS, AGGREGATE_WEIGHTS } from "#domain/admission/constants/admission.constants.js";
+import AdmissionApplication from "#domain/admission/models/admissionApplication.model.js";
+import AdmissionDocument from "#domain/admission/models/admissionDocument.model.js";
+import AdmissionDecision from "#domain/admission/models/admissionDecision.model.js";
+import AdmissionAcceptance from "#domain/admission/models/admissionAcceptance.model.js";
+import AdmissionSettings from "#domain/admission/models/admissionSettings.model.js";
+import FileService from "#domain/files/files.service.js";
 
 export class AdmissionService {
   /**

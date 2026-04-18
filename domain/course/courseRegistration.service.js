@@ -3,15 +3,15 @@ import courseRegistrationModel from "./courseRegistration.model.js";
 import CourseRegistration from "./courseRegistration.model.js";
 
 import { normalizeCourse } from "./course.normallizer.js";
-import AppError from "../errors/AppError.js";
-import departmentService from "../department/department.service.js";
-import SemesterService from "../semester/semester.service.js";
-import studentService from "../student/student.service.js";
+import AppError from "#shared/errors/AppError.js";
+import departmentService from "#domain/department/department.service.js";
+import SemesterService from "#domain/semester/semester.service.js";
+import studentService from "#domain/user/student/student.service.js";
 import courseModel from "./course.model.js";
-import CarryoverCourse from "../carryover/carryover.model.js";
-import studentModel from "../student/student.model.js";
-import AuditLogService from "../auditlog/auditlog.service.js";
-import Result from "../result/result.model.js";
+import CarryoverCourse from "#domain/user/student/carryover/carryover.model.js";
+import studentModel from "#domain/user/student/student.model.js";
+import AuditLogService from "#domain/auditlog/auditlog.service.js";
+import Result from "#domain/result/result.model.js";
 import courseService from "./course.service.js";
 
 class RegistrationService {

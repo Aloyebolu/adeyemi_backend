@@ -6,8 +6,8 @@
  * This function DOES not perform any CRUD operation, It only buildes the correct/safe structur for computation summaries
  */
 
-import { resolveUserName } from "../../../utils/resolveUserName.js";
-import { REMARK_CATEGORIES, GRADES } from "../utils/computationConstants.js";
+import { resolveUserName } from "#utils/resolveUserName.js";
+import { REMARK_CATEGORIES, GRADES } from "#domain/computation/utils/computationConstants.js";
 
 class SummaryListBuilder {
 

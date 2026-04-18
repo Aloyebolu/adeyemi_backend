@@ -1,8 +1,8 @@
-import { hashData, verifyHashedData } from '../../../../utils/hashData.js';
-import AppError from '../../../errors/AppError.js';
-import User from '../../../user/user.model.js';
-import Admin from '../../../admin/admin.model.js';
-import PasswordValidator from '../password/PasswordValidator.js';
+import { hashData, verifyHashedData } from '#utils/hashData.js';
+import AppError from '#shared/errors/AppError.js';
+import User from '#domain/user/user.model.js';
+import Admin from '#domain/admin/admin.model.js';
+import PasswordValidator from '#domain/auth/services/password/PasswordValidator.js';
 
 class AdminAuthenticator {
   /**

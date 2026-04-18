@@ -1,11 +1,11 @@
 import Faculty from "./faculty.model.js";
-import buildResponse from "../../utils/responseBuilder.js";
-import { fetchDataHelper } from "../../utils/fetchDataHelper.js";
+import buildResponse from "#utils/responseBuilder.js";
+import { fetchDataHelper } from "#utils/fetchDataHelper.js";
 import mongoose from "mongoose";
-import { dataMaps } from "../../config/dataMap.js";
+import { dataMaps } from "#config/dataMap.js";
 import FacultyService from "./faculty.service.js";
-import { resolveUserName } from "../../utils/resolveUserName.js";
-import AppError from "../errors/AppError.js";
+import { resolveUserName } from "#utils/resolveUserName.js";
+import AppError from "#shared/errors/AppError.js";
 
 // Common configuration for fetchDataHelper
 const FACULTY_FETCH_CONFIG = {

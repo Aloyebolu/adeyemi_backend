@@ -1,18 +1,18 @@
 // src/modules/ai/services/ai.orchestrator.service.js
 
 import sessionService from './ai.session.service.js';
-import { ai } from '../index.js';
-import AI_CONFIG from '../config/ai.config.js';
-import queryEngine from '../engines/query.engine.js';
-import queryValidator from '../validators/query.validator.js';
-import markdownFormatter from '../formatters/markdown.formatter.js';
+import { ai } from '#domain/ai/index.js';
+import AI_CONFIG from '#domain/ai/config/ai.config.js';
+import queryEngine from '#domain/ai/engines/query.engine.js';
+import queryValidator from '#domain/ai/validators/query.validator.js';
+import markdownFormatter from '#domain/ai/formatters/markdown.formatter.js';
 import preferencesService from './ai.preferences.service.js';
 // Add to imports
-import analysisEngine from '../engines/analysis.engine.js';
-import actionEngine from '../engines/action.engine.js';
-import exportFormatter from '../formatters/export.formatter.js';
-import auditService from '../services/ai.audit.service.js';
-import safetyFilter from '../utils/safety.filter.js';
+import analysisEngine from '#domain/ai/engines/analysis.engine.js';
+import actionEngine from '#domain/ai/engines/action.engine.js';
+import exportFormatter from '#domain/ai/formatters/export.formatter.js';
+import auditService from '#domain/ai/services/ai.audit.service.js';
+import safetyFilter from '#domain/ai/utils/safety.filter.js';
 
 /**
  * Main orchestration logic - the brain of the AI system

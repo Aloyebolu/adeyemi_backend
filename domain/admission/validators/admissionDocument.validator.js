@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { DOCUMENT_CATEGORIES, DOCUMENT_STATUS, REJECTION_REASONS } from "../constants/admission.constants.js";
+import { DOCUMENT_CATEGORIES, DOCUMENT_STATUS, REJECTION_REASONS } from "#domain/admission/constants/admission.constants.js";
 
 export const validateDocumentUpload = Joi.object({
   admissionApplicationId: Joi.string().hex().length(24).required(),

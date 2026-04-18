@@ -7,42 +7,43 @@ router.use("/delete", authenticate('admin'), deleteRoutes);
 // 
 
 
-import userRoutes from "../domain/user/index.js";
-import semesterRoutes from "../domain/semester/index.js";
-import settingsRoutes from "../domain/settings/index.js";
-import courseRoutes from "../domain/course/index.js";
-import programmeRoutes from "../domain/programme/programme.routes.js"
-import departmentRoutes from "../domain/department/index.js";
-import facultyRoutes from "../domain/faculty/faculty.routes.js";
-import studentRoutes from "../domain/student/student.routes.js";
-import resultRoutes from "../domain/result/index.js";
-import lecturerRoutes from "../domain/lecturer/index.js";
-// import applicantRoutes from "../domain/applicant/index.js"; 
-import paymentRoutes from "../domain/payment/index.js";
-import notificationRoutes from "../domain/notification/index.js";
-import adminRoutes from "../domain/admin/index.js"
-import admissionRoutes from "../domain/admission/routes/index.js"
-import announcementRoutes from "../domain/announcement/index.js";
-import computationRoutes from "../domain/computation/routes/computation.routes.js";
-import systemMonitorRoutes from "../domain/system/systemMonitor.js"
-import authRoutes from "../domain/auth/index.js"
-import auditRoutes from "../domain/auditlog/auditlog.routes.js";
-import carryoverRoutes from "../domain/carryover/carryover.routes.js";
-import fileRoutes from "../domain/files/files.routes.js"
+import userRoutes from "#domain/user/index.js";
+import semesterRoutes from "#domain/semester/index.js";
+import settingsRoutes from "#domain/system/settings/index.js";
+import courseRoutes from "#domain/course/index.js";
+import programmeRoutes from "#domain/programme/programme.routes.js"
+import departmentRoutes from "#domain/department/index.js";
+import facultyRoutes from "#domain/faculty/faculty.routes.js";
+import studentRoutes from "#domain/user/student/student.routes.js";
+import resultRoutes from "#domain/result/index.js";
+import lecturerRoutes from "#domain/user/lecturer/index.js";
+// import applicantRoutes from "#domain/applicant/index.js"; 
+import paymentRoutes from "#domain/payment/index.js";
+import notificationRoutes from "#domain/notification/index.js";
+import adminRoutes from "#domain/admin/index.js"
+import admissionRoutes from "#domain/admission/routes/index.js"
+import announcementRoutes from "#domain/announcement/index.js";
+import computationRoutes from "#domain/computation/routes/computation.routes.js";
+import systemMonitorRoutes from "#domain/system/systemMonitor.js"
+import authRoutes from "#domain/auth/index.js"
+import auditRoutes from "#domain/auditlog/auditlog.routes.js";
+import carryoverRoutes from "#domain/user/student/carryover/carryover.routes.js";
+import fileRoutes from "#domain/files/files.routes.js"
 import authenticate from "../middlewares/authenticate.js";
-import attendanceRoutes from "../domain/attendance/attendance.route.js"
-import { rankingRoutes } from "../domain/ranking/index.js";
-import createScriptsRouter from "../domain/scripts/scripts.routes.js";
-import userModel from "../domain/user/user.model.js";
+import attendanceRoutes from "#domain/user/student/attendance/attendance.route.js"
+import { rankingRoutes } from "#domain/ranking/index.js";
+import createScriptsRouter from "#domain/system/scripts/scripts.routes.js";
+import userModel from "#domain/user/user.model.js";
 import { addDepartmentJob } from "../workers/department.queue.js";
-import departmentModel from "../domain/department/department.model.js";
-import feedbackRoutes from "../domain/feedback/feedback.routes.js";
-import databaseRoutes from "../domain/database/index.js";
-import studentSuspension from "../domain/studentSuspension/index.js";
-import ai from "../domain/ai/ai.routes.js";
-import errorLog from "../domain/errors/errorLog.routes.js";
-
-// import chatRoutes from "../domain/chat/chat.routes.js";
+import departmentModel from "#domain/department/department.model.js";
+import feedbackRoutes from "#domain/feedback/feedback.routes.js";
+import databaseRoutes from "#domain/system/database/index.js";
+import studentSuspension from "#domain/user/student/studentSuspension/index.js";
+import ai from "#domain/ai/ai.routes.js";
+import errorLog from "#domain/system/errors/errorLog.routes.js";
+import whatsAppRoutes from "#domain/notification/routes/whatsapp.routes.js"
+import adminUnitRoutes from "#domain/admin/adminUnits/routes/adminUnit.routes.js";
+// import chatRoutes from "#domain/chat/chat.routes.js";
 // app.js or server.js
 
 
@@ -57,10 +58,16 @@ router.use((req, res, next) => {
 
 /* -------------------------USER ROUTES-------------------- */
 router.use("/user", userRoutes);
-router.use("/student", studentRoutes);
+router.use("/student",(req, res, next)=>{
+  console.warn("This route has been moved to /user/student, consider correcting its usage before it gets removed finally")
+next()
+}, studentRoutes);
 router.use("/students", studentRoutes);
 router.use("/student-suspensions", studentSuspension);
-router.use("/lecturers", lecturerRoutes);
+router.use("/lecturers", (req, res, next)=>{
+  console.warn("This route has been moved to /user/lecturers, consider correcting its usage before it gets removed finally")
+next()
+}, lecturerRoutes);
 router.use("/admin", adminRoutes)
 
 /* -------------------------SETTINGS ROUTES-------------------- */
@@ -90,6 +97,8 @@ router.use("/feedback", feedbackRoutes);
 router.use("/database", databaseRoutes)
 router.use("/ai", ai)
 router.use("/errors", errorLog)
+router.use("/whatsapp", whatsAppRoutes)
+router.use("/admin-units", adminUnitRoutes)
 
 // Models collection
 const models = {
@@ -101,8 +110,9 @@ const models = {
   // Add other models as needed
 };
 const services = {
-  addDepartmentJob: () =>addDepartmentJob
+  addDepartmentJob: () => addDepartmentJob
 }
+
 
 // Routes
 router.use('/admin/scripts', createScriptsRouter(models, services));

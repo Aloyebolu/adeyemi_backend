@@ -1,20 +1,12 @@
 // computation/core/computation.core.js
 import mongoose from "mongoose";
-import { BATCH_SIZE, STUDENT_STATUS, SUSPENSION_REASONS } from "../utils/computationConstants.js";
-import StudentService from "../../student/student.service.js";
-import ResultService from "../services/ResultService.js";
-import GPACalculator from "../services/GPACalculator.js";
-import AcademicStandingEngine from "../services/AcademicStandingEngine.js";
-import SummaryListBuilder from "../services/SummaryListBuilder.js";
-import { getDepartmentLeadershipDetails } from "../services/helpers.js";
-import { resolveUserName } from "../../../utils/resolveUserName.js";
-import AppError from "../../errors/AppError.js";
-import courseService from "../../course/course.service.js";
-import CarryoverService from "../services/CarryoverService.js";
-import courseRegistrationService from "../../course/courseRegistration.service.js";
-import { Perf } from "../../../utils/performanceMonitor.js";
-import { logger } from "../../../utils/logger.js";
-import SemesterService from "../../semester/semester.service.js";
+import { BATCH_SIZE } from "#domain/computation/utils/computationConstants.js";
+import StudentService from "#domain/computation/services/StudentService.js";
+import ResultService from "#domain/computation/services/ResultService.js";
+import GPACalculator from "#domain/computation/services/GPACalculator.js";
+import AcademicStandingEngine from "#domain/computation/services/AcademicStandingEngine.js";
+import SummaryListBuilder from "#domain/computation/services/SummaryListBuilder.js";
+import { getDepartmentLeadershipDetails } from "#domain/computation/services/helpers.js";
 
 /**
  * Core computation engine - shared logic between preview and final
@@ -26,7 +18,6 @@ export class ComputationCore {
     this.computedBy = options.computedBy;
     this.computationSummary = options.computationSummary;
     this.department = options.department;
-    this.programme = options.programme;
     this.activeSemester = options.activeSemester;
     this.masterComputationId = options.masterComputationId;
 
@@ -65,17 +56,13 @@ export class ComputationCore {
         probationList: [],
         withdrawalList: [],
         terminationList: [],
-        // FEB18
-        notRegisteredList: [],
-        leaveOfAbsenceList: [],
         carryoverStudents: [],
       },
 
       // Course data
-      // allResults: [], // All results processed
+      allResults: [], // All results processed
       keyToCourses: {}, // Course mapping
       keyToCoursesByLevel: {}, // Course mapping by level
-      coursesByLevel: {},
 
       // Other
       failedStudents: [],
@@ -107,69 +94,12 @@ export class ComputationCore {
   /**
    * Process a batch of students - shared logic
    */
-  async processStudentBatch(studentIds, computationId) {
-
-    // -----BATCH MONITORING STARTS HERE
-    const batchTimer = Perf.start(`Batch Processing (${studentIds.length} students)`, {
-      domain: "computation",
-      scopeId: this.scopeId
-    });
-
-    // Fetch student details and results in parallel, wrapped by performace monitoring
-    // const fetchTimer = Perf.start("Fetch Students + Registrations + Results + Carryovers", {
-    //   domain: "computation",
-    //   scopeId: this.scopeId
-    // });
-
-    const previousSemesters = await SemesterService.getPreviousAcademicSemesters(this.activeSemester._id);
-    console.log(`🔍 Previous semesters for ${this.activeSemester.name}:`, previousSemesters);
-    const [
-      students,
-      registrationsByStudent,
-      resultsByStudent,
-      previousCarryoversByStudents,
-      previousSemesterResultsByStudents,
-    ] = await Promise.all([
+  async processStudentBatch(studentIds) {
+    // Fetch student details and results in parallel
+    const [students, resultsByStudent] = await Promise.all([
       StudentService.getStudentsWithDetails(studentIds),
-      courseRegistrationService.getRegistrationsByStudents(
-        studentIds,
-        this.activeSemester._id
-      ),
-      ResultService.getResultsByStudents(
-        studentIds,
-        this.activeSemester._id
-      ),
-      CarryoverService.getCarryoversByStudents(studentIds, previousSemesters),
-      ResultService.getPreviousResultsByStudents(studentIds, previousSemesters)
+      ResultService.getResultsByStudents(studentIds, this.activeSemester._id)
     ]);
-
-    // Perf.end(fetchTimer);
-
-    // Determine levels present in this batch
-    const levels = [...new Set(students.map(s => s.level))];
-
-    const coursesByLevel = {};
-
-    for (const level of levels) {
-      coursesByLevel[level] = await courseService.getCurriculumCourses(
-        this.department._id,
-        this.activeSemester.name,
-        level,
-        this.programme._id
-      );
-    }
-
-    // ✅ Restore global curriculum buffer
-    if (!this.buffers.coursesByLevel) {
-      this.buffers.coursesByLevel = {};
-    }
-
-    Object.assign(this.buffers.coursesByLevel, coursesByLevel);
-
-    // Ensure results buffer exists
-    if (!this.buffers.allResults) {
-      this.buffers.allResults = [];
-    }
 
     const batchResults = [];
 
@@ -177,58 +107,24 @@ export class ComputationCore {
       this.counters.totalStudents++;
 
       try {
-        const studentId = student._id.toString();
-
-        const studentResults =
-          resultsByStudent[studentId] || [];
-
-        const courses =
-          coursesByLevel[student.level] || [];
-
-        const previousCarryovers =
-          previousCarryoversByStudents[studentId] || [];
-
-        const registrations =
-          registrationsByStudent[studentId] || [];
-
-        const previousSemesterResults =
-          previousSemesterResultsByStudents[studentId] || [];
+        const studentResults = resultsByStudent[student._id.toString()] || [];
 
         if (!studentResults || studentResults.length === 0) {
-          // this.handleMissingResults(student);
+          this.handleMissingResults(student);
+          continue;
         }
 
-        // ✅ Track results globally for later computations
+        // Track results for keyToCourses building
+        if (!this.buffers.allResults) {
+          this.buffers.allResults = [];
+        }
         this.buffers.allResults.push(...studentResults);
 
-        const result = await this.processSingleStudent(
-          student,
-          studentResults,
-          courses,
-          previousCarryovers,
-          { registrations, previousSemesterResults, computationId }
-        );
-
-        // ✅ Restore expected fields used by final processors
-        result.student = student;
-        result.results = studentResults;
-
+        const result = await this.processSingleStudent(student, studentResults);
         batchResults.push(result);
 
-        //  --------BATCH MONITORING ENDS HERE---------//
-
-        // Perf.end(batchTimer)
-
       } catch (error) {
-        logger.info("[processStudentBatch] Error:", error, {
-          scopeId: this.masterComputationId
-        });
-
-        const errorResult = this.handleStudentProcessingError(
-          student,
-          error
-        );
-
+        const errorResult = this.handleStudentProcessingError(student, error);
         batchResults.push(errorResult);
       }
     }
@@ -239,19 +135,8 @@ export class ComputationCore {
   /**
    * Process single student - shared logic
    */
-  async processSingleStudent(student, results, allCourses, previousCarryovers = [], { registrations, previousSemesterResults, computationId } = {}) {
-
-    let totalUnits = 0;
-    for (const course of registrations) {
-      if (course.unit == null || course.unit === undefined) {
-        throw new AppError(`Course ${course.courseCode} has no unit value. This is required for a correct GPA.`);
-      }
-      totalUnits += course.unit || 0;
-    }
-    if (!student || !student.level === undefined) {
-      throw new AppError(`Invalid student or results data. ${student._id}`);
-    }
-    const studentLevel = student.level;
+  async processSingleStudent(student, results) {
+    const studentLevel = student.level || "100";
 
     // Initialize level stats
     if (!this.levelStats[studentLevel]) {
@@ -259,42 +144,14 @@ export class ComputationCore {
     }
     this.levelStats[studentLevel].totalStudents++;
 
-    // FIRST: Check if student has results
-    const registered = results && results.length > 0;
-
-
-
-
-
-    // FOR STUDENTS WITH RESULTS - your existing code continues...
     // Calculate GPA and CGPA
-
-    // Calculate GPA and CGPA
-    const gpaData = GPACalculator.calculateSemesterGPA(results, totalUnits);
+    const gpaData = GPACalculator.calculateSemesterGPA(results);
     const cgpaData = await GPACalculator.calculateStudentCGPAWithTCP(
       student._id,
       this.activeSemester._id,
       gpaData.totalCreditPoints,
-      gpaData.totalUnits,
-      previousSemesterResults
+      gpaData.totalUnits
     );
-    if (!registered) {
-    }
-
-
-    // If the student registered and is suspended due to no registration in the previous semester make sure to lift them from the suspension,
-    // Do that by updating the academic standing before passing it further into other functions
-
-    const hasNoRegistrationSuspension = student?.suspension?.some(
-      s => s.reason === SUSPENSION_REASONS.NO_REGISTRATION && s.is_active === registered
-    );
-    if (hasNoRegistrationSuspension && registered) {
-      // handle lift
-      academicStanding.suspension = {
-        stats: false,
-        reason: SUSPENSION_REASONS.NO_REGISTRATION_LIFTED
-      }
-    }
 
     // Determine academic standing
     const academicStanding = await AcademicStandingEngine.determineAcademicStanding(
@@ -303,34 +160,42 @@ export class ComputationCore {
       cgpaData.cgpa,
       student.totalCarryovers + gpaData.failedCount,
       this.activeSemester._id,
-      !this.isPreview,
-      registered,
-      this.activeSemester
+      !this.isPreview
     );
-
-
 
     // Check termination/withdrawal status
     const isTerminatedOrWithdrawn = this.checkTerminatedOrWithdrawn(academicStanding);
 
     // Calculate outstanding courses only for active students
     let outstandingCourses = [];
-    outstandingCourses = await CarryoverService.calculateOutstandingCourses(
-      student._id,
-      this.activeSemester._id,
-      null,
-      results,
-      allCourses,
-      previousCarryovers,
-      { registrations, cumulative: true, computationId }
+    if (!isTerminatedOrWithdrawn) {
+      outstandingCourses = await GPACalculator.calculateOutstandingCourses(
+        student._id,
+        this.activeSemester._id
+      );
+    }
+
+    // Calculate academic history
+    const academicHistory = await GPACalculator.calculateAcademicHistory(student._id);
+
+    // Build student summary
+    const studentSummary = SummaryListBuilder.buildStudentSummary(
+      student,
+      gpaData,
+      cgpaData,
+      academicStanding,
+      outstandingCourses,
+      academicHistory
     );
 
+    // Add to level-based buffers
+    this.addToBuffers(studentLevel, studentSummary, student, academicStanding, gpaData, cgpaData);
 
+    // Update statistics
+    this.updateStatistics(studentLevel, gpaData, cgpaData, academicStanding);
 
     return {
-      notRegistered: !registered,
       studentId: student._id,
-      student,
       success: true,
       standing: academicStanding.remark,
       level: studentLevel,
@@ -339,9 +204,7 @@ export class ComputationCore {
       outstandingCoursesCount: outstandingCourses.length,
       gpaData,
       cgpaData,
-      academicStanding,
-      outstandingCourses,
-      previousOutstandingCourses: previousCarryovers
+      academicStanding
     };
   }
 
@@ -364,7 +227,113 @@ export class ComputationCore {
   /**
    * Add student data to buffers
    */
+  addToBuffers(studentLevel, studentSummary, student, academicStanding, gpaData, cgpaData) {
+    // ✅ FIX 1: Store in flat array too
+    if (!Array.isArray(this.buffers.studentSummaries)) {
+      this.buffers.studentSummaries = [];
+    }
+    this.buffers.studentSummaries.push(studentSummary);
 
+    // ✅ FIX 2: Store in grouped structure
+    if (!this.buffers.studentSummariesByLevel[studentLevel]) {
+      this.buffers.studentSummariesByLevel[studentLevel] = [];
+    }
+    this.buffers.studentSummariesByLevel[studentLevel].push(studentSummary);
+
+    // ✅ FIX 3: Store summary data separately
+    if (!this.buffers.studentSummaryDataByLevel) {
+      this.buffers.studentSummaryDataByLevel = {};
+    }
+    if (!this.buffers.studentSummaryDataByLevel[studentLevel]) {
+      this.buffers.studentSummaryDataByLevel[studentLevel] = [];
+    }
+
+    // Store just the summary object (not the wrapper)
+    const cleanSummary = studentSummary.summary || studentSummary;
+    this.buffers.studentSummaryDataByLevel[studentLevel].push(cleanSummary);
+
+    // ✅ FIX 4: Build list entries
+    const wasPreviouslyTerminated = student.terminationStatus === 'terminated';
+    const listEntries = SummaryListBuilder.addStudentToLists(
+      student,
+      academicStanding,
+      gpaData.semesterGPA,
+      cgpaData.cgpa,
+      gpaData.failedCount,
+      gpaData.failedCourses,
+      wasPreviouslyTerminated
+    );
+
+    // ✅ FIX 5: Store listEntries in flat array
+    if (!Array.isArray(this.buffers.listEntries)) {
+      this.buffers.listEntries = [];
+    }
+    this.buffers.listEntries.push(listEntries);
+
+    // ✅ FIX 6: Store listEntriesByLevel
+    if (!this.buffers.listEntriesByLevel[studentLevel]) {
+      this.buffers.listEntriesByLevel[studentLevel] = [];
+    }
+    this.buffers.listEntriesByLevel[studentLevel].push(listEntries);
+
+    // ✅ FIX 7: Add to flat lists (backward compatibility)
+    if (listEntries.passList) this.buffers.flatLists.passList.push(listEntries.passList);
+    if (listEntries.probationList) this.buffers.flatLists.probationList.push(listEntries.probationList);
+    if (listEntries.withdrawalList) this.buffers.flatLists.withdrawalList.push(listEntries.withdrawalList);
+    if (listEntries.terminationList) this.buffers.flatLists.terminationList.push(listEntries.terminationList);
+    if (listEntries.carryoverList) this.buffers.flatLists.carryoverStudents.push(listEntries.carryoverList);
+
+    // ✅ DEBUG: Log what we're storing
+    console.log(`📝 Stored student ${student.matricNumber} (Level ${studentLevel}):`, {
+      hasSummary: !!studentSummary,
+      hasSummarySummary: !!(studentSummary.summary),
+      listEntriesTypes: Object.keys(listEntries).filter(k => listEntries[k] !== null)
+    });
+  }
+
+  /**
+   * Update statistics
+   */
+  updateStatistics(studentLevel, gpaData, cgpaData, academicStanding) {
+    this.counters.studentsWithResults++;
+    this.counters.totalGPA += gpaData.semesterGPA;
+
+    // Update high/low GPA
+    if (gpaData.semesterGPA > this.counters.highestGPA) {
+      this.counters.highestGPA = gpaData.semesterGPA;
+    }
+    if (gpaData.semesterGPA < this.counters.lowestGPA && gpaData.semesterGPA > 0) {
+      this.counters.lowestGPA = gpaData.semesterGPA;
+    }
+
+    // Update level stats
+    const levelStat = this.levelStats[studentLevel];
+    levelStat.totalGPA += gpaData.semesterGPA;
+    if (gpaData.semesterGPA > levelStat.highestGPA) {
+      levelStat.highestGPA = gpaData.semesterGPA;
+    }
+    if (gpaData.semesterGPA < levelStat.lowestGPA && gpaData.semesterGPA > 0) {
+      levelStat.lowestGPA = gpaData.semesterGPA;
+    }
+
+    // Update grade distribution
+    const classification = GPACalculator.getGradeClassification(gpaData.semesterGPA);
+    this.gradeDistribution[classification]++;
+    levelStat.gradeDistribution[classification]++;
+  }
+
+  /**
+   * Handle missing results
+   */
+  handleMissingResults(student) {
+    this.buffers.failedStudents.push({
+      studentId: student._id,
+      matricNumber: student.matricNumber,
+      name: student.name,
+      error: "No results found",
+      notified: false
+    });
+  }
 
   /**
    * Handle student processing error
@@ -375,7 +344,7 @@ export class ComputationCore {
     const failedStudent = {
       studentId: student._id,
       matricNumber: student.matricNumber,
-      name: resolveUserName(student, "ComputationCore.handleStudentProcessingError") || 'Undefined',
+      name: student.name,
       error: error.message,
       notified: false
     };
@@ -393,75 +362,115 @@ export class ComputationCore {
   /**
    * Build keyToCourses from all results
    */
-  // async buildKeyToCourses() {
-  //   if (this.buffers.allResults && this.buffers.allResults.length > 0) {
-  //     this.buffers.keyToCoursesByLevel = await SummaryListBuilder.buildKeyToCoursesByLevel(this.buffers.allResults);
-  //   }
-  //   return this.buffers.keyToCoursesByLevel;
-  // }
   async buildKeyToCourses() {
-    // Use curriculum from buffer instead of allResults
-    if (this.buffers.coursesByLevel && Object.keys(this.buffers.coursesByLevel).length > 0) {
-      this.buffers.keyToCoursesByLevel = {};
-
-      for (const [level, courses] of Object.entries(this.buffers.coursesByLevel)) {
-        this.buffers.keyToCoursesByLevel[level] = courses.map(course => ({
-          courseCode: course.courseCode,
-          courseTitle: course.title,
-          unitLoad: course.unit ?? course.credits ?? 1,
-          isCoreCourse: course.isCoreCourse || course.type === "core",
-          level: course.level || parseInt(level),
-          semester: course.semester,
-          _id: course._id
-        }));
-
-        // Sort for consistent display
-        this.buffers.keyToCoursesByLevel[level].sort((a, b) =>
-          a.courseCode.localeCompare(b.courseCode)
-        );
-      }
-      logger.info(`📊 Built keyToCourses from curriculum for levels: ${Object.keys(this.buffers.keyToCoursesByLevel).join(', ')}`, null, {
-        scopeId: this.masterComputationId
-      });
-      return this.buffers.keyToCoursesByLevel;
-
-    } else {
-      console.warn('No curriculum data in buffers to build keyToCourses');
+    if (this.buffers.allResults && this.buffers.allResults.length > 0) {
+      this.buffers.keyToCoursesByLevel = await SummaryListBuilder.buildKeyToCoursesByLevel(this.buffers.allResults);
     }
-
     return this.buffers.keyToCoursesByLevel;
   }
 
-  // async buildKeyToCourses() {
-  //   // coursesByLevel is already fetched and organized by level
-  //   // Example structure:
-  //   // {
-  //   //   "100": [Course1, Course2, ...],
-  //   //   "200": [Course3, Course4, ...],
-  //   //   ...
-  //   // }
+  /**
+   * Prepare summary data for saving
+   */
+  async prepareSummaryData() {
+    console.log('🔍 prepareSummaryData - Buffer Status:', {
+      studentSummaries: this.buffers.studentSummaries?.length || 0,
+      studentSummaryDataByLevel: this.buffers.studentSummaryDataByLevel
+        ? Object.keys(this.buffers.studentSummaryDataByLevel).map(k => `${k}: ${this.buffers.studentSummaryDataByLevel[k]?.length || 0}`)
+        : [],
+      listEntries: this.buffers.listEntries?.length || 0,
+      listEntriesByLevel: this.buffers.listEntriesByLevel
+        ? Object.keys(this.buffers.listEntriesByLevel).map(k => `${k}: ${this.buffers.listEntriesByLevel[k]?.length || 0}`)
+        : []
+    });
 
-  //   const coursesByLevel = this.buffers.keyToCoursesByLevel;
+    // Build keyToCourses if not already built
+    await this.buildKeyToCourses();
 
-  //   for (const [level, courses] of Object.entries(coursesByLevel)) {
-  //     this.buffers.keyToCoursesByLevel[level] = courses.map(course => ({
-  //       courseCode: course.courseCode,
-  //       courseTitle: course.title,
-  //       unitLoad: course.unit ?? course.credits ?? 1,
-  //       isCoreCourse: course.isCoreCourse || course.type === "core",
-  //       level: course.level || parseInt(level),
-  //       semester: course.semester,
-  //       _id: course._id
-  //     }));
+    // ✅ USE studentSummaryDataByLevel instead of trying to group again
+    const studentSummariesByLevel = this.buffers.studentSummaryDataByLevel || {};
 
-  //     // Sort for consistent display
-  //     this.buffers.keyToCoursesByLevel[level].sort((a, b) =>
-  //       a.courseCode.localeCompare(b.courseCode)
-  //     );
-  //   }
+    // Group lists by level
+    const groupedLists = SummaryListBuilder.groupListsByLevel(
+      this.buffers.listEntries || []
+    );
 
-  //   return this.buffers.keyToCoursesByLevel;
-  // }
+    console.log('📊 Grouped Lists Structure:', {
+      passListLevels: Object.keys(groupedLists.passList || {}),
+      probationListLevels: Object.keys(groupedLists.probationList || {}),
+      withdrawalListLevels: Object.keys(groupedLists.withdrawalList || {}),
+      terminationListLevels: Object.keys(groupedLists.terminationList || {})
+    });
+
+    // Build summary statistics
+    const summaryStats = SummaryListBuilder.buildSummaryStatsByLevel(
+      this.counters,
+      this.gradeDistribution,
+      this.levelStats
+    );
+
+    // Build summary of results by level
+    const summaryOfResultsByLevel = {};
+    for (const [level, stats] of Object.entries(this.levelStats)) {
+      if (stats.totalStudents > 0) {
+        const averageGPA = stats.totalGPA / stats.totalStudents;
+        summaryOfResultsByLevel[level] = {
+          totalStudents: stats.totalStudents,
+          studentsWithResults: stats.totalStudents,
+          gpaStatistics: {
+            average: parseFloat(averageGPA.toFixed(2)),
+            highest: parseFloat(stats.highestGPA.toFixed(2)),
+            lowest: parseFloat(stats.lowestGPA.toFixed(2)),
+            standardDeviation: 0
+          },
+          classDistribution: stats.gradeDistribution
+        };
+      }
+    }
+
+    // Get department details
+    const departmentDetails = await getDepartmentLeadershipDetails(
+      this.department._id,
+      this.activeSemester._id
+    );
+
+    // Build student lists by level
+    const studentListsByLevel = {};
+    for (const level in studentSummariesByLevel) {
+      studentListsByLevel[level] = {
+        passList: (groupedLists.passList && groupedLists.passList[level]) || [],
+        probationList: (groupedLists.probationList && groupedLists.probationList[level]) || [],
+        withdrawalList: (groupedLists.withdrawalList && groupedLists.withdrawalList[level]) || [],
+        terminationList: (groupedLists.terminationList && groupedLists.terminationList[level]) || [],
+        carryoverStudents: (groupedLists.carryoverStudents && groupedLists.carryoverStudents[level]) || []
+      };
+    }
+
+    // Build master sheet data
+    const masterSheetData = SummaryListBuilder.buildMasterSheetDataByLevel(
+      studentSummariesByLevel,
+      summaryStats,
+      this.buffers.keyToCoursesByLevel,
+      departmentDetails
+    );
+
+    // Build final summary data
+    return {
+      ...summaryStats,
+      departmentDetails,
+      studentSummariesByLevel,
+      keyToCoursesByLevel: this.buffers.keyToCoursesByLevel,
+      studentListsByLevel,
+      summaryOfResultsByLevel,
+      masterSheetData,
+      // Backward compatibility
+      passList: this.buffers.flatLists.passList.slice(0, 100),
+      probationList: this.buffers.flatLists.probationList.slice(0, 100),
+      withdrawalList: this.buffers.flatLists.withdrawalList.slice(0, 100),
+      terminationList: this.buffers.flatLists.terminationList.slice(0, 100),
+      failedStudents: this.buffers.failedStudents || []
+    };
+  }
 
   /**
    * Get summary data for master computation stats
@@ -473,11 +482,6 @@ export class ComputationCore {
       probationListCount: this.buffers.flatLists.probationList.length,
       withdrawalListCount: this.buffers.flatLists.withdrawalList.length,
       terminationListCount: this.buffers.flatLists.terminationList.length,
-
-      // FEB18
-      notRegisteredList: this.buffers.flatLists.notRegisteredList.length,
-      leaveOfAbsenceList: this.buffers.flatLists.leaveOfAbsenceList.length,
-
       carryoverCount: this.counters.totalCarryovers,
       averageGPA: this.counters.studentsWithResults > 0
         ? this.counters.totalGPA / this.counters.studentsWithResults

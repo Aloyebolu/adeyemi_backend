@@ -1,15 +1,15 @@
 import User from './user.model.js';
-import { hashData, verifyHashedData } from '../../utils/hashData.js';
-import createToken from '../../utils/createToken.js';
-import Admin from '../admin/admin.model.js';
-import lecturerModel from '../lecturer/lecturer.model.js';
-import studentModel from '../student/student.model.js';
-import departmentService from '../department/department.service.js';
-import { resolveUserName } from '../../utils/resolveUserName.js';
-import AppError from '../errors/AppError.js';
-import { logDevice } from '../../utils/deviceLogger.js';
-import { toProfessionalAbbreviation } from '../../utils/helpers.js';
-import SemesterService from '../semester/semester.service.js';
+import { hashData, verifyHashedData } from '#utils/hashData.js';
+import createToken from '#utils/createToken.js';
+import Admin from '#domain/admin/admin.model.js';
+import lecturerModel from './lecturer/lecturer.model.js';
+import studentModel from './student/student.model.js';
+import departmentService from '#domain/department/department.service.js';
+import { resolveUserName } from '#utils/resolveUserName.js';
+import AppError from '#shared/errors/AppError.js';
+import { logDevice } from '#utils/deviceLogger.js';
+import { toProfessionalAbbreviation } from '#utils/helpers.js';
+import SemesterService from '#domain/semester/semester.service.js';
 
 class UserService {
 

@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import AppError from "../domain/errors/AppError.js";
+import AppError from "../shared/errors/AppError.js";
 // bootstrap.js
 import dotenv from "dotenv";
 dotenv.config();

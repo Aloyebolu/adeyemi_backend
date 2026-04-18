@@ -1,4 +1,4 @@
-import AppError from "../domain/errors/AppError.js";
+import AppError from "../shared/errors/AppError.js";
 import { delay } from "../utils/helpers.js";
 import { softDeleteService } from "./softDelete.service.js";
 

@@ -84,27 +84,10 @@ const masterComputationSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.Mixed,
     default: {}
   },
-  notifications: [{
-    type: {
-      type: String,
-      enum: ["admin", "hod", "all"]
-    },
-    sentAt: Date,
-    recipient: mongoose.Schema.Types.ObjectId,
-    status: String
-  }],
-  isFinal: {
-    type: Boolean,
-    default: false
-  },
   purpose: {
     type: String,
-    enum: ['preview', 'final', 'simulation'],
-    default: 'final'
-  },
-  isPreview: {
-    type: Boolean,
-    default: false
+    enum: ['preview', 'final'],
+    default: 'preview'
   },
   academicBoardDate: {
     type: Date,

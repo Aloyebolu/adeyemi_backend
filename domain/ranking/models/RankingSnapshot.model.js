@@ -5,9 +5,9 @@
  */
 
 import mongoose from 'mongoose';
-import AppError from '../../errors/AppError.js';
-import { SYSTEM_USER_ID } from '../../../config/system.js';
-import { RANKING_CONSTANTS } from '../ranking.constants.js';
+import AppError from '#shared/errors/AppError.js';
+import { SYSTEM_USER_ID } from '#config/system.js';
+import { RANKING_CONSTANTS } from '#domain/ranking/ranking.constants.js';
 
 const { Schema } = mongoose;
 

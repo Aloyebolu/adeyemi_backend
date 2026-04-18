@@ -1,8 +1,8 @@
-import { hashData, verifyHashedData } from '../../../../utils/hashData.js';
-import AppError from '../../../errors/AppError.js';
-import User from '../../../user/user.model.js';
-import lecturerModel from '../../../lecturer/lecturer.model.js';
-import PasswordValidator from '../password/PasswordValidator.js';
+import { hashData, verifyHashedData } from '#utils/hashData.js';
+import AppError from '#shared/errors/AppError.js';
+import User from '#domain/user/user.model.js';
+import lecturerModel from '#domain/user/lecturer/lecturer.model.js';
+import PasswordValidator from '#domain/auth/services/password/PasswordValidator.js';
 
 class LecturerAuthenticator {
   /**
@@ -43,13 +43,6 @@ class LecturerAuthenticator {
     if (!userDoc) {
       console.error(`[AuthService] Lecturer record exists but User record missing: ${userDetails._id}`);
       throw new AppError('Data inconsistency detected', 500, {message: `[AuthService] Lecturer record exists but User record missing: ${userDetails._id}`});
-    }
-
-    // AUDIT: Validate lecturer role variations
-    const validLecturerRoles = ['lecturer', 'hod', 'dean', 'vc'];
-    if (!validLecturerRoles.includes(userDoc.role)) {
-      console.error(`[AuthService] Invalid role ${userDoc.role} for lecturer ID: ${userDetails._id}`);
-      throw new AppError('Data inconsistency detected', 500, {message: `[AuthService] Invalid role ${userDoc.role} for lecturer ID: ${userDetails._id}`});
     }
 
     // Validate password and track if legacy path was used

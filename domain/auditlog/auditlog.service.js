@@ -1,6 +1,6 @@
 import AuditLog from "./auditlog.model.js";
 import AuditUtil from "./auditlog.util.js";
-import User from "../user/user.model.js";
+import User from "#domain/user/user.model.js";
 
 /**
  * Generic Audit Log Service that works with ANY model

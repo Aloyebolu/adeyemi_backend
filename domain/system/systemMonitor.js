@@ -5,7 +5,7 @@ import os from "os";
 import { exec } from "child_process";
 import util from "util";
 import Agenda from "agenda";
-import notificationModel from "../notification/notification.model.js";
+import notificationModel from "#domain/notification/notification.model.js";
 import mongoose from "mongoose";
 
 const execPromise = util.promisify(exec);

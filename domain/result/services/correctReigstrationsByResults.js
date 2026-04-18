@@ -1,7 +1,7 @@
-import courseModel from "../../course/course.model.js";
-import courseRegistrationModel from "../../course/courseRegistration.model.js";
-import studentModel from "../../student/student.model.js";
-import Result from "../result.model.js";
+import courseModel from "#domain/course/course.model.js";
+import courseRegistrationModel from "#domain/course/courseRegistration.model.js";
+import studentModel from "#domain/user/student/student.model.js";
+import Result from "#domain/result/result.model.js";
 
 export const rebuildStudentRegistrations = async ({ semesterId, session }) => {
     console.log(semesterId)

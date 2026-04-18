@@ -2,7 +2,7 @@
 import Permission from './permission.model.js';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
-import AppError from '../errors/AppError.js';
+import AppError from '#shared/errors/AppError.js';
 
 const PERMISSION_SECRET = process.env.PERMISSION_SECRET;
 

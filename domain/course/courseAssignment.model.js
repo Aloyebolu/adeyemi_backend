@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { SYSTEM_USER_ID } from "../../config/system.js";
+import { SYSTEM_USER_ID } from "#config/system.js";
 
 const courseAssignmentSchema = new mongoose.Schema(
   {

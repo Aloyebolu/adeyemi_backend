@@ -1,6 +1,6 @@
 import AnnouncementService from './announcement.service.js';
-import buildResponse from '../../utils/responseBuilder.js';
-import catchAsync from '../../utils/catchAsync.js';
+import buildResponse from '#utils/responseBuilder.js';
+import catchAsync from '#utils/catchAsync.js';
 
 // @desc    Get all announcements with filtering
 // @route   GET /api/announcements

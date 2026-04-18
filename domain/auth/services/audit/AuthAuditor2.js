@@ -1,5 +1,5 @@
 // auth/services/audit/AuthAuditor.js
-import AppError from '../../../errors/AppError.js';
+import AppError from '#shared/errors/AppError.js';
 
 class AuthAuditor {
   constructor() {

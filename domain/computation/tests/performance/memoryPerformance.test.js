@@ -1,5 +1,5 @@
 // test/performance/memoryPerformance.test.js
-import { processStudentBatch } from "../../computation/workers/computation.controller.js";
+import { processStudentBatch } from "#domain/computation/workers copy2/computation.controller.js";
 
 describe("Memory Performance Tests", () => {
   beforeEach(() => {

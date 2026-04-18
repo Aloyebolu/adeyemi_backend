@@ -1,6 +1,6 @@
 // src/modules/ai/services/ai.audit.service.js
 
-import AuditLog from '../models/audit.log.model.js';
+import AuditLog from '#domain/ai/models/audit.log.model.js';
 
 class AIAuditService {
   constructor() {

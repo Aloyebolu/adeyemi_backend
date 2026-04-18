@@ -1,7 +1,7 @@
 // courseMaterial.routes.js
 import { Router } from "express";
 import { deleteMaterial, getByWeek, getMaterial, getMaterials, reorderMaterials, updateMaterial, uploadMaterial } from "./courseMaterial.controller.js";
-import authenticate from "../../../middlewares/authenticate.js";
+import authenticate from "#middlewares/authenticate.js";
 
 const router = Router();
 

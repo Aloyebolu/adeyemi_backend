@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { DOCUMENT_STATUS } from "../constants/admissionDocument.constants.js";
-import { DOCUMENT_CATEGORIES } from "../constants/admission.constants.js";
+import { DOCUMENT_STATUS } from "#domain/admission/constants/admissionDocument.constants.js";
+import { DOCUMENT_CATEGORIES } from "#domain/admission/constants/admission.constants.js";
 
 const admissionDocumentSchema = new mongoose.Schema(
   {

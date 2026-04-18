@@ -3,11 +3,11 @@
 import crypto from "crypto";
 import ChatSession from "./chat.model.js";
 import Message from "./chat.message.model.js";
-import User from "../user/user.model.js";
+import User from "#domain/user/user.model.js";
 import mongoose from "mongoose";
 import fs from "fs";
 import path from "path";
-import AppError from "../errors/AppError.js";
+import AppError from "#shared/errors/AppError.js";
 
 const MAX_CONCURRENT_CHATS = 50;
 const MAX_WAITING_TIME = 5 * 60 * 1000; // 5 minutes

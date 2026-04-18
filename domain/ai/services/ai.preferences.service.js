@@ -1,6 +1,6 @@
 // src/modules/ai/services/ai.preferences.service.js
 
-import UserPreferences from '../models/user.preferences.model.js';
+import UserPreferences from '#domain/ai/models/user.preferences.model.js';
 
 class AIPreferencesService {
   /**

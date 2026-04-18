@@ -1,9 +1,9 @@
 // computation/services/ResultService.js
 import mongoose from "mongoose";
-import Result from "../../result/result.model.js";
-import courseModel from "../../course/course.model.js";
-import AppError from "../../errors/AppError.js";
-import studentSemesterResultModel from "../../student/student.semseterResult.model.js";
+import Result from "#domain/result/result.model.js";
+import courseModel from "#domain/course/course.model.js";
+import AppError from "#shared/errors/AppError.js";
+import studentSemesterResultModel from "#domain/user/student/student.semseterResult.model.js";
 
 class ResultService {
   /**

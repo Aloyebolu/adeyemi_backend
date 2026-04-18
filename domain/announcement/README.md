@@ -1,5 +1,5 @@
 # Announcement Domain
-
+### Before reading, note that this domain is well structured, secured, inspected and lockeed
 A comprehensive announcement management system built with Node.js, Express, and MongoDB. This domain provides full CRUD operations with role-based access control, filtering, pagination, and validation.
 
 ## 📋 Table of Contents

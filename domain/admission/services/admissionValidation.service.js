@@ -1,7 +1,7 @@
 /**
  * Validation service for admission business rules
  */
-import { APPLICATION_STATUS } from "../constants/admission.constants.js";
+import { APPLICATION_STATUS } from "#domain/admission/constants/admission.constants.js";
 
 export class AdmissionValidationService {
   /**

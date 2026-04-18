@@ -7,12 +7,12 @@
  * 
  * No other services or controllers should handle password logic directly except for this service.
  */
-import { hashData, verifyHashedData } from '../../../../utils/hashData.js';
-import AppError from '../../../errors/AppError.js';
-import User from '../../../user/user.model.js';
-import Admin from '../../../admin/admin.model.js';
-import lecturerModel from '../../../lecturer/lecturer.model.js';
-import studentModel from '../../../student/student.model.js';
+import { hashData, verifyHashedData } from '#utils/hashData.js';
+import AppError from '#shared/errors/AppError.js';
+import User from '#domain/user/user.model.js';
+import Admin from '#domain/admin/admin.model.js';
+import lecturerModel from '#domain/user/lecturer/lecturer.model.js';
+import studentModel from '#domain/user/student/student.model.js';
 import PasswordValidator from './PasswordValidator.js';
 
 class PasswordManager {

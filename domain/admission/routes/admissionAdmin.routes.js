@@ -1,11 +1,11 @@
 import express from "express";
-import { AdmissionController } from "../controllers/admission.controller.js";
-import { AdmissionDocumentController } from "../controllers/admissionDocument.controller.js";
-import { AdmissionAcceptanceController } from "../controllers/admissionAcceptance.controller.js";
-import * as admissionValidators from "../validators/admission.validator.js";
-import * as documentValidators from "../validators/admissionDocument.validator.js";
-import validate from "../../../middlewares/validate.js";
-import authenticate from "../../../middlewares/authenticate.js";
+import { AdmissionController } from "#domain/admission/controllers/admission.controller.js";
+import { AdmissionDocumentController } from "#domain/admission/controllers/admissionDocument.controller.js";
+import { AdmissionAcceptanceController } from "#domain/admission/controllers/admissionAcceptance.controller.js";
+import * as admissionValidators from "#domain/admission/validators/admission.validator.js";
+import * as documentValidators from "#domain/admission/validators/admissionDocument.validator.js";
+import validate from "#middlewares/validate.js";
+import authenticate from "#middlewares/authenticate.js";
 
 const router = express.Router();
 

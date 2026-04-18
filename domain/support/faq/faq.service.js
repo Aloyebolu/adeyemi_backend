@@ -3,7 +3,7 @@
 import crypto from "crypto";
 import mongoose from "mongoose";
 import FAQ from "./faq.model.js";
-import AppError from "../../errors/AppError.js";
+import AppError from "#shared/errors/AppError.js";
 
 class FAQService {
     constructor() {

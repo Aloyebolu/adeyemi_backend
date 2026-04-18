@@ -1,14 +1,14 @@
-import buildResponse from "../../utils/responseBuilder.js";
-import { fetchDataHelper } from "../../utils/fetchDataHelper.js";
-import { dataMaps } from "../../config/dataMap.js";
-import studentModel from "../student/student.model.js";
-import lecturerModel from "../lecturer/lecturer.model.js";
-import courseModel from "../course/course.model.js";
-import User from "../user/user.model.js";
-import { AcademicSemester } from "../semester/semester.academicModel.js";
-import { exportCourseResultsToExcel } from "../result/services/batchExportToExcel.js";
-import SemesterService from "../semester/semester.service.js";
-import { rebuildStudentRegistrations } from "../result/services/correctReigstrationsByResults.js";
+import buildResponse from "#utils/responseBuilder.js";
+import { fetchDataHelper } from "#utils/fetchDataHelper.js";
+import { dataMaps } from "#config/dataMap.js";
+import studentModel from "#domain/user/student/student.model.js";
+import lecturerModel from "#domain/user/lecturer/lecturer.model.js";
+import courseModel from "#domain/course/course.model.js";
+import User from "#domain/user/user.model.js";
+import { AcademicSemester } from "#domain/semester/semester.academicModel.js";
+import { exportCourseResultsToExcel } from "#domain/result/services/batchExportToExcel.js";
+import SemesterService from "#domain/semester/semester.service.js";
+import { rebuildStudentRegistrations } from "#domain/result/services/correctReigstrationsByResults.js";
 
 export const getAdminOverview = async (req, res, next) => {
   try {

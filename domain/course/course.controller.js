@@ -1,17 +1,17 @@
 import mongoose from "mongoose";
 import Course from "./course.model.js";
-import buildResponse from "../../utils/responseBuilder.js";
-import { dataMaps } from "../../config/dataMap.js";
-import departmentModel from "../department/department.model.js";
-import fetchDataHelper, { applyTransformations } from "../../utils/fetchDataHelper.js";
+import buildResponse from "#utils/responseBuilder.js";
+import { dataMaps } from "#config/dataMap.js";
+import departmentModel from "#domain/department/department.model.js";
+import fetchDataHelper, { applyTransformations } from "#utils/fetchDataHelper.js";
 import CourseService from "./course.service.js";
 import courseRegistrationModel from "./courseRegistration.model.js";
-import departmentService from "../department/department.service.js";
-import { resolveUserName } from "../../utils/resolveUserName.js";
-import studentModel from "../student/student.model.js";
-import AppError from "../errors/AppError.js";
-import { delay } from "../../utils/helpers.js";
-import SemesterService from "../semester/semester.service.js";
+import departmentService from "#domain/department/department.service.js";
+import { resolveUserName } from "#utils/resolveUserName.js";
+import studentModel from "#domain/user/student/student.model.js";
+import AppError from "#shared/errors/AppError.js";
+import { delay } from "#utils/helpers.js";
+import SemesterService from "#domain/semester/semester.service.js";
 import courseRegistrationService from "./courseRegistration.service.js";
 
 // Common configuration for fetchDataHelper

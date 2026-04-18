@@ -1,9 +1,9 @@
 // computation/controllers/computation.handler.js
-import ComputationSummaryService from "../services/ComputationSummaryService.js";
-import SummaryListBuilder from "../services/SummaryListBuilder.js";
-import SemesterService from "../../semester/semester.service.js";
-import { updateMasterComputationStats } from "../utils/computation.utils.js";
-import ReportService from "../services/ReportService.js";
+import ComputationSummaryService from "#domain/computation/services/ComputationSummaryService.js";
+import SummaryListBuilder from "#domain/computation/services/SummaryListBuilder.js";
+import SemesterService from "#domain/semester/semester.service.js";
+import { updateMasterComputationStats } from "#domain/computation/utils/computation.utils.js";
+import ReportService from "#domain/computation/services/ReportService.js";
 
 export class ComputationHandler {
   constructor(options = {}) {
@@ -27,9 +27,9 @@ export class ComputationHandler {
     bulkWriter = null
   ) {
     const isFinal = !this.isPreview;
-    
+
     console.log(`🏁 Finalizing ${this.isPreview ? 'PREVIEW' : 'FINAL'} computation for department: ${department.name}, programme: ${programme.name}`);
-    
+
     // Build the unified summary
     const summaryData = await this.summaryService.buildComputationSummary(
       computationCore,
@@ -39,7 +39,7 @@ export class ComputationHandler {
       null, // Nullify departmentDetails so that it would get built but the buildDepartmentDetails function
       programme
     );
-    
+
     console.log('✅ Summary data generated:', {
       studentListsLevels: Object.keys(summaryData.studentListsByLevel || {}),
       hasMasterSheetData: !!summaryData.masterSheetData
@@ -52,10 +52,12 @@ export class ComputationHandler {
       // For preview or when not using bulk writer
       // BYPASS
       await this.updateComputationSummaryDirectly(computationSummary, summaryData);
+      // eslint-disable-next-line no-undef
       const size = Buffer.byteLength(JSON.stringify(computationSummary));
+      // eslint-disable-next-line no-undef
       const size2 = Buffer.byteLength(JSON.stringify(summaryData));
 
-console.log("SIZE (bytes):", size, size2);
+      console.log("SIZE (bytes):", size, size2);
     }
 
     // Additional finalization steps for final computation
@@ -78,11 +80,11 @@ console.log("SIZE (bytes):", size, size2);
    * Update computation summary directly (for preview)
    */
   async updateComputationSummaryDirectly(computationSummary, summaryData) {
-    computationSummary.status = summaryData.failedStudents?.length > 0 
-      ? "completed_with_errors" 
+    computationSummary.status = summaryData.failedStudents?.length > 0
+      ? "completed_with_errors"
       : "completed";
     computationSummary.completedAt = new Date();
-    
+
     if (computationSummary.startedAt) {
       computationSummary.duration = Date.now() - computationSummary.startedAt.getTime();
     }
@@ -90,7 +92,7 @@ console.log("SIZE (bytes):", size, size2);
     // Convert objects to Maps for MongoDB storage
     computationSummary.keyToCoursesByLevel = new Map(Object.entries(summaryData.keyToCoursesByLevel || {}));
     computationSummary.summaryOfResultsByLevel = new Map(Object.entries(summaryData.summaryOfResultsByLevel || {}));
-    
+
     // Set other summary data
     computationSummary.totalStudents = summaryData.totalStudents || 0;
     computationSummary.studentsWithResults = summaryData.studentsWithResults || 0;
@@ -100,9 +102,9 @@ console.log("SIZE (bytes):", size, size2);
     computationSummary.lowestGPA = summaryData.lowestGPA || 0;
     computationSummary.gradeDistribution = summaryData.gradeDistribution || {};
     computationSummary.departmentDetails = summaryData.departmentDetails;
-    
 
-    
+
+
     await computationSummary.save();
     console.log(`✅ Updated computation summary ${computationSummary._id}`);
   }
@@ -120,7 +122,7 @@ console.log("SIZE (bytes):", size, size2);
     bulkWriter
   ) {
     console.log('🔒 Finalizing final computation steps...');
-    
+
     // Lock semester if successful
     if (computationCore.buffers.failedStudents.length === 0) {
       await SemesterService.lockSemester(activeSemester._id);

@@ -1,3 +1,4 @@
+import 'module-alias/register';
 import "./config/dbMetrics.js";
 import app from "./app.js";
 import { createServer } from "http";

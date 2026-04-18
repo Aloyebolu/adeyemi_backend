@@ -1,11 +1,12 @@
 // ResultTranscriptHtmlRenderer.js
 // STUDENT ACADEMIC TRANSCRIPT - COMPREHENSIVE VERSION
 
-import { formatDateWithOrdinal, semesterNameToSeason, toProfessionalAbbreviation } from "../../../utils/helpers.js";
-import { convertToPart } from "../../../utils/levelConverter.js";
-import { capitalizeFirstLetter } from "../../../utils/StringUtils.js";
-import { formatMatricNumber, resolveUserName } from "../../../utils/resolveUserName.js";
-import { config } from "../../computation/services/master-sheet/MasterSheetConfig.js";
+import { formatDateWithOrdinal, semesterNameToSeason, toProfessionalAbbreviation } from "#utils/helpers.js";
+import { convertToPart } from "#utils/levelConverter.js";
+import { capitalizeFirstLetter } from "#utils/StringUtils.js";
+import { formatMatricNumber, resolveUserName } from "#utils/resolveUserName.js";
+import { config } from "#domain/computation/services/master-sheet/MasterSheetConfig.js";
+import { normalizeCourses } from "#domain/course/course.normallizer.js";
 
 class ResultTranscriptHtmlRenderer {
   
@@ -35,14 +36,40 @@ class ResultTranscriptHtmlRenderer {
     str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : str;
 
   /**
+   * Calculate grade letter from score
+   */
+  getGradeLetter(score) {
+    if (score == null || isNaN(score)) return '-';
+    if (score >= 70) return 'A';
+    if (score >= 60) return 'B';
+    if (score >= 50) return 'C';
+    if (score >= 45) return 'D';
+    if (score >= 40) return 'E';
+    return 'F';
+  }
+
+  /**
+   * Calculate grade point from score
+   */
+  getGradePoint(score) {
+    if (score == null || isNaN(score)) return 0;
+    if (score >= 70) return 5.0;
+    if (score >= 60) return 4.0;
+    if (score >= 50) return 3.0;
+    if (score >= 45) return 2.0;
+    if (score >= 40) return 1.0;
+    return 0.0;
+  }
+
+  /**
    * Calculate degree class based on final CGPA
    */
   getDegreeClass(cgpa) {
     if (cgpa == null || isNaN(cgpa)) return "Not Classified";
-    if (cgpa >= 4.50) return "First Class Honours";
-    if (cgpa >= 3.50) return "Second Class Honours (Upper Division)";
-    if (cgpa >= 2.40) return "Second Class Honours (Lower Division)";
-    if (cgpa >= 1.50) return "Third Class Honours";
+    if (cgpa >= 4.50) return "First Class";
+    if (cgpa >= 3.50) return "Second Class Upper ";
+    if (cgpa >= 2.40) return "Second Class Lower ";
+    if (cgpa >= 1.50) return "Third Class";
     if (cgpa >= 1.00) return "Pass";
     return "Fail";
   }
@@ -91,7 +118,7 @@ class ResultTranscriptHtmlRenderer {
 <table class="transcript-table">
   ${this.renderHeader(studentInfo, departmentDetails, transcriptId, isPreview)}
   ${this.renderStudentProfile(studentInfo, departmentDetails)}
-  ${this.renderAcademicSummary(studentInfo, finalCGPA, totalCredits, degreeClass)}
+  ${this.renderCompactSummary(finalCGPA, totalCredits, degreeClass, studentInfo)}
   ${this.renderAcademicHistory(groupedHistory, departmentDetails)}
   ${this.renderGraduationInfo(graduationInfo, degreeClass, graduationDate)}
   ${this.renderTranscriptKey()}
@@ -108,7 +135,7 @@ class ResultTranscriptHtmlRenderer {
   <style>
     @page {
       size: A4 portrait;
-      margin: 12mm 10mm 12mm 10mm;
+      margin: 8mm 10mm 8mm 10mm;
     }
     
     * {
@@ -119,8 +146,8 @@ class ResultTranscriptHtmlRenderer {
     
     body {
       font-family: "Times New Roman", serif;
-      font-size: 11pt;
-      line-height: 1.4;
+      font-size: 10pt;
+      line-height: 1.3;
       color: #000;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
@@ -150,7 +177,7 @@ class ResultTranscriptHtmlRenderer {
       background-image: url('${config.logoUrl || ''}');
       background-repeat: no-repeat;
       background-position: center;
-      background-size: 250px 250px;
+      background-size: 200px 200px;
     }
     
     .transcript-table {
@@ -161,25 +188,39 @@ class ResultTranscriptHtmlRenderer {
       z-index: 1;
     }
     
+    /* Prevent unwanted page breaks */
+    tr, td, div, .profile-grid, .compact-summary, .level-header, 
+    .semester-header, .courses-table, .summary-table, .graduation-box,
+    .key-box, .certification-box {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    
+    /* Allow natural flow - no forced page breaks */
+    .academic-history-section {
+      page-break-before: avoid;
+      break-before: avoid;
+    }
+    
     /* Header Styles */
     .header-cell {
-      padding: 5mm 0 2mm 0;
-      border-bottom: 2.5pt solid #1a3a5c;
+      padding: 2mm 0 1mm 0;
+      border-bottom: 2pt solid #1a3a5c;
       text-align: center;
       vertical-align: top;
     }
     
     .header-content {
       position: relative;
-      min-height: 25mm;
+      min-height: 20mm;
     }
     
     .header-logo-container {
       position: absolute;
       left: 0;
       top: 0;
-      width: 25mm;
-      height: 25mm;
+      width: 20mm;
+      height: 20mm;
     }
     
     .header-logo {
@@ -189,22 +230,22 @@ class ResultTranscriptHtmlRenderer {
     }
     
     .header-text-container {
-      margin: 0 30mm;
+      margin: 0 25mm;
       text-align: center;
       text-transform: uppercase;
     }
     
     .header-institution {
-      font-size: 16pt;
+      font-size: 14pt;
       font-weight: bold;
       color: #1a3a5c;
-      margin-bottom: 2mm;
+      margin-bottom: 1mm;
     }
     
     .header-title {
-      font-size: 14pt;
+      font-size: 12pt;
       font-weight: bold;
-      margin: 2mm 0;
+      margin: 1mm 0;
       color: #1a3a5c;
       letter-spacing: 2px;
     }
@@ -213,23 +254,22 @@ class ResultTranscriptHtmlRenderer {
       position: absolute;
       right: 0;
       top: 0;
-      font-size: 8pt;
+      font-size: 7pt;
       text-align: right;
       line-height: 1.2;
     }
     
     /* Student Profile */
     .profile-cell {
-      padding: 4mm 2mm;
     }
     
     .profile-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 2mm;
-      padding: 2mm;
-      border: 1pt solid #1a3a5c;
-      background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+      gap: 0.5mm;
+      padding: 1mm;
+      border: 0.5pt solid #1a3a5c;
+      background: #f8f9fa;
     }
     
     .profile-item {
@@ -238,94 +278,113 @@ class ResultTranscriptHtmlRenderer {
     }
     
     .profile-label {
-      font-size: 8pt;
+      font-size: 7pt;
       font-weight: bold;
       color: #1a3a5c;
       text-transform: uppercase;
     }
     
     .profile-value {
-      font-size: 10pt;
+      font-size: 9pt;
       font-weight: bold;
-      margin-top: 0.5mm;
+      margin-top: 0.3mm;
     }
     
-    /* Academic Summary */
-    .summary-box {
-      margin: 3mm 0;
-      padding: 3mm;
-      border: 1.5pt solid #1a3a5c;
-      background: linear-gradient(to bottom, #e8f0fe, #ffffff);
+    /* Compact Summary */
+    .compact-summary {
+      margin: 1mm 0 2mm 0;
+      padding: 1.5mm;
+      border: 0.5pt solid #1a3a5c;
+      background: #f0f4f8;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
     }
     
-    .summary-title {
-      font-size: 10pt;
-      font-weight: bold;
-      color: #1a3a5c;
-      margin-bottom: 2mm;
-      text-align: center;
-      text-transform: uppercase;
-    }
-    
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 2mm;
+    .summary-stat {
       text-align: center;
     }
     
-    .summary-item {
-      padding: 2mm;
-    }
-    
-    .summary-label {
-      font-size: 8pt;
+    .summary-stat-label {
+      font-size: 7pt;
       font-weight: bold;
-      color: #666;
+      color: #555;
     }
     
-    .summary-value {
-      font-size: 14pt;
+    .summary-stat-value {
+      font-size: 11pt;
       font-weight: bold;
       color: #1a3a5c;
-      margin-top: 1mm;
     }
     
     /* Academic History */
     .section-header {
       background-color: #1a3a5c;
       color: white;
-      padding: 2mm;
+      padding: 1.5mm;
       font-weight: bold;
       text-align: left;
-      margin-top: 3mm;
+      margin: 2mm 0 1mm 0;
     }
     
-    .history-table {
+    .level-header {
+      background-color: #2a5a8c;
+      color: white;
+      font-weight: bold;
+      padding: 1.5mm;
+      margin: 2mm 0 1mm 0;
+    }
+    
+    .semester-header {
+      background-color: #d0e0f0;
+      font-weight: bold;
+      padding: 1mm 2mm;
+      margin: 1.5mm 0 1mm 0;
+    }
+    
+    .courses-table {
       width: 100%;
       border-collapse: collapse;
-      margin: 2mm 0;
-      font-size: 9pt;
+      margin: 1mm 0;
+      font-size: 8pt;
     }
     
-    .history-table th {
+    .courses-table th {
       background-color: #e8f0fe;
       color: #1a3a5c;
       font-weight: bold;
       text-align: center;
-      padding: 1.5mm;
+      padding: 1mm;
       border: 0.5pt solid #1a3a5c;
     }
     
-    .history-table td {
-      padding: 1.5mm;
+    .courses-table td {
+      padding: 0.8mm;
       border: 0.5pt solid #999;
       text-align: center;
     }
     
-    .level-header {
-      background-color: #d0e0f0;
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1mm 0 2mm 0;
+      font-size: 8pt;
+      background-color: #f8f9fa;
+    }
+    
+    .summary-table th {
+      background-color: #2a5a8c;
+      color: white;
       font-weight: bold;
+      text-align: center;
+      padding: 1mm;
+      border: 0.5pt solid #1a3a5c;
+    }
+    
+    .summary-table td {
+      padding: 1mm;
+      border: 0.5pt solid #999;
+      text-align: center;
     }
     
     .text-left {
@@ -346,25 +405,25 @@ class ResultTranscriptHtmlRenderer {
     
     /* Graduation Section */
     .graduation-box {
-      margin: 5mm 0 3mm 0;
-      padding: 3mm;
-      border: 2pt solid #1a3a5c;
-      background: linear-gradient(to bottom, #f0f8ff, #ffffff);
+      margin: 3mm 0 2mm 0;
+      padding: 2mm;
+      border: 1.5pt solid #1a3a5c;
+      background: #f0f8ff;
       text-align: center;
     }
     
     .graduation-title {
-      font-size: 12pt;
+      font-size: 10pt;
       font-weight: bold;
       color: #1a3a5c;
-      margin-bottom: 2mm;
+      margin-bottom: 1.5mm;
     }
     
     .graduation-details {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 3mm;
-      margin-top: 2mm;
+      gap: 2mm;
+      margin-top: 1mm;
     }
     
     .graduation-item {
@@ -373,43 +432,43 @@ class ResultTranscriptHtmlRenderer {
     
     /* Key Section */
     .key-box {
-      margin: 3mm 0;
-      padding: 2mm;
-      border: 1pt solid #999;
+      margin: 2mm 0;
+      padding: 1.5mm;
+      border: 0.5pt solid #999;
       background-color: #f9f9f9;
-      font-size: 8pt;
+      font-size: 7pt;
     }
     
     .key-title {
       font-weight: bold;
-      margin-bottom: 1mm;
+      margin-bottom: 0.5mm;
     }
     
     .key-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1mm;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5mm;
     }
     
     /* Certification */
     .certification-box {
-      margin: 5mm 0;
-      padding: 3mm;
-      border-top: 1pt solid #1a3a5c;
-      border-bottom: 1pt solid #1a3a5c;
+      margin: 3mm 0;
+      padding: 2mm;
+      border-top: 0.5pt solid #1a3a5c;
+      border-bottom: 0.5pt solid #1a3a5c;
     }
     
     .certification-text {
       text-align: justify;
-      font-size: 9pt;
-      line-height: 1.5;
-      margin-bottom: 5mm;
+      font-size: 8pt;
+      line-height: 1.4;
+      margin-bottom: 3mm;
     }
     
     .signatures-container {
       display: flex;
       justify-content: space-between;
-      margin-top: 5mm;
+      margin-top: 3mm;
     }
     
     .signature-block {
@@ -421,31 +480,32 @@ class ResultTranscriptHtmlRenderer {
       border-top: 0.5pt solid #000;
       width: 100%;
       margin: 0 auto;
-      height: 6mm;
+      height: 5mm;
     }
     
     .signature-name {
       font-weight: bold;
-      font-size: 9pt;
-      margin-top: 1mm;
+      font-size: 8pt;
+      margin-top: 0.5mm;
     }
     
     .signature-title {
-      font-size: 8pt;
+      font-size: 7pt;
     }
     
     /* Footer */
     .footer-cell {
-      padding-top: 3mm;
+      padding-top: 2mm;
       border-top: 0.5pt solid #ccc;
-      font-size: 7pt;
+      font-size: 6pt;
       text-align: center;
       color: #666;
     }
     
     @media print {
-      .page-break {
-        page-break-before: always;
+      body {
+        margin: 0;
+        padding: 0;
       }
       
       .watermark {
@@ -549,33 +609,30 @@ class ResultTranscriptHtmlRenderer {
   }
 
   /**
-   * Render academic summary
+   * Render compact summary (replaces the old academic summary)
    */
-  renderAcademicSummary(studentInfo, finalCGPA, totalCredits, degreeClass) {
-    return ``
+  renderCompactSummary(finalCGPA, totalCredits, degreeClass, studentInfo) {
+    return
     return `
 <tbody>
   <tr>
     <td>
-      <div class="summary-box">
-        <div class="summary-title">Academic Summary</div>
-        <div class="summary-grid">
-          <div class="summary-item">
-            <div class="summary-label">Final CGPA</div>
-            <div class="summary-value">${finalCGPA.toFixed(2)}</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-label">Total Credits</div>
-            <div class="summary-value">${totalCredits}</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-label">Degree Classification</div>
-            <div class="summary-value" style="font-size: 10pt;">${degreeClass}</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-label">Status</div>
-            <div class="summary-value" style="font-size: 10pt;">${studentInfo.academicStatus || 'Active'}</div>
-          </div>
+      <div class="compact-summary">
+        <div class="summary-stat">
+          <div class="summary-stat-label">Final CGPA</div>
+          <div class="summary-stat-value">${finalCGPA.toFixed(2)}</div>
+        </div>
+        <div class="summary-stat">
+          <div class="summary-stat-label">Total Credits</div>
+          <div class="summary-stat-value">${totalCredits}</div>
+        </div>
+        <div class="summary-stat">
+          <div class="summary-stat-label">Classification</div>
+          <div class="summary-stat-value" style="font-size: 9pt;">${degreeClass}</div>
+        </div>
+        <div class="summary-stat">
+          <div class="summary-stat-label">Status</div>
+          <div class="summary-stat-value" style="font-size: 9pt;">${studentInfo.academicStatus || 'Active'}</div>
         </div>
       </div>
     </td>
@@ -584,55 +641,43 @@ class ResultTranscriptHtmlRenderer {
   }
 
   /**
-   * Render academic history by session and level
+   * Render courses table for a semester
    */
-  renderAcademicHistory(groupedHistory, departmentDetails) {
-    if (!groupedHistory || Object.keys(groupedHistory).length === 0) {
-      return `
-<tbody>
-  <tr>
-    <td>
-      <div style="text-align: center; padding: 5mm;">No academic history available</div>
-    </td>
-  </tr>
-</tbody>`;
+  renderCoursesTable(courses) {
+    if (!courses || courses.length === 0) {
+      return '<tr><td colspan="7" style="text-align: center; padding: 1.5mm;">No courses available for this semester</td></tr>';
     }
 
-    let historyHTML = '';
-    
-    Object.values(groupedHistory).forEach((group) => {
-      const semesterRows = group.semesters.map((sem, index) => `
+    return courses.map((course, index) => {
+      const score = course.score || course.totalScore || 0;
+      const gradeLetter = this.getGradeLetter(score);
+      const gradePoint = this.getGradePoint(score);
+      const creditUnits = course.unit || course.creditUnits || course.creditHours || course.units || 0;
+      const creditPoints = gradePoint * creditUnits;
+      
+      return `
         <tr>
           <td class="text-center">${index + 1}</td>
-          <td class="text-left">${capitalizeFirstLetter(sem.semester || '-')}</td>
-          <td class="text-center">${sem.tcp || 0}</td>
-          <td class="text-center">${sem.tnu || 0}</td>
-          <td class="text-center text-bold">${sem.gpa ? sem.gpa.toFixed(2) : '0.00'}</td>
-          <td class="text-center text-bold">${sem.cgpa ? sem.cgpa.toFixed(2) : '0.00'}</td>
-          <td class="text-left">${sem.remark || '-'}</td>
+          <td class="text-left">${course.courseCode || '-'}</td>
+          <td class="text-left">${course.title || course.courseName || '-'}</td>
+          <td class="text-center">${creditUnits}</td>
+          <td class="text-center">${score}${gradeLetter !== '-' ? '%' : ''}</td>
+          <td class="text-center text-bold">${gradeLetter}</td>
+          <td class="text-center">${gradePoint.toFixed(1)}</td>
+          <td class="text-center">${creditPoints.toFixed(1)}</td>
         </tr>
-      `).join('');
-      
-      historyHTML += `
-      <tr class="level-header">
-        <td colspan="7" style="padding: 2mm;">
-          <strong>${group.session} Session - ${convertToPart(group.level)} Level</strong>
-        </td>
-      </tr>
-      ${semesterRows}
-      <tr><td colspan="7" style="padding: 1mm;"></td></tr>
-    `;
-    });
+      `;
+    }).join('');
+  }
 
+  /**
+   * Render semester summary table
+   */
+  renderSemesterSummary(semester) {
     return `
-<tbody>
-  <tr>
-    <td>
-      <div class="section-header">ACADEMIC HISTORY</div>
-      <table class="history-table">
+      <table class="summary-table">
         <thead>
           <tr>
-            <th>S/N</th>
             <th>Semester</th>
             <th>TCP</th>
             <th>TNU</th>
@@ -642,9 +687,88 @@ class ResultTranscriptHtmlRenderer {
           </tr>
         </thead>
         <tbody>
-          ${historyHTML}
+          <tr>
+            <td class="text-center">${capitalizeFirstLetter(semester.semester || '-')}</td>
+            <td class="text-center">${semester.tcp || 0}</td>
+            <td class="text-center">${semester.tnu || 0}</td>
+            <td class="text-center text-bold">${semester.gpa ? semester.gpa.toFixed(2) : '0.00'}</td>
+            <td class="text-center text-bold">${semester.cgpa ? semester.cgpa.toFixed(2) : '0.00'}</td>
+            <td class="text-left">${semester.remark || '-'}</td>
+          </tr>
         </tbody>
       </table>
+    `;
+  }
+
+  /**
+   * Render academic history by session and level - NO PAGE BREAKS
+   */
+  renderAcademicHistory(groupedHistory, departmentDetails) {
+    if (!groupedHistory || Object.keys(groupedHistory).length === 0) {
+      return `
+<tbody>
+  <tr>
+    <td>
+      <div style="text-align: center; padding: 3mm;">No academic history available</div>
+    </td>
+  </tr>
+</tbody>`;
+    }
+
+    let historyHTML = '<div class="academic-history-section">';
+    
+    Object.values(groupedHistory).forEach((group) => {
+      const semesterContent = group.semesters.map((sem) => {
+            // Process courses
+            if (sem.courses && sem.courses.length) {
+              sem.courses = sem.courses.map((v, i) => ({ ...v, ...v.courseId, status: v.status }));
+              sem.courses = normalizeCourses(sem.courses);
+            }
+        return `
+          <div>
+            <div class="semester-header">
+              ${capitalizeFirstLetter(sem.semester)} Semester
+            </div>
+            
+            <table class="courses-table">
+              <thead>
+                <tr>
+                  <th>S/N</th>
+                  <th>Course Code</th>
+                  <th>Course Title</th>
+                  <th>Units</th>
+                  <th>Score</th>
+                  <th>Grade</th>
+                  <th>Grade Point</th>
+                  <th>Credit Points</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${this.renderCoursesTable(sem.courses)}
+              </tbody>
+            </table>
+            
+            ${this.renderSemesterSummary(sem)}
+          </div>
+        `;
+      }).join('');
+      
+      historyHTML += `
+        <div class="level-header">
+          ${group.session} Session - ${convertToPart(group.level)} Level
+        </div>
+        ${semesterContent}
+      `;
+    });
+    
+    historyHTML += '</div>';
+
+    return `
+<tbody>
+  <tr>
+    <td>
+      <div class="section-header">ACADEMIC HISTORY</div>
+      ${historyHTML}
     </td>
   </tr>
 </tbody>`;
@@ -667,19 +791,19 @@ class ResultTranscriptHtmlRenderer {
         <div class="graduation-details">
           <div class="graduation-item">
             <div class="profile-label">Degree Awarded</div>
-            <div style="font-weight: bold; margin-top: 1mm;">${graduationInfo.degreeAwarded || 'Bachelor of Science'}</div>
+            <div style="font-weight: bold; margin-top: 0.5mm;">${graduationInfo.degreeAwarded || 'Bachelor of Science'}</div>
           </div>
           <div class="graduation-item">
             <div class="profile-label">Classification</div>
-            <div style="font-weight: bold; margin-top: 1mm;">${degreeClass}</div>
+            <div style="font-weight: bold; margin-top: 0.5mm;">${degreeClass}</div>
           </div>
           <div class="graduation-item">
             <div class="profile-label">Graduation Date</div>
-            <div style="font-weight: bold; margin-top: 1mm;">${graduationDate ? this.formatDateWithOrdinal(graduationDate) : 'To be determined'}</div>
+            <div style="font-weight: bold; margin-top: 0.5mm;">${graduationDate ? this.formatDateWithOrdinal(graduationDate) : 'To be determined'}</div>
           </div>
           <div class="graduation-item">
             <div class="profile-label">Convocation</div>
-            <div style="font-weight: bold; margin-top: 1mm;">${graduationInfo.convocationYear || 'TBD'}</div>
+            <div style="font-weight: bold; margin-top: 0.5mm;">${graduationInfo.convocationYear || 'TBD'}</div>
           </div>
         </div>
       </div>
@@ -699,14 +823,14 @@ class ResultTranscriptHtmlRenderer {
       <div class="key-box">
         <div class="key-title">KEY TO GRADING SYSTEM</div>
         <div class="key-grid">
-          <div><strong>A</strong> (70-100%) = 5.0 pts - Excellent</div>
-          <div><strong>B</strong> (60-69%) = 4.0 pts - Very Good</div>
-          <div><strong>C</strong> (50-59%) = 3.0 pts - Good</div>
-          <div><strong>D</strong> (45-49%) = 2.0 pts - Fair</div>
-          <div><strong>E</strong> (40-44%) = 1.0 pts - Pass</div>
-          <div><strong>F</strong> (0-39%) = 0.0 pts - Fail</div>
+          <div><strong>A</strong> (70-100%) = 5.0 pts</div>
+          <div><strong>B</strong> (60-69%) = 4.0 pts</div>
+          <div><strong>C</strong> (50-59%) = 3.0 pts</div>
+          <div><strong>D</strong> (45-49%) = 2.0 pts</div>
+          <div><strong>E</strong> (40-44%) = 1.0 pts</div>
+          <div><strong>F</strong> (0-39%) = 0.0 pts</div>
         </div>
-        <div style="margin-top: 2mm;">
+        <div style="margin-top: 1mm;">
           <strong>GPA:</strong> Grade Point Average | <strong>CGPA:</strong> Cumulative Grade Point Average | 
           <strong>TCP:</strong> Total Credit Points | <strong>TNU:</strong> Total Number of Units
         </div>
@@ -754,7 +878,7 @@ class ResultTranscriptHtmlRenderer {
           </div>
         </div>
         
-        <div style="text-align: center; margin-top: 5mm; font-size: 7pt; color: #666;">
+        <div style="text-align: center; margin-top: 3mm; font-size: 6.5pt; color: #666;">
           This transcript is official only when it bears the University seal and authorized signature.
           ${graduationDate ? `<br>Issued: ${this.formatDateWithOrdinal(new Date())}` : ''}
         </div>

@@ -1,5 +1,5 @@
 import express from "express";
-import authenticate from "../../middlewares/authenticate.js";
+import authenticate from "#middlewares/authenticate.js";
 import { feedbackController } from "./feedback.controller.js";
 
 const router = express.Router();

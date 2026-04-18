@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import { faker } from "@faker-js/faker";
-import userModel from "../user.model.js";
-import Admin from "../../admin/admin.model.js";
-import lecturerModel from "../../lecturer/lecturer.model.js";
-import studentModel from "../../student/student.model.js";
-import { TEST_DB } from "../../../config/db.js";
+import userModel from "#domain/user/user.model.js";
+import Admin from "#domain/admin/admin.model.js";
+import lecturerModel from "#domain/user/lecturer/lecturer.model.js";
+import studentModel from "#domain/user/student/student.model.js";
+import { TEST_DB } from "#config/db.js";
 
 // ==================== CONFIGURATION ====================
 // Connect to your database (set MONGODB_URI in .env or replace directly)

@@ -1,9 +1,9 @@
 // computation/services/ReportService.js
-import { resolveUserName } from "../../../utils/resolveUserName.js";
-import { capitalizeFirstLetter } from "../../../utils/StringUtils.js";
-import { queueNotification } from "../../../workers/department.queue.js";
-import AppError from "../../errors/AppError.js";
-import ComputationSummary from "../models/computation.model.js";
+import { resolveUserName } from "#utils/resolveUserName.js";
+import { capitalizeFirstLetter } from "#utils/StringUtils.js";
+import { queueNotification } from "#workers/department.queue.js";
+import AppError from "#shared/errors/AppError.js";
+import ComputationSummary from "#domain/computation/models/computation.model.js";
 
 class ReportService {
     /**

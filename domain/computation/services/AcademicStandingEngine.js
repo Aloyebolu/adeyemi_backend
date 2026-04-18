@@ -1,5 +1,5 @@
 // computation/services/AcademicStandingEngine.js
-import { ACADEMIC_RULES, STUDENT_STATUS, REMARK_CATEGORIES, SUSPENSION_REASONS } from "../utils/computationConstants.js";
+import { ACADEMIC_RULES, STUDENT_STATUS, REMARK_CATEGORIES, SUSPENSION_REASONS } from "#domain/computation/utils/computationConstants.js";
 
 class AcademicStandingEngine {
 

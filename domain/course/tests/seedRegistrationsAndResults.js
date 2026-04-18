@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 import { faker } from "@faker-js/faker";
-import { TEST_DB } from "../../../config/db.js";
-import lecturerModel from "../../lecturer/lecturer.model.js";
-import studentModel from "../../student/student.model.js";
-import courseModel from "../course.model.js";
-import courseRegistrationModel from "../courseRegistration.model.js";
-import Result from "../../result/result.model.js";
+import { TEST_DB } from "#config/db.js";
+import lecturerModel from "#domain/user/lecturer/lecturer.model.js";
+import studentModel from "#domain/user/student/student.model.js";
+import courseModel from "#domain/course/course.model.js";
+import courseRegistrationModel from "#domain/course/courseRegistration.model.js";
+import Result from "#domain/result/result.model.js";
 
 // Try to import AcademicSemester model – if not found, define a minimal schema
 let AcademicSemester;

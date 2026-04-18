@@ -4,9 +4,11 @@ import dotenv from "dotenv";
 // import { processDepartmentJob } from "../domain/result/computation.controller.js";
 import { sendNotificationCore } from "../domain/notification/notification.controller.js";
 import departmentModel from "../domain/department/department.model.js";
-import { processDepartmentJob } from "../domain/computation/workers/computation.controller.js";
+import { processDepartmentJob } from "../domain/computation/controllers/computation.controller.js";
 import MasterComputation from "../domain/computation/models/masterComputation.model.js";
 import { sendEmail } from "../utils/sendEmail.js";
+import { WhatsAppWorkerService } from "../domain/notification/services/whatsapp/whatsapp.service.js";
+import { v4 as uuidv4 } from 'uuid';
 
 dotenv.config();
 
@@ -41,7 +43,7 @@ async function startWorker() {
   // Define department computation job
   agenda.define(
     "department-computation",
-    { priority: "high", concurrency: 1,lockLifetime: 600000, lockLimit: 1  },
+    { priority: "high", concurrency: 1, lockLifetime: 600000, lockLimit: 1 },
     async job => {
       console.log("[Worker] >>> START job:", job.attrs._id);
 
@@ -164,8 +166,14 @@ async function startWorker() {
   // Monitor
   setInterval(async () => {
     const pending = await agenda.jobs({ nextRunAt: { $ne: null }, lockedAt: null });
-    console.log(`[Monitor] Pending jobs: ${pending.length}`);
+    // console.log(`[Monitor] Pending jobs: ${pending.length}`);
   }, 10000);
+
+
+
+  const workerId = process.env.WORKER_ID || uuidv4();
+  const workerService = new WhatsAppWorkerService(workerId);
+  workerService.start();
 }
 
 (async () => {

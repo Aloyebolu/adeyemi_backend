@@ -1,19 +1,19 @@
-import buildResponse from "../../../utils/responseBuilder.js";
-import departmentModel from "../../department/department.model.js";
-import CarryoverCourse from "../../carryover/carryover.model.js";
-import ComputationSummary from "../models/computation.model.js";
-import studentModel from "../../student/student.model.js";
+import buildResponse from "#utils/responseBuilder.js";
+import departmentModel from "#domain/department/department.model.js";
+import CarryoverCourse from "#domain/user/student/carryover/carryover.model.js";
+import ComputationSummary from "#domain/computation/models/computation.model.js";
+import studentModel from "#domain/user/student/student.model.js";
 // IMPORTANT: Import Faculty model to register it
-import "../../faculty/faculty.model.js";
+import "#domain/faculty/faculty.model.js";
 import mongoose from "mongoose";
-import SemesterService from "../../semester/semester.service.js";
-import { resolveUserName } from "../../../utils/resolveUserName.js";
-import AppError from "../../errors/AppError.js";
-import programmeService from "../../programme/programme.service.js";
+import SemesterService from "#domain/semester/semester.service.js";
+import { resolveUserName } from "#utils/resolveUserName.js";
+import AppError from "#shared/errors/AppError.js";
+import programmeService from "#domain/programme/programme.service.js";
 import facultyModel from "../../faculty/faculty.model.js";
-import lecturerModel from "../../lecturer/lecturer.model.js";
-import userModel from "../../user/user.model.js";
-import departmentService from "../../department/department.service.js";
+import lecturerModel from "#domain/user/lecturer/lecturer.model.js";
+import userModel from "#domain/user/user.model.js";
+import departmentService from "#domain/department/department.service.js";
 
 /**
  * Get department leadership details (Dean and HOD)
@@ -44,7 +44,6 @@ export async function getDepartmentLeadershipDetails(department, activeSemester,
         _id: new mongoose.Types.ObjectId(department.faculty)
       });
 
-      console.log(`✅ Found faculty: ${faculty?.name || 'Unknown'}`);
     }
 
     // 4. Get HOD details using raw queries
@@ -70,7 +69,6 @@ export async function getDepartmentLeadershipDetails(department, activeSemester,
           signature: hodLecturer.signature || '',
           isHOD: hodLecturer.isHOD || true
         };
-        console.log(`✅ Found HOD: ${hodDetails.name}`);
       }
     }
 
@@ -98,7 +96,6 @@ export async function getDepartmentLeadershipDetails(department, activeSemester,
           signature: deanLecturer.signature || '',
           isDean: deanLecturer.isDean || true
         };
-        console.log(`✅ Found Dean: ${deanDetails.name}`);
       }
     }
 
@@ -113,7 +110,6 @@ export async function getDepartmentLeadershipDetails(department, activeSemester,
       activeDepartmentSemester
     );
 
-    console.log(`✅ Department details built successfully for ${department.name}`);
     return departmentDetails;
 
   } catch (error) {

@@ -1,8 +1,8 @@
 // src/modules/ai/controllers/ai.chat.controller.js
 
 import { v4 as uuidv4 } from 'uuid';
-import orchestrator from '../services/ai.orchestrator.service.js';
-import catchAsync from '../../../utils/catchAsync.js';
+import orchestrator from '#domain/ai/services/ai.orchestrator.service.js';
+import catchAsync from '#utils/catchAsync.js';
 
 /**
  * Stream chat response via Server-Sent Events

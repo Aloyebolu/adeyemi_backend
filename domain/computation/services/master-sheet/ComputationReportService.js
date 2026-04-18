@@ -1,21 +1,14 @@
 // computationReport.service.js
 import puppeteer from "puppeteer";
-import fs from "fs/promises";
-import { createReadStream } from "fs";
-import path from "path";
-import crypto from "crypto";
 import { fileURLToPath } from "url";
-import studentSemesterResultModel from "../../../student/student.semseterResult.model.js";
-import CarryoverCourse from "../../../carryover/carryover.model.js";
-import ComputationSummary from "../../models/computation.model.js";
-import MasterComputation from "../../models/masterComputation.model.js";
-import AppError from "../../../errors/AppError.js";
+import path from "path";
+import ComputationSummary from "#domain/computation/models/computation.model.js";
+import MasterComputation from "#domain/computation/models/masterComputation.model.js";
+import AppError from "#shared/errors/AppError.js";
 import MasterSheetHtmlRenderer from "./MasterSheetHtmlRenderer.js";
-import pdf from "html-pdf-node";
-
-// computationReport.service.js
-// import fs from "fs/promises";
-
+import FileService from "#domain/files/files.service.js";
+import CarryoverCourse from "#domain/user/student/carryover/carryover.model.js";
+import studentSemesterResultModel from "#domain/user/student/student.semseterResult.model.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,25 +16,11 @@ const __dirname = path.dirname(__filename);
 class ComputationReportService {
   
   constructor() {
-    this.cacheDir = path.join(__dirname, "../../temp/cache/reports");
-    this.cacheExpiry = 24 * 60 * 60 * 1000; // 24 hours
-    this.browser = null; // ✅ Reusable browser instance
-    this.ensureCacheDirectory();
+    this.browser = null; // Reusable browser instance
   }
 
   /**
-   * Ensure cache directory exists
-   */
-  async ensureCacheDirectory() {
-    try {
-      await fs.access(this.cacheDir);
-    } catch {
-      await fs.mkdir(this.cacheDir, { recursive: true, mode: 0o755 });
-    }
-  }
-
-  /**
-   * ✅ Get or create Puppeteer browser instance
+   * Get or create Puppeteer browser instance
    */
   async getBrowser() {
     if (!this.browser) {
@@ -60,75 +39,13 @@ class ComputationReportService {
   }
 
   /**
-   * ✅ Close browser instance (call on app shutdown)
+   * Close browser instance (call on app shutdown)
    */
   async closeBrowser() {
     if (this.browser) {
       await this.browser.close();
       this.browser = null;
       console.log("✅ Puppeteer browser closed");
-    }
-  }
-
-  /**
-   * Generate cache key from parameters
-   */
-  generateCacheKey(summaryId, level, type, options = {}) {
-    const data = {
-      summaryId,
-      level,
-      type,
-      ...options
-    };
-    return crypto.createHash("md5").update(JSON.stringify(data)).digest("hex");
-  }
-
-  /**
-   * Check if cached file exists and is valid
-   */
-  async getCachedFile(cacheKey) {
-    try {
-      const filePath = path.join(this.cacheDir, `${cacheKey}.pdf`);
-      const stats = await fs.stat(filePath);
-      
-      if (Date.now() - stats.mtimeMs > this.cacheExpiry) {
-        await fs.unlink(filePath).catch(() => {});
-        return null;
-      }
-      
-      return filePath;
-    } catch (error) {
-      return null;
-    }
-  }
-
-  /**
-   * Save file to cache
-   */
-  async saveToCache(cacheKey, buffer) {
-    const filePath = path.join(this.cacheDir, `${cacheKey}.pdf`);
-    await fs.writeFile(filePath, buffer);
-    return filePath;
-  }
-
-  /**
-   * Clean up old cache files
-   */
-  async cleanupCache() {
-    try {
-      const files = await fs.readdir(this.cacheDir);
-      const now = Date.now();
-      
-      for (const file of files) {
-        const filePath = path.join(this.cacheDir, file);
-        const stats = await fs.stat(filePath);
-        
-        if (now - stats.mtimeMs > this.cacheExpiry) {
-          await fs.unlink(filePath).catch(() => {});
-        }
-      }
-    } catch (error) {
-      console.error("Cache cleanup error:", error);
     }
   }
 
@@ -327,7 +244,7 @@ class ComputationReportService {
   }
 
   /**
-   * ✅ Generate PDF using Puppeteer (simulates Chrome print)
+   * Generate PDF using Puppeteer (simulates Chrome print)
    */
   async generatePDF(html, options = {}) {
     const browser = await this.getBrowser();
@@ -347,10 +264,10 @@ class ComputationReportService {
         timeout: 30000 
       });
 
-      // ✅ Wait for any images/fonts to load
+      // Wait for any images/fonts to load
       await page.evaluateHandle("document.fonts.ready");
 
-      // ✅ Generate PDF with Chrome's print emulation
+      // Generate PDF with Chrome's print emulation
       const pdfBuffer = await page.pdf({
         format: "A4",
         printBackground: true,
@@ -373,19 +290,25 @@ class ComputationReportService {
   }
 
   /**
-   * Generate master sheet PDF with caching
+   * Generate master sheet PDF with caching (delegated to FileService)
    */
   async generateMasterSheetPDF(summaryId, level, queryParams = {}) {
     try {
-      const cacheKey = this.generateCacheKey(summaryId, level, "pdf", queryParams);
+      // Generate cache key using FileService
+      const cacheKey = FileService.generateCacheKey('masterSheet', {
+        summaryId,
+        level,
+        type: "pdf",
+        ...queryParams
+      });
       
-      // Check cache (skip if force refresh requested)
+      // Check cache using FileService
       if (!queryParams.forceRefresh) {
-        const cachedFile = await this.getCachedFile(cacheKey);
-        if (cachedFile) {
+        const cached = await FileService.getCachedFile(cacheKey);
+        if (cached) {
           console.log(`📦 Serving from cache: ${cacheKey}`);
           return {
-            filePath: cachedFile,
+            buffer: cached.buffer,
             filename: `MasterSheet_Level_${level}_${summaryId.slice(-8)}.pdf`,
             fromCache: true
           };
@@ -404,17 +327,14 @@ class ComputationReportService {
         masterComputationId: summaryId
       });
 
-      // ✅ No need to wrap - the renderer already returns full HTML
+      // Generate PDF buffer
       const pdfBuffer = await this.generatePDF(html);
       
-      // Save to cache
-      const filePath = await this.saveToCache(cacheKey, pdfBuffer);
-      
-      // Cleanup old cache files (async, don't wait)
-      this.cleanupCache().catch(console.error);
+      // Save to cache using FileService
+      await FileService.saveToCache(cacheKey, pdfBuffer);
 
       return {
-        filePath,
+        buffer: pdfBuffer,
         filename: `MasterSheet_Level_${level}_${summaryId.slice(-8)}.pdf`,
         fromCache: false
       };
@@ -429,6 +349,23 @@ class ComputationReportService {
    */
   async generateMasterSheetDOCX(summaryId, level, queryParams = {}) {
     try {
+      const cacheKey = FileService.generateCacheKey('masterSheetDocx', {
+        summaryId,
+        level,
+        ...queryParams
+      });
+
+      if (!queryParams.forceRefresh) {
+        const cached = await FileService.getCachedFile(cacheKey);
+        if (cached) {
+          return {
+            buffer: cached.buffer,
+            filename: `MasterSheet_Level_${level}_${summaryId.slice(-8)}.docx`,
+            fromCache: true
+          };
+        }
+      }
+
       const { summary } = await this.prepareMasterSheetData(summaryId, level, queryParams);
       
       const wordHtml = MasterSheetWordSimpleRenderer.render({
@@ -461,7 +398,13 @@ class ComputationReportService {
         throw new Error("Generated DOCX buffer is empty");
       }
 
-      return Buffer.from(buffer);
+      await FileService.saveToCache(cacheKey, buffer);
+
+      return {
+        buffer: Buffer.from(buffer),
+        filename: `MasterSheet_Level_${level}_${summaryId.slice(-8)}.docx`,
+        fromCache: false
+      };
     } catch (error) {
       throw new AppError(`Failed to generate DOCX: ${error.message}`, 500);
     }
@@ -495,31 +438,17 @@ class ComputationReportService {
   }
 
   /**
-   * Clear cache for specific summary
+   * Clear cache for specific summary using FileService
    */
   async clearSummaryCache(summaryId) {
-    try {
-      const files = await fs.readdir(this.cacheDir);
-      let clearedCount = 0;
-      
-      for (const file of files) {
-        if (file.includes(summaryId)) {
-          await fs.unlink(path.join(this.cacheDir, file));
-          clearedCount++;
-        }
-      }
-      
-      return { cleared: clearedCount };
-    } catch (error) {
-      throw new AppError(`Failed to clear cache: ${error.message}`, 500);
-    }
+    return await FileService.invalidateCachePattern(summaryId.toString());
   }
 }
 
-// ✅ Create singleton instance
+// Create singleton instance
 const service = new ComputationReportService();
 
-// ✅ Handle graceful shutdown
+// Handle graceful shutdown
 process.on("SIGTERM", async () => {
   await service.closeBrowser();
 });

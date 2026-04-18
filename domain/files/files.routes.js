@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import FileController from "./files.controller.js";
-import authenticate from "../../middlewares/authenticate.js";
+import authenticate from "#middlewares/authenticate.js";
 
 // Single file upload
 router.post("/upload", authenticate(), FileController.upload);

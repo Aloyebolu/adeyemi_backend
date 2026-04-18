@@ -1,9 +1,11 @@
-import { resolveUserName } from "../../../../utils/resolveUserName.js";
-import courseService from "../../../course/course.service.js";
-import courseRegistrationService from "../../../course/courseRegistration.service.js";
-import ResultService from "../../../result/result.service.js";
-import userService from "../../../user/user.service.js";
+import { resolveUserName } from "#utils/resolveUserName.js";
+import courseService from "#domain/course/course.service.js";
+import courseRegistrationService from "#domain/course/courseRegistration.service.js";
+import ResultService from "#domain/result/result.service.js";
+import userService from "#domain/user/user.service.js";
+import AbuseWorkflow from "./AbuseWorkflow.js";
 import CourseRegistrationWorkflow from "./CourseRegistrationWorkflow.js";
+import FunChatWorkflow from "./FunChatWorkflow.js";
 import HelpWorkflow from "./HelpWorkflow.js";
 import StudentResultWorkflow from "./StudentResultWorkflow.js";
 
@@ -28,6 +30,8 @@ class UniversityAssistantSystem {
             'VIEW_GRADES': new GradesWorkflow(),
             'HELP': new HelpWorkflow(),
             'RESULT': new StudentResultWorkflow(),
+            'ABUSE_DETECTED': new AbuseWorkflow(),
+            'FUN_CHAT': new FunChatWorkflow(),
             // 'PAYMENT_PROCESSING': new PaymentWorkflow(),
             // 'LIBRARY_BOOKING': new LibraryBookingWorkflow(),
             // 'HOSTEL_MAINTENANCE': new HostelMaintenanceWorkflow(),
@@ -48,6 +52,33 @@ class UniversityAssistantSystem {
     initializeIntentMatchers() {
         return {
 
+            'ABUSE_DETECTED': {
+                patterns: [
+                    /stupid/i, /idiot/i, /dumb/i, /useless/i, /hate/i, /suck/i,
+                    /worthless/i, /trash/i, /terrible/i, /annoying/i, /frustrating/i,
+                    /fuck/i, /shit/i, /damn/i, /hell/i, /crap/i, /moron/i,
+                    /incompetent/i, /pathetic/i, /horrible/i, /awful/i, /disgusting/i,
+                    /fool/i, /jerk/i, /bastard/i, /screw you/i, /shut up/i,
+                    /kill/i, /die/i, /hate you/i, /worst/i, /stupidt/i, /mad/i, /crazy/i
+                ],
+                requiredContext: ['studentId'],
+                confidence: 0.85,
+                priority: 10  // High priority - intercepts before other intents
+            },
+            'FUN_CHAT': {
+                patterns: [
+                    /joke/i, /funny/i, /lol/i, /haha/i, /😂/i, /🤣/i,
+                    /sing/i, /dance/i, /play/i, /game/i, /trivia/i,
+                    /riddle/i, /puzzle/i, /cool/i, /awesome/i, /amazing/i,
+                    /tell me something fun/i, /entertain/i, /bored/i,
+                    /happy/i, /excited/i, /woohoo/i, /yay/i, /🎉/i,
+                    /party/i, /fun fact/i, /did you know/i, /interesting/i,
+                    /👻/i, /🎈/i, /🎮/i, /🎲/i, /🎯/i
+                ],
+                requiredContext: ['studentId'],
+                confidence: 0.7,  // Lower to avoid conflicting with serious intents
+                priority: 5
+            },
             'HELP': {
                 patterns: [/help/i],
                 requiredContext: ['studentId'],
@@ -177,12 +208,21 @@ class UniversityAssistantSystem {
     async processMessage(message, sock, notificationManager) {
         let conversationState;
         try {
+
+            function extractContactName(remoteJid) {
+                // Extract phone number from JID
+                const phoneNumber = remoteJid.split('@')[0];
+
+                // Try to get contact name from WhatsApp
+                // You can enhance this by checking sock.contacts
+                return `+${phoneNumber}`;
+            }
             const text = this.extractMessageText(message);
             if (!text) return;
 
             const senderNumber = this.extractSenderNumber(message);
             const remoteJid = message.key.remoteJid;
-            const contactName = notificationManager.extractContactName(remoteJid);
+            const contactName = extractContactName(remoteJid);
 
             console.log(`💬 Processing message from ${contactName} (${senderNumber}): ${text}`);
 
@@ -281,8 +321,9 @@ class UniversityAssistantSystem {
                 };
                 await this.sendResponse(sock, remoteJid, result.prompt);
             } else {
-                const formattedResponse = this.formatResponse(result.data, intent, userContext);
-                await this.sendResponse(sock, remoteJid, formattedResponse);
+                console.log(result)
+                const formattedResponse = this.formatResponse(result.data || result.message, intent, userContext);
+                await this.sendResponse(sock, remoteJid, formattedResponse );
 
                 // Log analytics
                 await this.services.analyticsService.logInteraction({
@@ -330,6 +371,7 @@ class UniversityAssistantSystem {
             step,
             userResponse,
             collectedData,
+            conversationState,
             userContext: conversationState.userContext,
             services: this.services,
             streamCallback,  // <-- Add this

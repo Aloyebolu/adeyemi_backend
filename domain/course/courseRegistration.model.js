@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { SYSTEM_USER_ID } from "../../config/system.js";
-import AppError from "../errors/AppError.js";
-import studentModel from "../student/student.model.js";
+import { SYSTEM_USER_ID } from "#config/system.js";
+import AppError from "#shared/errors/AppError.js";
+import studentModel from "#domain/user/student/student.model.js";
 import courseModel from "./course.model.js";
 
 const courseRegistrationSchema = new mongoose.Schema(

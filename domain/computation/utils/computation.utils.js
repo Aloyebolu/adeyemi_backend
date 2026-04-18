@@ -1,8 +1,8 @@
 // computation/utils/computation.utils.js
-import ComputationSummary from "../models/computation.model.js";
-import MasterComputation from "../models/masterComputation.model.js";
-import departmentModel from "../../department/department.model.js";
-import SemesterService from "../../semester/semester.service.js";
+import ComputationSummary from "#domain/computation/models/computation.model.js";
+import MasterComputation from "#domain/computation/models/masterComputation.model.js";
+import departmentModel from "#domain/department/department.model.js";
+import SemesterService from "#domain/semester/semester.service.js";
 import mongoose from "mongoose";
 
 /**

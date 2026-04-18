@@ -1,5 +1,5 @@
 // auth/services/twofa/TwoFactorManager.js
-import AppError from '../../../errors/AppError.js';
+import AppError from '#shared/errors/AppError.js';
 import crypto from 'crypto';
 import speakeasy from 'speakeasy'; // You'll need to install: npm install speakeasy
 import QRCode from 'qrcode'; // You'll need to install: npm install qrcode

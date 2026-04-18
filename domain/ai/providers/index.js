@@ -1,7 +1,7 @@
 // src/modules/ai/providers/index.js
 
 import MockAIProvider from './mock.provider.js';
-import AI_CONFIG from '../config/ai.config.js';
+import AI_CONFIG from '#domain/ai/config/ai.config.js';
 
 // Import OpenAI provider when ready
 // import OpenAIProvider from './openai.provider.js';

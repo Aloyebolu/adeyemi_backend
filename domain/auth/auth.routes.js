@@ -34,8 +34,8 @@ import {
   shadowLogin
   // ================================================================
 } from './auth.controller.js';
-import authenticate from '../../middlewares/authenticate.js';
-import validate from '../../middlewares/validate.js'; 
+import authenticate from '#middlewares/authenticate.js';
+import validate from '#middlewares/validate.js'; 
 import authValidation from './auth.validation.js'; 
 
 const router = express.Router();

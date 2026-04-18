@@ -1,0 +1,3 @@
+This is similar to the way we have faculty and department model, but these are academic units, while this is adminUnit, the admin units should capture all other non academic departments such as Registry, Library, Healt Center and more, making us have details of their head(!IMPORTANT) and more
+
+As for the head of these units, it is really really critical to avoid multiple users being the head at a time, so we have to store the departmental head only at the admin unit model

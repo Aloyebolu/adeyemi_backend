@@ -1,14 +1,14 @@
 // computation/services/CarryoverService.js
 import mongoose from "mongoose";
-import CarryoverCourse from "../../carryover/carryover.model.js";
-import studentModel from "../../student/student.model.js";
+import CarryoverCourse from "#domain/user/student/carryover/carryover.model.js";
+import studentModel from "#domain/user/student/student.model.js";
 import ResultService from "./ResultService.js";
-import { resolveUserName } from "../../../utils/resolveUserName.js";
-import AppError from "../../errors/AppError.js";
-import studentService from "../../student/student.service.js";
-import courseService from "../../course/course.service.js";
-import { SYSTEM_USER_ID } from "../../../config/system.js";
-import { normalizeCourse } from "../../course/course.normallizer.js";
+import { resolveUserName } from "#utils/resolveUserName.js";
+import AppError from "#shared/errors/AppError.js";
+import studentService from "#domain/user/student/student.service.js";
+import courseService from "#domain/course/course.service.js";
+import { SYSTEM_USER_ID } from "#config/system.js";
+import { normalizeCourse } from "#domain/course/course.normallizer.js";
 
 class CarryoverService {
 

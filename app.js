@@ -16,14 +16,14 @@ import { auditMiddleware, authAuditMiddleware } from "./domain/auditlog/index.js
 // Your existing routes
 import routes from "./routes/index.js";
 import { createServer } from "http";
-import authenticate, { blockWritesForReadOnly, resolveArchiveMode } from "./middlewares/authenticate.js";
+import authenticate, { attachRequestIntent, attachUser, blockWritesForReadOnly, resolveArchiveMode } from "./middlewares/authenticate.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import { initializeRankingDomain } from "./domain/ranking/index.js";
 import { setIO, setupFeedbackSocketServer } from "./domain/feedback/feedback.socket.js";
 import { register, httpRequestDuration } from "./metrics.js";
 import { detect_honeytoken } from "./domain/auth/services/token/HoneyToken.js";
 import { setupSocketServer } from "./domain/chat/chat.socket.js";
-import { detectRequestIntent } from "./domain/auditlog/auditlog.middleware.js";
+import {  enforceRequestIntent } from "./domain/auditlog/auditlog.middleware.js";
 // import { setupSocketServer } from "./domain/chat/chat.socket.js";
 
 export const allowedOrigins = [
@@ -127,8 +127,10 @@ app.get("/health", (req, res) => {
     requestId: req.requestId
   });
 });
-app.use(detectRequestIntent) //attaches req._intent
-app.use(authenticate()); // attaches req.user
+app.use(attachUser); // attaches req.user, 
+app.use(attachRequestIntent)//attaches req._intent
+app.use(enforceRequestIntent) 
+app.use(authenticate());
 app.use(blockWritesForReadOnly);
 app.use(resolveArchiveMode); // to handle archive mode if needed
 // ============================================

@@ -1,6 +1,6 @@
 // computation/services/computation.auditlogService.js
-import { SYSTEM_USER_ID } from "../../../config/system.js";
-import AuditLogService from "../../auditlog/auditlog.service.js";
+import { SYSTEM_USER_ID } from "#config/system.js";
+import AuditLogService from "#domain/auditlog/auditlog.service.js";
 
 class ComputationAuditLogService {
     constructor(buffer, computationId) {

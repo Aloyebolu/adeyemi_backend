@@ -1,12 +1,12 @@
 import XLSX from "xlsx";
 import fs from "fs";
 import readline from "readline";
-import Result from "../result.model.js";
-import Student from "../../student/student.model.js";
-import Course from "../../course/course.model.js";
-import SemesterService from "../../semester/semester.service.js";
+import Result from "#domain/result/result.model.js";
+import Student from "#domain/user/student/student.model.js";
+import Course from "#domain/course/course.model.js";
+import SemesterService from "#domain/semester/semester.service.js";
 import mongoose from "mongoose";
-import { TEST_DB } from "../../../config/db.js";
+import { TEST_DB } from "#config/db.js";
 
 
 // Create readline interface for user interaction

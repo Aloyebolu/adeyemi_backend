@@ -1,5 +1,5 @@
 import { Router } from "express";
-import buildResponse from "../../utils/responseBuilder.js";
+import buildResponse from "#utils/responseBuilder.js";
 import courseMaterialRoutes from "./material/courseMaterial.routes.js";
 import {
   createCourse,
@@ -18,16 +18,16 @@ import {
   unassignCourse
 } from "./course.controller.js";
 
-import authenticate from "../../middlewares/authenticate.js";
-import fetchDataHelper from "../../utils/fetchDataHelper.js";
-import Result from "../result/result.model.js";
-import { paymentGuard } from "../../middlewares/paymentGuard.js";
-import { resolveUserName } from "../../utils/resolveUserName.js";
+import authenticate from "#middlewares/authenticate.js";
+import fetchDataHelper from "#utils/fetchDataHelper.js";
+import Result from "#domain/result/result.model.js";
+import { paymentGuard } from "#middlewares/paymentGuard.js";
+import { resolveUserName } from "#utils/resolveUserName.js";
 import mongoose from "mongoose";
 import courseRegistrationModel from "./courseRegistration.model.js";
 import { mapResults } from "./course.dto.js";
 import courseRegistrationService from "./courseRegistration.service.js";
-import SemesterService from "../semester/semester.service.js";
+import SemesterService from "#domain/semester/semester.service.js";
 
 const router = Router();
 

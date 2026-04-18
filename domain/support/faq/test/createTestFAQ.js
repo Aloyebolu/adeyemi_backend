@@ -1,6 +1,6 @@
-import connectToDB from "../../../../config/db.js";
-import { SYSTEM_USER_ID } from "../../../../config/system.js";
-import faqService from "../faq.service.js";
+import connectToDB from "#config/db.js";
+import { SYSTEM_USER_ID } from "#config/system.js";
+import faqService from "#domain/support/faq/faq.service.js";
 await connectToDB()
 async function seedUniversityFAQs(createFAQFunction, createdBy) {
   const universityFAQs = [

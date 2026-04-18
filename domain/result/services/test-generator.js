@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import Result from "../result.model.js";
-import Course from "../../course/course.model.js";
-import connectToDB from "../../../config/db.js";
+import Result from "#domain/result/result.model.js";
+import Course from "#domain/course/course.model.js";
+import connectToDB from "#config/db.js";
 import { analyzeWrongCourseDepartments } from "./normalizeWrongDepartmentResults.js";
 await connectToDB();
 const semester = "692857cfc3c2904e51b75554";

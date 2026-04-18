@@ -2,18 +2,18 @@ import XLSX from "xlsx";
 // import fs from "fs";
 import mongoose from "mongoose";
 import Result from "./result.model.js";
-import buildResponse from "../../utils/responseBuilder.js";
-import { fetchDataHelper } from "../../utils/fetchDataHelper.js";
-import Student from "../student/student.model.js";
-import AppError from "../errors/AppError.js";
+import buildResponse from "#utils/responseBuilder.js";
+import { fetchDataHelper } from "#utils/fetchDataHelper.js";
+import Student from "#domain/user/student/student.model.js";
+import AppError from "#shared/errors/AppError.js";
 import ResultService from "./result.service.js"
-import courseModel from "../course/course.model.js";
-import SemesterService from "../semester/semester.service.js";
-import CourseRegistration from "../course/courseRegistration.model.js";
-import { normalizeCourse } from "../course/course.normallizer.js";
-import studentService from "../student/student.service.js";
-import catchAsync from "../../utils/catchAsync.js";
-import { mapResults } from "../course/course.dto.js";
+import courseModel from "#domain/course/course.model.js";
+import SemesterService from "#domain/semester/semester.service.js";
+import CourseRegistration from "#domain/course/courseRegistration.model.js";
+import { normalizeCourse } from "#domain/course/course.normallizer.js";
+import studentService from "#domain/user/student/student.service.js";
+import catchAsync from "#utils/catchAsync.js";
+import { mapResults } from "#domain/course/course.dto.js";
 
 const REQUIRE_REGISTRATION_FOR_UPLOAD = false;
 

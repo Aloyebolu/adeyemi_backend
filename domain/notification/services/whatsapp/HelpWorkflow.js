@@ -1,5 +1,5 @@
-import feedbackService from "../../../feedback/feedback.service.js";
-import faqService from "../../../support/faq/faq.service.js";
+import feedbackService from "#domain/feedback/feedback.service.js";
+import faqService from "#domain/support/faq/faq.service.js";
 
 class HelpWorkflow {
     constructor() {

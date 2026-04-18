@@ -7,7 +7,7 @@
  * Version: 1.0.0
  * Status: Stable
  */
-import AppError from '../../../errors/AppError.js';
+import AppError from '#shared/errors/AppError.js';
 
 class PrivacyManager {
   constructor() {

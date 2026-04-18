@@ -3,9 +3,9 @@
  * Handles retrieval of historical ranking data
  */
 
-import AppError from '../../errors/AppError.js';
-import RankingSnapshot from '../models/RankingSnapshot.model.js';
-import { RANKING_CONSTANTS } from '../ranking.constants.js';
+import AppError from '#shared/errors/AppError.js';
+import RankingSnapshot from '#domain/ranking/models/RankingSnapshot.model.js';
+import { RANKING_CONSTANTS } from '#domain/ranking/ranking.constants.js';
 
 class HistoryReader {
   constructor() {

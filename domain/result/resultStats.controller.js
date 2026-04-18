@@ -1,15 +1,15 @@
-import courseAssignmentModel from "../course/courseAssignment.model.js";
-import CourseAssignment from "../course/courseAssignment.model.js";
-import departmentService from "../department/department.service.js";
-import AppError from "../errors/AppError.js";
-import Result from "../result/result.model.js";
-// import User from "../models/user.model.js";
-import DepartmentSemester from "../semester/semester.model.js";
-// import Department from "../models/department.model.js";
-// import Student from "../models/student.model.js";
+import courseAssignmentModel from "#domain/course/courseAssignment.model.js";
+import CourseAssignment from "#domain/course/courseAssignment.model.js";
+import departmentService from "#domain/department/department.service.js";
+import AppError from "#shared/errors/AppError.js";
+import Result from "#domain/result/result.model.js";
+// import User from "#domain/user/user.model.js";
+import DepartmentSemester from "#domain/semester/semester.model.js";
+// import Department from "#domain/department/department.model.js";
+// import Student from "#domain/user/student/student.model.js";
 import mongoose from "mongoose";
-import Student from "../student/student.model.js";
-import SemesterService from "../semester/semester.service.js";
+import Student from "#domain/user/student/student.model.js";
+import SemesterService from "#domain/semester/semester.service.js";
 
 /**
  * @desc Get result upload statistics for HOD

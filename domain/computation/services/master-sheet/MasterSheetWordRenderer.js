@@ -1,11 +1,11 @@
 // MasterSheetWordSimpleRenderer.js
 // PROFESSIONAL UNIVERSITY MASTER SHEET - SIMPLIFIED WORD RENDERER
 
-import { formatDateWithOrdinal, toProfessionalAbbreviation } from "../../../../utils/helpers.js";
-import { convertToPart } from "../../../../utils/levelConverter.js";
-import { DEGREE_CLASS, STUDENT_STATUS, SUSPENSION_REASONS } from "../../utils/computationConstants.js";
+import { formatDateWithOrdinal, toProfessionalAbbreviation } from "#utils/helpers.js";
+import { convertToPart } from "#utils/levelConverter.js";
+import { DEGREE_CLASS, STUDENT_STATUS, SUSPENSION_REASONS } from "#domain/computation/utils/computationConstants.js";
 import config from "./MasterSheetConfig.js";
-import { capitalizeFirstLetter } from "../../../../utils/StringUtils.js";
+import { capitalizeFirstLetter } from "#utils/StringUtils.js";
 
 class MasterSheetWordSimpleRenderer {
 

@@ -1,7 +1,7 @@
 import Programme from './programme.model.js';
-import Department from '../department/department.model.js';
-import { logger } from '../../utils/logger.js';
-import AppError from '../errors/AppError.js';
+import Department from '#domain/department/department.model.js';
+import { logger } from '#utils/logger.js';
+import AppError from '#shared/errors/AppError.js';
 import mongoose from 'mongoose';
 
 class ProgrammeService {

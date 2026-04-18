@@ -1,5 +1,5 @@
 // auth/services/recovery/AccountRecoveryService.js
-import AppError from '../../../errors/AppError.js';
+import AppError from '#shared/errors/AppError.js';
 import crypto from 'crypto';
 
 class AccountRecoveryService {

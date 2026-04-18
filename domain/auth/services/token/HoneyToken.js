@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
-import buildResponse from "../../../../utils/responseBuilder.js";
-import { AuditLogService } from "../../../auditlog/index.js";
-import { logger } from "../../../../utils/logger.js";
+import buildResponse from "#utils/responseBuilder.js";
+import { AuditLogService } from "#domain/auditlog/index.js";
+import { logger } from "#utils/logger.js";
 
 export function detect_honeytoken(req, res, next) {
   const authHeader = req.headers.authorization;

@@ -1,5 +1,5 @@
-import createToken from '../../../../utils/createToken.js';
-import { resolveUserName } from '../../../../utils/resolveUserName.js';
+import createToken from '#utils/createToken.js';
+import { resolveUserName } from '#utils/resolveUserName.js';
 
 // SECURITY NOTE: In production, import departmentService properly
 // This is a placeholder to avoid breaking existing code

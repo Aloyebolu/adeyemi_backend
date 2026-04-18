@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { deleteRegistry } from "./delete.registry.js";
-import AppError from "../domain/errors/AppError.js";
+import AppError from "../shared/errors/AppError.js";
 
 export async function scanDependencies({ modelName, documentId }) {
   const config = deleteRegistry[modelName];

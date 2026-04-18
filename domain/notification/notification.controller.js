@@ -1,19 +1,19 @@
 import Notification from "./notification.model.js";
-import User from "../user/user.model.js";
-import Settings from "../settings/settings.model.js";
-import { sendEmail } from "../../utils/sendEmail.js";
+import User from "#domain/user/user.model.js";
+import Settings from "#domain/system/settings/settings.model.js";
+import { sendEmail } from "#utils/sendEmail.js";
 import { Template } from "./template.model.js";
-import buildResponse from "../../utils/responseBuilder.js";
-import fetchDataHelper from "../../utils/fetchDataHelper.js";
-import { dataMaps } from "../../config/dataMap.js";
-import { resolveUserName } from "../../utils/resolveUserName.js";
-import DepartmentService from "../department/department.service.js";
-import settingsService from "../settings/settings.service.js";
-import courseModel from "../course/course.model.js";
+import buildResponse from "#utils/responseBuilder.js";
+import fetchDataHelper from "#utils/fetchDataHelper.js";
+import { dataMaps } from "#config/dataMap.js";
+import { resolveUserName } from "#utils/resolveUserName.js";
+import DepartmentService from "#domain/department/department.service.js";
+import settingsService from "#domain/system/settings/settings.service.js";
+import courseModel from "#domain/course/course.model.js";
 import mongoose from "mongoose";
-import { queueNotification } from "../../workers/department.queue.js";
-import AppError from "../errors/AppError.js";
-import { validateObjectId } from "../../utils/validator.js";
+import { queueNotification } from "#workers/department.queue.js";
+import AppError from "#shared/errors/AppError.js";
+import { validateObjectId } from "#utils/validator.js";
 import { sendWhatsAppMessage } from "./services/whatsapp/whatsapp.js";
 
 /* 🧠 Dynamic variable resolver */

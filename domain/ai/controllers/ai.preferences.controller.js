@@ -1,7 +1,7 @@
 // src/modules/ai/controllers/ai.preferences.controller.js
 
-import preferencesService from '../services/ai.preferences.service.js';
-import catchAsync from '../../../utils/catchAsync.js';
+import preferencesService from '#domain/ai/services/ai.preferences.service.js';
+import catchAsync from '#utils/catchAsync.js';
 
 /**
  * Get user preferences

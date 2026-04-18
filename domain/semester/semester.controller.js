@@ -1,13 +1,13 @@
 import DepartmentSemester from "./semester.model.js";
-import Settings from "../settings/settings.model.js";
-import buildResponse from "../../utils/responseBuilder.js";
+import Settings from "#domain/system/settings/settings.model.js";
+import buildResponse from "#utils/responseBuilder.js";
 import mongoose from "mongoose";
 import { AcademicSemester } from "./semester.academicModel.js";
-import departmentModel from "../department/department.model.js";
-import studentModel from "../student/student.model.js";
+import departmentModel from "#domain/department/department.model.js";
+import studentModel from "#domain/user/student/student.model.js";
 import SemesterService from "./semester.service.js";
-import departmentService from "../department/department.service.js";
-import AuditLogService from "../auditlog/auditlog.service.js";
+import departmentService from "#domain/department/department.service.js";
+import AuditLogService from "#domain/auditlog/auditlog.service.js";
 import { defaultLevelSettings, lateRegistrationDate, registrationDeadline } from "./semester.constants.js";
 
 

@@ -1,7 +1,7 @@
 // src/modules/ai/providers/mock.provider.js
 
 import AIProviderBase from './base.provider.js';
-import { getMockResponse, MOCK_QUERIES, MOCK_ACTIONS } from '../utils/mock.responses.js';
+import { getMockResponse, MOCK_QUERIES, MOCK_ACTIONS } from '#domain/ai/utils/mock.responses.js';
 
 class MockAIProvider extends AIProviderBase {
   constructor(config = {}) {

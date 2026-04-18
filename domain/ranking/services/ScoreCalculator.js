@@ -3,9 +3,9 @@
  * Calculates ranking scores from raw student data
  */
 
-import AppError from '../../errors/AppError.js';
-import RankingRules from '../ranking.rules.js';
-import RankingScore from '../models/RankingScore.model.js';
+import AppError from '#shared/errors/AppError.js';
+import RankingRules from '#domain/ranking/ranking.rules.js';
+import RankingScore from '#domain/ranking/models/RankingScore.model.js';
 
 class ScoreCalculator {
   constructor(rulesConfig = {}) {

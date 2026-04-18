@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
-import { securityUtils } from "../domain/fetchdata/sec.fetchdata.js";
-import AppError from "../domain/errors/AppError.js";
+// import { securityUtils } from "../domain/fetchdata/sec.fetchdata.js";
+import AppError from "../shared/errors/AppError.js";
 import { validateObjectId } from "./validator.js";
+import securityUtils from "./securityUtils.js";
 
 // const ENABLE_PERFORMANCE_LOG = true;
 const ENABLE_PERFORMANCE_LOG = false;
@@ -782,7 +783,7 @@ export const fetchDataHelper = async (req, res, Model, options = {}) => {
     }
 
     // Validate school ID
-    if (schoolId && !securityUtils.isValidObjectId(schoolId)) {
+    if (schoolId && !securityUtils.isValidObjectId(schoolId, false)) {
       // Handle invalid school ID (commented out as per original)
     }
 

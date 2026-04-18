@@ -7,15 +7,21 @@ import {
   getUsers,
   getUser,
 } from './user.controller.js';
-import authenticate from '../../middlewares/authenticate.js';
-import validate from '../../middlewares/validate.js';
+import authenticate from '#middlewares/authenticate.js';
+import validate from '#middlewares/validate.js';
 import userValidation from './user.validation.js'; // To be created
 import { updateProfile } from './services/userProfile.service.js';
+import studentRoutes from "#domain/user/student/student.routes.js";
+import staffRoutes from "#domain/user/staffs/routes/staff.routes.js";
+import lecturerRoutes from "#domain/user/lecturer/index.js";
 
 const router = express.Router();
 
 // Public routes
 
+router.use('/students', studentRoutes)
+router.use('/lecturers', lecturerRoutes)
+router.use('/staffs', staffRoutes)
 
 router.post(
   '/signup',

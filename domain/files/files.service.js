@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
-import { extname } from "path";
+import { extname, join } from "path";
 import FileModel from "./files.model.js";
-import { supabase } from "../../config/supabase.js";
-import AppError from "../errors/AppError.js";
+import { supabase } from "#config/supabase.js";
+import AppError from "#shared/errors/AppError.js";
+import fs from "fs";
 
 const PUBLIC_BUCKET = "afued_storage_bucket";
 const PRIVATE_BUCKET = "private-files";
@@ -230,6 +231,250 @@ const { error: uploadError } = await supabase.storage
 
   static async getFilesByDomain(domain, domainId, options = {}) {
     return this.getFiles({ domain, domainId, ...options });
+  }
+
+
+
+
+
+  //============================ CACHING=======================||
+   /**
+   * CACHE CONFIGURATION
+   */
+  static cacheConfig = {
+    cacheDir: process.env.FILE_CACHE_DIR || "/tmp/afued-cache",
+    defaultExpiry: 24 * 60 * 60 * 1000, // 24 hours
+    maxSize: 1024 * 1024 * 1024, // 1GB max cache size
+    cleanupInterval: 60 * 60 * 1000 // 1 hour
+  };
+
+  /**
+   * Initialize cache directory
+   */
+  static async initCache() {
+    try {
+      await fs.mkdir(this.cacheConfig.cacheDir, { recursive: true });
+      
+      // Start cleanup interval if not already running
+      if (!this.cleanupTimer) {
+        this.cleanupTimer = setInterval(() => {
+          this.cleanupCache().catch(console.error);
+        }, this.cacheConfig.cleanupInterval);
+      }
+    } catch (error) {
+      console.error("Failed to initialize cache directory:", error);
+    }
+  }
+
+  /**
+   * Generate cache key from parameters
+   */
+  static generateCacheKey(prefix, params = {}) {
+    const data = {
+      prefix,
+      timestamp: Math.floor(Date.now() / (60 * 60 * 1000)), // Hourly granularity
+      ...params
+    };
+    return crypto.createHash("md5").update(JSON.stringify(data)).digest("hex");
+  }
+
+  /**
+   * Get cached file
+   * @param {string} cacheKey - Unique cache key
+   * @param {number} expiryMs - Cache expiry in milliseconds (optional)
+   */
+  static async getCachedFile(cacheKey, expiryMs = null) {
+    try {
+      const filePath = join(this.cacheConfig.cacheDir, `${cacheKey}.cache`);
+      const stats = await fs.stat(filePath);
+      
+      const expiry = expiryMs || this.cacheConfig.defaultExpiry;
+      if (Date.now() - stats.mtimeMs > expiry) {
+        await this.invalidateCache(cacheKey);
+        return null;
+      }
+      
+      // Read cached file
+      const buffer = await fs.readFile(filePath);
+      const metadata = JSON.parse(await fs.readFile(`${filePath}.meta`, 'utf8').catch(() => '{}'));
+      
+      return {
+        buffer,
+        metadata,
+        filePath,
+        createdAt: stats.birthtime,
+        lastAccessed: stats.mtime
+      };
+    } catch (error) {
+      return null;
+    }
+  }
+
+  /**
+   * Save to cache
+   * @param {string} cacheKey - Unique cache key
+   * @param {Buffer} buffer - File buffer
+   * @param {Object} metadata - Cache metadata (optional)
+   */
+  static async saveToCache(cacheKey, buffer, metadata = {}) {
+    await this.initCache();
+    
+    const filePath = join(this.cacheConfig.cacheDir, `${cacheKey}.cache`);
+    const metaPath = `${filePath}.meta`;
+    
+    // Check cache size before saving
+    await this.ensureCacheSpace(buffer.length);
+    
+    // Write file buffer
+    await fs.writeFile(filePath, buffer);
+    
+    // Write metadata
+    await fs.writeFile(metaPath, JSON.stringify({
+      ...metadata,
+      cachedAt: new Date().toISOString(),
+      size: buffer.length
+    }));
+    
+    return filePath;
+  }
+
+  /**
+   * Invalidate specific cache entry
+   */
+  static async invalidateCache(cacheKey) {
+    try {
+      const filePath = join(this.cacheConfig.cacheDir, `${cacheKey}.cache`);
+      const metaPath = `${filePath}.meta`;
+      
+      await fs.unlink(filePath).catch(() => {});
+      await fs.unlink(metaPath).catch(() => {});
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  /**
+   * Invalidate cache by pattern (useful for bulk invalidation)
+   */
+  static async invalidateCachePattern(pattern) {
+    try {
+      const files = await fs.readdir(this.cacheConfig.cacheDir);
+      const toDelete = files.filter(f => f.includes(pattern));
+      
+      await Promise.all(
+        toDelete.map(async (file) => {
+          const filePath = join(this.cacheConfig.cacheDir, file);
+          await fs.unlink(filePath).catch(() => {});
+        })
+      );
+      
+      return toDelete.length;
+    } catch (error) {
+      return 0;
+    }
+  }
+
+  /**
+   * Ensure cache doesn't exceed maximum size
+   */
+  static async ensureCacheSpace(requiredBytes) {
+    try {
+      const files = await fs.readdir(this.cacheConfig.cacheDir);
+      const fileStats = await Promise.all(
+        files
+          .filter(f => f.endsWith('.cache'))
+          .map(async (file) => {
+            const filePath = join(this.cacheConfig.cacheDir, file);
+            const stats = await fs.stat(filePath);
+            return { path: filePath, size: stats.size, mtime: stats.mtime };
+          })
+      );
+      
+      const totalSize = fileStats.reduce((sum, f) => sum + f.size, 0);
+      
+      if (totalSize + requiredBytes > this.cacheConfig.maxSize) {
+        // Sort by last modified (oldest first)
+        fileStats.sort((a, b) => a.mtime - b.mtime);
+        
+        let freedSpace = 0;
+        for (const file of fileStats) {
+          if (freedSpace >= requiredBytes) break;
+          await fs.unlink(file.path).catch(() => {});
+          await fs.unlink(`${file.path}.meta`).catch(() => {});
+          freedSpace += file.size;
+        }
+      }
+    } catch (error) {
+      console.error("Error ensuring cache space:", error);
+    }
+  }
+
+  /**
+   * Clean up old cache files
+   */
+  static async cleanupCache(expiryMs = null) {
+    try {
+      const expiry = expiryMs || this.cacheConfig.defaultExpiry;
+      const files = await fs.readdir(this.cacheConfig.cacheDir);
+      const now = Date.now();
+      
+      for (const file of files) {
+        if (!file.endsWith('.cache')) continue;
+        
+        const filePath = join(this.cacheConfig.cacheDir, file);
+        const stats = await fs.stat(filePath);
+        
+        if (now - stats.mtimeMs > expiry) {
+          await fs.unlink(filePath).catch(() => {});
+          await fs.unlink(`${filePath}.meta`).catch(() => {});
+        }
+      }
+    } catch (error) {
+      console.error("Cache cleanup error:", error);
+    }
+  }
+
+  /**
+   * Get cache statistics
+   */
+  static async getCacheStats() {
+    try {
+      const files = await fs.readdir(this.cacheConfig.cacheDir);
+      const cacheFiles = files.filter(f => f.endsWith('.cache'));
+      
+      let totalSize = 0;
+      for (const file of cacheFiles) {
+        const stats = await fs.stat(join(this.cacheConfig.cacheDir, file));
+        totalSize += stats.size;
+      }
+      
+      return {
+        totalFiles: cacheFiles.length,
+        totalSize: totalSize,
+        maxSize: this.cacheConfig.maxSize,
+        usagePercent: (totalSize / this.cacheConfig.maxSize) * 100,
+        cacheDir: this.cacheConfig.cacheDir,
+        defaultExpiry: this.cacheConfig.defaultExpiry
+      };
+    } catch (error) {
+      return { error: error.message };
+    }
+  }
+
+  /**
+   * Clear entire cache
+   */
+  static async clearCache() {
+    try {
+      const files = await fs.readdir(this.cacheConfig.cacheDir);
+      await Promise.all(
+        files.map(file => fs.unlink(join(this.cacheConfig.cacheDir, file)).catch(() => {}))
+      );
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 }
 

@@ -294,36 +294,6 @@ export const dataMaps = {
         is_active: active.is_active,
       };
     },
-    semesters: async (doc, models) => {
-      try {
-        const studentId = doc._id;
-        if (!studentId) return [];
-
-        // Fetch all semester result docs for this student
-        const results = await models.StudentSemesterResult.find({
-          studentId
-        })
-          .populate("semesterId")
-          .lean();
-
-        if (!results.length) return [];
-
-        // Transform into readable format
-        return results.map(r => ({
-          _id: r.semesterId?._id || null,
-          name: r.semesterId?.name || null,
-          session: r.semesterId?.session || null,
-          level: r.semesterId?.level || null,
-          gpa: r.gpa,
-          cgpa: r.cgpa,
-          remark: r.remark,
-          createdAt: r.createdAt
-        }));
-      } catch (err) {
-        console.error("Error fetching student semesters:", err);
-        return [];
-      }
-    },
 
     deletedAt: "this.deletedAt" || null,
     email: "this._id.email"

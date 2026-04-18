@@ -20,8 +20,9 @@
  */
 
 import mongoose from "mongoose";
-import AppError from "../errors/AppError.js";
-import { SYSTEM_USER_FULL_NAME, SYSTEM_USER_ID } from "../../config/system.js";
+import AppError from "#shared/errors/AppError.js";
+import { SYSTEM_USER_FULL_NAME, SYSTEM_USER_ID } from "#config/system.js";
+import { resolveUserName } from "#utils/resolveUserName.js";
 
 const { Schema } = mongoose;
 
@@ -117,9 +118,15 @@ const userSchema = new Schema(
 
     role: {
       type: String,
-      enum: ["admin", "dean", "hod", "lecturer", "student", "applicant", "vc"],
+      enum: [ "lecturer", "student", "staff"],
       required: true
     },
+    extra_roles: [
+      {
+        type: String,
+        enum: ["admin", "dean", "hod", "registrar", "bursar" , "vc", 'dvc', "applicant", "customer_service", "moderator", "support_agent"]
+      }
+    ],
 
     department: {
       type: Schema.Types.ObjectId,
@@ -139,12 +146,6 @@ const userSchema = new Schema(
       sparse: true
     },
 
-    extra_roles: [
-      {
-        type: String,
-        enum: ["customer_service", "moderator", "support_agent"]
-      }
-    ],
 
     chat_availability: {
       type: Boolean,
@@ -278,9 +279,7 @@ userSchema.pre("save", function (next) {
 
 userSchema.virtual("name")
   .get(function () {
-    return [this.first_name, this.middle_name, this.last_name] 
-      .filter(Boolean)
-      .join(" ");
+    return resolveUserName({first_name: this.first_name, middle_name: this.middle_name, last_name: this.last_name, title: this.title})
   })
   .set(function (value) {
     if (!value) return;
@@ -306,6 +305,23 @@ userSchema.pre(/^find/, function () {
       query.last_name = parts[parts.length - 1];
     }
   }
+});
+
+
+// The following virtuals are to introduce just one thing to the user model.
+//  currently the user model has no direct connection to user profiles like the student model, staff model
+// This virtualization now makes sure there is a link directing back to the profile model
+// Before User --> Staff(Wrong) 
+// Before User <-- Staff(Correct) 
+// After User --> Staff(COrrect) 
+// After User <-- Staff(Correct) 
+
+
+userSchema.virtual("staff", {
+  ref: "Staff",
+  localField: "_id",
+  foreignField: "_id",
+  justOne: true
 });
 
 export default mongoose.model("User", userSchema);

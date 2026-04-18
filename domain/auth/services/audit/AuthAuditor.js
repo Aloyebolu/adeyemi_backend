@@ -1,6 +1,6 @@
-import { logDevice } from '../../../../utils/deviceLogger.js';
-import AppError from '../../../errors/AppError.js';
-import User from '../../../user/user.model.js';
+import { logDevice } from '#utils/deviceLogger.js';
+import AppError from '#shared/errors/AppError.js';
+import User from '#domain/user/user.model.js';
 
 class AuthAuditor {
   // AUDIT: Internal security counters (in-memory, production would use Redis)

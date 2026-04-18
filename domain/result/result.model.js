@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import Student from "../student/student.model.js";
-import Course from "../course/course.model.js"; // ensure correct path
-import AppError from "../errors/AppError.js";
-import SemesterService from "../semester/semester.service.js";
+import Student from "#domain/user/student/student.model.js";
+import Course from "#domain/course/course.model.js"; // ensure correct path
+import AppError from "#shared/errors/AppError.js";
+import SemesterService from "#domain/semester/semester.service.js";
 
 /* ------------------------------
    ResultHistory (unchanged)

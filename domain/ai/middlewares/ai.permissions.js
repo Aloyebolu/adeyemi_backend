@@ -1,6 +1,6 @@
 // src/modules/ai/middlewares/ai.permissions.js
 
-import catchAsync from '../../../utils/catchAsync.js';
+import catchAsync from '#utils/catchAsync.js';
 
 class AIPermissionsMiddleware {
   /**

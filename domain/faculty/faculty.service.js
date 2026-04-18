@@ -1,10 +1,10 @@
-import { logger } from "../../utils/logger.js";
-import departmentModel from "../department/department.model.js";
-import AppError from "../errors/AppError.js";
-import lecturerModel from "../lecturer/lecturer.model.js";
-import User from "../user/user.model.js";
+import { logger } from "#utils/logger.js";
+import departmentModel from "#domain/department/department.model.js";
+import AppError from "#shared/errors/AppError.js";
+import lecturerModel from "#domain/user/lecturer/lecturer.model.js";
+import User from "#domain/user/user.model.js";
 import facultyModel from "./faculty.model.js";
-// import logger from "../utils/logger.js";
+// import logger from "#utils/logger.js";
 
 class FacultyService {
   constructor() {
@@ -269,33 +269,45 @@ class FacultyService {
       );
     }
 
-    // Update records
-    const oldDeanId = faculty.dean;
-    faculty.dean = user._id;
-    user.role = "dean";
-    user.faculty = facultyId;
+const oldDeanId = faculty.dean;
 
-    // Update lecturer model if exists
-    const lecturer = await lecturerModel
-      .findOne({ _id: user._id })
-      .session(session);
-    if (lecturer) {
-      lecturer.isDean = true;
-      lecturer.facultyId = facultyId;
-      await lecturer.save({ session });
-    }
+// Snapshot BEFORE mutation (important)
+const oldUserData = user.toObject?.();
+const oldLecturerData = lecturer?.toObject?.();
 
-    await faculty.save({ session });
-    await user.save({ session });
+// 1. Update faculty ownership
+faculty.dean = user._id;
 
-    return {
-      faculty,
-      user,
-      lecturer,
-      oldDeanId,
-      oldUserData: user.toObject?.(),
-      oldLecturerData: lecturer?.toObject?.(),
-    };
+// 2. Update user (DO NOT overwrite base role)
+user.faculty = facultyId;
+
+if (!user.extra_roles.includes("dean")) {
+  user.extra_roles.push("dean");
+}
+
+// 3. Update lecturer model if exists
+const lecturer = await lecturerModel
+  .findOne({ userId: user._id })
+  .session(session);
+
+if (lecturer) {
+  lecturer.isDean = true;
+  lecturer.facultyId = facultyId;
+  await lecturer.save({ session });
+}
+
+// 4. Save main entities
+await faculty.save({ session });
+await user.save({ session });
+
+return {
+  faculty,
+  user,
+  lecturer,
+  oldDeanId,
+  oldUserData,
+  oldLecturerData
+};
   }
 
   /**

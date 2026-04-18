@@ -1,6 +1,6 @@
 import express from "express";
 import { createTemplate, deleteTemplate, getNotifications, getTemplates, getTopUnread, getUnreadNotificationCount, sendNotification, updateTemplate } from "./notification.controller.js";
-import authenticate from "../../middlewares/authenticate.js";
+import authenticate from "#middlewares/authenticate.js";
 
 const router = express.Router();
 router.get("/", authenticate(["admin", "hod", "lecturer", "student",  "dean"]), getNotifications);

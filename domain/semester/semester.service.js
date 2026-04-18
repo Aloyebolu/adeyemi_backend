@@ -1,9 +1,9 @@
 import mongoose, { get } from "mongoose";
 import DepartmentSemester from "./semester.model.js";
 import { AcademicSemester } from "./semester.academicModel.js";
-import AuditLogService from "../auditlog/auditlog.service.js";
-import departmentService from "../department/department.service.js";
-import AppError from "../errors/AppError.js";
+import AuditLogService from "#domain/auditlog/auditlog.service.js";
+import departmentService from "#domain/department/department.service.js";
+import AppError from "#shared/errors/AppError.js";
 import { defaultLevelSettings, lateRegistrationDate, registrationDeadline } from "./semester.constants.js";
 
 /**

@@ -1,6 +1,6 @@
 // src/modules/ai/engines/analysis.engine.js
 
-import markdownFormatter from '../formatters/markdown.formatter.js';
+import markdownFormatter from '#domain/ai/formatters/markdown.formatter.js';
 
 class AnalysisEngine {
   constructor() {

@@ -2,7 +2,7 @@
  * Utility functions for file handling across the application
  */
 
-import AppError from "../errors/AppError.js";
+import AppError from "#shared/errors/AppError.js";
 
 
 class FileUtils {

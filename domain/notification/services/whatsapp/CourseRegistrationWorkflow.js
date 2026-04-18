@@ -1,5 +1,5 @@
-import courseService from "../../../course/course.service.js";
-import courseRegistrationService from "../../../course/courseRegistration.service.js";
+import courseService from "#domain/course/course.service.js";
+import courseRegistrationService from "#domain/course/courseRegistration.service.js";
 
 class CourseRegistrationWorkflow {
     constructor() {

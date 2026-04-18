@@ -1,11 +1,11 @@
 // test/performance/performanceTestRunner.js
 import mongoose from "mongoose";
-import { processDepartmentJob } from "../../computation/workers/computation.controller.js";
-import StudentService from "../../computation/services/StudentService.js";
-import BulkWriter from "../../computation/services/BulkWriter.js";
-import departmentModel from "../../models/department/department.model.js";
-import studentModel from "../../models/student/student.model.js";
-import Result from "../../models/result.model.js";
+import { processDepartmentJob } from "#domain/computation/workers copy2/computation.controller.js";
+import StudentService from "#domain/computation/services/StudentService.js";
+import BulkWriter from "#domain/computation/services/BulkWriter.js";
+import departmentModel from "#domain/department/department.model.js";
+import studentModel from "#domain/user/student/student.model.js";
+import Result from "#domain/result/result.model.js";
 
 class PerformanceTestRunner {
   constructor() {

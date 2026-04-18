@@ -1,13 +1,13 @@
 // computation/controllers/finalComputation.controller.js
-import { ComputationCore } from "../core/computation.core.js";
-import ComputationSummary from "../models/computation.model.js";
-import SemesterService from "../../semester/semester.service.js";
-import { addDepartmentJob, queueNotification } from "../../../workers/department.queue.js";
-import BulkWriter from "../services/BulkWriter.js";
-import ReportService from "../services/ReportService.js";
-import StudentService from "../../student/student.service.js";
-import ResultService from "../services/ResultService.js";
-import GPACalculator from "../services/GPACalculator.js";
+import { ComputationCore } from "./computation.core.js";
+import ComputationSummary from "#domain/computation/models/computation.model.js";
+import SemesterService from "#domain/semester/semester.service.js";
+import { addDepartmentJob, queueNotification } from "#workers/department.queue.js";
+import BulkWriter from "#domain/computation/services/BulkWriter.js";
+import ReportService from "#domain/computation/services/ReportService.js";
+import StudentService from "#domain/user/student/student.service.js";
+import ResultService from "#domain/computation/services/ResultService.js";
+import GPACalculator from "#domain/computation/services/GPACalculator.js";
 
 export const processFinalDepartmentJob = async (job) => {
   const {
@@ -557,15 +557,15 @@ export async function handlePreviewJobFailure(computationSummary, department, ac
 }
 
 // Import missing constant
-import { BATCH_SIZE } from "../utils/computationConstants.js"; import { ComputationHandler } from "./computation.handler.js";
-import AppError from "../../errors/AppError.js";
-import programmeService from "../../programme/programme.service.js";
-import departmentService from "../../department/department.service.js";
-import { logger } from "../../../utils/logger.js";
-import { toProfessionalAbbreviation } from "../../../utils/helpers.js";
-import ComputationSummaryService from "../services/ComputationSummaryService.js";
+import { BATCH_SIZE } from "#domain/computation/utils/computationConstants.js"; import { ComputationHandler } from "./computation.handler.js";
+import AppError from "#shared/errors/AppError.js";
+import programmeService from "#domain/programme/programme.service.js";
+import departmentService from "#domain/department/department.service.js";
+import { logger } from "#utils/logger.js";
+import { toProfessionalAbbreviation } from "#utils/helpers.js";
+import ComputationSummaryService from "#domain/computation/services/ComputationSummaryService.js";
 import mongoose from "mongoose";
-import { SYSTEM_USER_ID } from "../../../config/system.js";
-import { resolveUserName } from "../../../utils/resolveUserName.js";
-import CarryoverService from "../services/CarryoverService.js";
+import { SYSTEM_USER_ID } from "#config/system.js";
+import { resolveUserName } from "#utils/resolveUserName.js";
+import CarryoverService from "#domain/computation/services/CarryoverService.js";
 

@@ -1,5 +1,5 @@
-import { AdmissionDocumentService } from "../services/admissionDocument.service.js";
-import { validateDocumentUpload, validateDocumentVerification } from "../validators/admissionDocument.validator.js";
+import { AdmissionDocumentService } from "#domain/admission/services/admissionDocument.service.js";
+import { validateDocumentUpload, validateDocumentVerification } from "#domain/admission/validators/admissionDocument.validator.js";
 
 export class AdmissionDocumentController {
   /**

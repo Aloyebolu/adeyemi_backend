@@ -1,11 +1,12 @@
 // domain/department/department.service.js
 import Department from './department.model.js';
-import { logger } from '../../utils/logger.js'; // Adjust based on your logging setup
-import lecturerModel from '../lecturer/lecturer.model.js';
-import User from '../user/user.model.js';
-import facultyModel from '../faculty/faculty.model.js';
-import studentModel from '../student/student.model.js';
-import AppError from '../errors/AppError.js';
+import { logger } from '#utils/logger.js'; // Adjust based on your logging setup
+import lecturerModel from '#domain/user/lecturer/lecturer.model.js';
+import User from '#domain/user/user.model.js';
+import facultyModel from '#domain/faculty/faculty.model.js';
+import studentModel from '#domain/user/student/student.model.js';
+import AppError from '#shared/errors/AppError.js';
+import userModel from '#domain/user/user.model.js';
 
 class DepartmentService {
   /**
@@ -341,9 +342,18 @@ class DepartmentService {
       lecturer.isHOD = true;
 
       if (user) {
-        user.role = "hod";
-        user.department = departmentId;
-        await user.save({ session });
+        await userModel.updateOne(
+          { _id: user._id },
+          {
+            $set: {
+              department: departmentId
+            },
+            $addToSet: {
+              extra_roles: "hod"
+            }
+          },
+          { session }
+        );
       }
 
       await department.save({ session });
@@ -513,11 +523,11 @@ class DepartmentService {
    * @returns {Promise<Number>}
    */
 
-  async getDepartmentsCount( filter={}){
-    try{
+  async getDepartmentsCount(filter = {}) {
+    try {
       const count = Department.countDocuments(filter)
       return count
-    }catch(error){
+    } catch (error) {
       throw error
     }
   }

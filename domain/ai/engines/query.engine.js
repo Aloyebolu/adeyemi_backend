@@ -1,7 +1,7 @@
 // src/modules/ai/engines/query.engine.js
 
 import mongoose from 'mongoose';
-import AI_CONFIG from '../config/ai.config.js';
+import AI_CONFIG from '#domain/ai/config/ai.config.js';
 
 class QueryEngine {
   constructor() {

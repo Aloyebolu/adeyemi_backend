@@ -2,15 +2,15 @@ import crypto from "crypto";
 import Feedback from "./feedback.model.js";
 import FeedbackResponse from "./feedback.response.model.js";
 import FeedbackAnalytics from "./feedback.analytics.model.js";
-import User from "../user/user.model.js";
+import User from "#domain/user/user.model.js";
 import mongoose from "mongoose";
 import fs from "fs";
 import path from "path";
-import AppError from "../errors/AppError.js";
+import AppError from "#shared/errors/AppError.js";
 import natural from 'natural'; // For sentiment analysis (optional)
-import FileUtils from "../files/file.utils.js";
-import FileService from "../files/files.service.js";
-import { resolveUserName } from "../../utils/resolveUserName.js";
+import FileUtils from "#domain/files/file.utils.js";
+import FileService from "#domain/files/files.service.js";
+import { resolveUserName } from "#utils/resolveUserName.js";
 
 const AUTO_REVIEW_INTERVAL = 5 * 60 * 1000; // 5 minutes
 const ESCALATION_THRESHOLD = 24 * 60 * 60 * 1000; // 24 hours

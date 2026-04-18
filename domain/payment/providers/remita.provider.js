@@ -1,6 +1,6 @@
 import axios from "axios";
 import crypto from "crypto";
-import AppError from "../../errors/AppError.js";
+import AppError from "#shared/errors/AppError.js";
 
 export class RemitaProvider {
   constructor() {

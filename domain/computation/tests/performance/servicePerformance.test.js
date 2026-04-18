@@ -1,7 +1,7 @@
 // test/performance/servicePerformance.test.js
-import StudentService from "../../computation/services/StudentService.js";
-import GPACalculator from "../../computation/services/GPACalculator.js";
-import BulkWriter from "../../computation/services/BulkWriter.js";
+import StudentService from "#domain/computation/services/StudentService.js";
+import GPACalculator from "#domain/computation/services/GPACalculator.js";
+import BulkWriter from "#domain/computation/services/BulkWriter.js";
 
 describe("Service Performance Tests", () => {
   describe("StudentService", () => {

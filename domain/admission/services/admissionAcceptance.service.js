@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import { AUDIT_ACTIONS } from "../constants/admission.constants.js";
-import AdmissionApplication from "../models/admissionApplication.model.js";
-import AdmissionAcceptance from "../models/admissionAcceptance.model.js";
-import AdmissionDocument from "../models/admissionDocument.model.js";
-import FileService from "../../files/files.service.js";
+import { AUDIT_ACTIONS } from "#domain/admission/constants/admission.constants.js";
+import AdmissionApplication from "#domain/admission/models/admissionApplication.model.js";
+import AdmissionAcceptance from "#domain/admission/models/admissionAcceptance.model.js";
+import AdmissionDocument from "#domain/admission/models/admissionDocument.model.js";
+import FileService from "#domain/files/files.service.js";
 
 export class AdmissionAcceptanceService {
   /**

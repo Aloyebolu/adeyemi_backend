@@ -1,11 +1,11 @@
 // controllers/userProfileController.js
 // import User from "../models/User.js";
-// import AppError from "../errors/AppError.js";
-// import { SYSTEM_USER_ID } from "../config/system.js";
+// import AppError from "#shared/errors/AppError.js";
+// import { SYSTEM_USER_ID } from "#config/system.js";
 
-import { SYSTEM_USER_ID } from "../../../config/system.js";
-import AppError from "../../errors/AppError.js";
-import User from "../user.model.js";
+import { SYSTEM_USER_ID } from "#config/system.js";
+import AppError from "#shared/errors/AppError.js";
+import User from "#domain/user/user.model.js";
 
 // Allowed fields for different roles
 const allowedUpdates = {

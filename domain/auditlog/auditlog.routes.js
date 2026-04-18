@@ -1,5 +1,5 @@
 import express from "express";
-import authenticate from "../../middlewares/authenticate.js";
+import authenticate from "#middlewares/authenticate.js";
 import {
   getAuditLogs,
   getAuditStatistics,

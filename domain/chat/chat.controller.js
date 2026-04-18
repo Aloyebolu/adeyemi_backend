@@ -2,8 +2,8 @@
 // import ChatSession from "../models/ChatSession.js";
 // import Message from "../models/Message.js";
 
-import buildResponse from "../../utils/responseBuilder.js";
-import User from "../user/user.model.js";
+import buildResponse from "#utils/responseBuilder.js";
+import User from "#domain/user/user.model.js";
 import ChatSession from "./chat.model.js";
 import chatService from "./chat.service.js";
 import path from "path";

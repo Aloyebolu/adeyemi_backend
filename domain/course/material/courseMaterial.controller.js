@@ -1,9 +1,9 @@
 // courseMaterial.controller.js
 import { validate } from "uuid";
-import buildResponse from "../../../utils/responseBuilder.js";
-import AppError from "../../errors/AppError.js";
-import SemesterService from "../../semester/semester.service.js";
-import courseAssignmentModel from "../courseAssignment.model.js";
+import buildResponse from "#utils/responseBuilder.js";
+import AppError from "#shared/errors/AppError.js";
+import SemesterService from "#domain/semester/semester.service.js";
+import courseAssignmentModel from "#domain/course/courseAssignment.model.js";
 import CourseMaterialService from "./courseMaterial.service.js";
 
 export async function uploadMaterial(req, res, next) {

@@ -1,6 +1,6 @@
 // computation/services/ComputationSummaryService.js
-import { logger } from "../../../utils/logger.js";
-import ComputationSummary from "../models/computation.model.js";
+import { logger } from "#utils/logger.js";
+import ComputationSummary from "#domain/computation/models/computation.model.js";
 import SummaryListBuilder from "./SummaryListBuilder.js";
 
 class ComputationSummaryService {

@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 import { faker } from "@faker-js/faker";
 
 // Models
-import { TEST_DB } from "../../../config/db.js";
-import departmentModel from "../../department/department.model.js";
-import courseModel from "../course.model.js";
-import facultyModel from "../../faculty/faculty.model.js";
+import { TEST_DB } from "#config/db.js";
+import departmentModel from "#domain/department/department.model.js";
+import courseModel from "#domain/course/course.model.js";
+import facultyModel from "#domain/faculty/faculty.model.js";
 
 // Configuration
 const MONGODB_URI = TEST_DB

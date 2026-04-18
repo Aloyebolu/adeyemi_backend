@@ -1,6 +1,6 @@
 import AuditLogService from "./auditlog.service.js";
 import AuditLog from "./auditlog.model.js";
-import buildResponse from "../../utils/responseBuilder.js";
+import buildResponse from "#utils/responseBuilder.js";
 
 export const getAuditLogs = async (req, res) => {
   try {

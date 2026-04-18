@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import errorLogSchema from "../domain/errors/error.model.js";
+import errorLogSchema from "../domain/system/errors/error.model.js";
 
 export default async (err, req, res, next) => {
   const timestamp = chalk.magenta(new Date().toISOString());

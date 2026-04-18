@@ -3,7 +3,7 @@ import Payment from "./payment.model.js";
 import PaymentFee from "./payment-fee.model.js";
 import RemitaProvider from "./providers/remita.provider.js";
 import PaystackProvider from "./providers/paystack.provider.js";
-import AppError from "../errors/AppError.js";
+import AppError from "#shared/errors/AppError.js";
 
 const providers = {
   REMITA: new RemitaProvider(),

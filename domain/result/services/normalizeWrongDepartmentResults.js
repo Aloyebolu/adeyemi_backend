@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import Result from "../result.model.js";
-import Course from "../../course/course.model.js";
-import connectToDB from "../../../config/db.js";
-import { normalizeCourse } from "../../course/course.normallizer.js";
+import Result from "#domain/result/result.model.js";
+import Course from "#domain/course/course.model.js";
+import connectToDB from "#config/db.js";
+import { normalizeCourse } from "#domain/course/course.normallizer.js";
 connectToDB();
 
 export async function analyzeWrongCourseDepartments(ourDepartmentId, batchSize = 100, dryRun = true) {

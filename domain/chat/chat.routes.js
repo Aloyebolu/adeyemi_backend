@@ -1,8 +1,8 @@
 import express from "express";
-import authenticate from "../../middlewares/authenticate.js";
+import authenticate from "#middlewares/authenticate.js";
 import { chatController } from "./chat.controller.js";
 // import { chatController } from "../controllers/chatController.js";
-// import authenticate from "../middlewares/authenticate.js";
+// import authenticate from "#middlewares/authenticate.js";
 
 const router = express.Router();
 

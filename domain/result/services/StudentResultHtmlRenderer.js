@@ -1,14 +1,14 @@
 // StudentResultHtmlRenderer.js
 // INDIVIDUAL STUDENT SEMESTER RESULT - ENHANCED VERSION
 
-import { formatDateWithOrdinal, semesterNameToSeason, toProfessionalAbbreviation } from "../../../utils/helpers.js";
-import { convertToPart } from "../../../utils/levelConverter.js";
-// import { DEGREE_CLASS, STUDENT_STATUS } from "../../utils/computationConstants.js";
-import { capitalizeFirstLetter } from "../../../utils/StringUtils.js";
-import { formatMatricNumber, resolveUserName, splitName } from "../../../utils/resolveUserName.js";
-import AppError from "../../errors/AppError.js";
-import { config } from "../../computation/services/master-sheet/MasterSheetConfig.js";
-import { normalizeCourses } from "../../course/course.normallizer.js";
+import { formatDateWithOrdinal, semesterNameToSeason, toProfessionalAbbreviation } from "#utils/helpers.js";
+import { convertToPart } from "#utils/levelConverter.js";
+// import { DEGREE_CLASS, STUDENT_STATUS } from "#domain/computation/utils/computationConstants.js";
+import { capitalizeFirstLetter } from "#utils/StringUtils.js";
+import { formatMatricNumber, resolveUserName, splitName } from "#utils/resolveUserName.js";
+import AppError from "#shared/errors/AppError.js";
+import { config } from "#domain/computation/services/master-sheet/MasterSheetConfig.js";
+import { normalizeCourses } from "#domain/course/course.normallizer.js";
 
 class StudentResultHtmlRenderer {
   
@@ -513,7 +513,6 @@ class StudentResultHtmlRenderer {
 
     courses.map((v, i)=> courses[i] = {...v, ...v.courseId, status: v.status})
     courses = normalizeCourses(courses)
-    console.log(courses)
     if (!courses || courses.length === 0) {
       return `
 <tbody>

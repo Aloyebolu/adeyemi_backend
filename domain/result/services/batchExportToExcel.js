@@ -1,11 +1,11 @@
 import XLSX from "xlsx";
 import fs from "fs";
 import path from "path";
-import { normalizeCourse } from "../../course/course.normallizer.js";
-import Result from "../result.model.js";
-import programmeModel from "../../programme/programme.model.js";
-import { resolveUserName } from "../../../utils/resolveUserName.js";
-import SemesterService from "../../semester/semester.service.js";
+import { normalizeCourse } from "#domain/course/course.normallizer.js";
+import Result from "#domain/result/result.model.js";
+import programmeModel from "#domain/programme/programme.model.js";
+import { resolveUserName } from "#utils/resolveUserName.js";
+import SemesterService from "#domain/semester/semester.service.js";
 
 export async function exportCourseResultsToExcel(semesterId = null) {
     const semester = await SemesterService.getAcademicSemesterById(semesterId)
