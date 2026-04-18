@@ -130,7 +130,6 @@ app.get("/health", (req, res) => {
 app.use(attachUser); // attaches req.user, 
 app.use(attachRequestIntent)//attaches req._intent
 app.use(enforceRequestIntent) 
-app.use(authenticate());
 app.use(blockWritesForReadOnly);
 app.use(resolveArchiveMode); // to handle archive mode if needed
 // ============================================
