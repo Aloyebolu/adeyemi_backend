@@ -269,45 +269,45 @@ class FacultyService {
       );
     }
 
-const oldDeanId = faculty.dean;
+    const oldDeanId = faculty.dean;
 
-// Snapshot BEFORE mutation (important)
-const oldUserData = user.toObject?.();
-const oldLecturerData = lecturer?.toObject?.();
+    // Snapshot BEFORE mutation (important)
+    const oldUserData = user.toObject?.();
+    const oldLecturerData = lecturer?.toObject?.();
 
-// 1. Update faculty ownership
-faculty.dean = user._id;
+    // 1. Update faculty ownership
+    faculty.dean = user._id;
 
-// 2. Update user (DO NOT overwrite base role)
-user.faculty = facultyId;
+    // 2. Update user (DO NOT overwrite base role)
+    user.faculty = facultyId;
 
-if (!user.extra_roles.includes("dean")) {
-  user.extra_roles.push("dean");
-}
+    if (!user.extra_roles.includes("dean")) {
+      user.extra_roles.push("dean");
+    }
 
-// 3. Update lecturer model if exists
-const lecturer = await lecturerModel
-  .findOne({ userId: user._id })
-  .session(session);
+    // 3. Update lecturer model if exists
+    const lecturer = await lecturerModel
+      .findOne({ userId: user._id })
+      .session(session);
 
-if (lecturer) {
-  lecturer.isDean = true;
-  lecturer.facultyId = facultyId;
-  await lecturer.save({ session });
-}
+    if (lecturer) {
+      lecturer.isDean = true;
+      lecturer.facultyId = facultyId;
+      await lecturer.save({ session });
+    }
 
-// 4. Save main entities
-await faculty.save({ session });
-await user.save({ session });
+    // 4. Save main entities
+    await faculty.save({ session });
+    await user.save({ session });
 
-return {
-  faculty,
-  user,
-  lecturer,
-  oldDeanId,
-  oldUserData,
-  oldLecturerData
-};
+    return {
+      faculty,
+      user,
+      lecturer,
+      oldDeanId,
+      oldUserData,
+      oldLecturerData
+    };
   }
 
   /**
@@ -386,6 +386,241 @@ return {
       },
     };
   }
+  /**
+ * Check if a user is Dean of a faculty (single source of truth from faculty)
+ * @param {string|ObjectId} userId - User ID to check
+ * @param {Object} options - { session, populate, lean }
+ * @returns {Promise<{isDean: boolean, faculty: Object|null, deanFacultyId: string|null}>}
+ */
+  async isDean(userId, options = {}) {
+    try {
+      let query = this.facultyModel.findOne({ dean: userId });
+
+      if (options.session) {
+        query = query.session(options.session);
+      }
+
+      if (options.populate) {
+        query = query.populate(options.populate);
+      }
+
+      if (options.lean) {
+        query = query.lean();
+      }
+
+      const faculty = await query;
+
+      if (!faculty) {
+        return {
+          isDean: false,
+          faculty: null,
+          deanFacultyId: null
+        };
+      }
+
+      return {
+        isDean: true,
+        faculty: faculty,
+        deanFacultyId: faculty._id.toString()
+      };
+    } catch (error) {
+      logger.error(`FacultyService.isDean failed: ${error.message}`, {
+        userId,
+        options,
+        stack: error.stack
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Check if user is Dean of a specific faculty
+   * @param {string|ObjectId} userId - User ID
+   * @param {string|ObjectId} facultyId - Faculty ID to check against
+   * @param {Object} session - Optional mongoose session
+   * @returns {Promise<boolean>}
+   */
+  async isDeanOfFaculty(userId, facultyId, session = null) {
+    try {
+      const faculty = await this.getFacultyById(facultyId, { session });
+
+      if (!faculty) {
+        return false;
+      }
+
+      return faculty.dean && faculty.dean.toString() === userId.toString();
+    } catch (error) {
+      logger.error(`FacultyService.isDeanOfFaculty failed: ${error.message}`, {
+        userId,
+        facultyId,
+        stack: error.stack
+      });
+      return false;
+    }
+  }
+
+  /**
+   * Get Dean of a faculty
+   * @param {string|ObjectId} facultyId - Faculty ID
+   * @param {Object} options - { session, populate, lean }
+   * @returns {Promise<{dean: Object|null, faculty: Object|null}>}
+   */
+  async getFacultyDean(facultyId, options = {}) {
+    try {
+      const faculty = await this.getFacultyById(facultyId, {
+        session: options.session,
+        populate: options.populate ? 'dean' : undefined,
+        lean: options.lean
+      });
+
+      if (!faculty) {
+        return {
+          dean: null,
+          faculty: null
+        };
+      }
+
+      return {
+        dean: faculty.dean,
+        faculty: faculty
+      };
+    } catch (error) {
+      logger.error(`FacultyService.getFacultyDean failed: ${error.message}`, {
+        facultyId,
+        options,
+        stack: error.stack
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Get all faculties where user is Dean (supports multiple faculties)
+   * @param {string|ObjectId} userId - User ID
+   * @param {Object} options - { session, populate, lean, sort }
+   * @returns {Promise<Array>}
+   */
+  async getFacultiesWhereDean(userId, options = {}) {
+    try {
+      let query = this.facultyModel.find({ dean: userId });
+
+      if (options.session) {
+        query = query.session(options.session);
+      }
+
+      if (options.populate) {
+        query = query.populate(options.populate);
+      }
+
+      if (options.lean) {
+        query = query.lean();
+      }
+
+      if (options.sort) {
+        query = query.sort(options.sort);
+      }
+
+      if (options.select) {
+        query = query.select(options.select);
+      }
+
+      return await query;
+    } catch (error) {
+      logger.error(`FacultyService.getFacultiesWhereDean failed: ${error.message}`, {
+        userId,
+        options,
+        stack: error.stack
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Get dean's faculty with departments populated
+   * @param {string|ObjectId} deanUserId - Dean user ID
+   * @param {Object} options - { session, populateDepartments }
+   * @returns {Promise<Object|null>}
+   */
+  async getDeanFacultyWithDepartments(deanUserId, options = {}) {
+    try {
+      let query = this.facultyModel.findOne({ dean: deanUserId });
+
+      if (options.session) {
+        query = query.session(options.session);
+      }
+
+      // Populate departments if requested
+      if (options.populateDepartments) {
+        query = query.populate({
+          path: 'departments',
+          select: 'name code hod',
+          populate: {
+            path: 'hod',
+            select: 'name email'
+          }
+        });
+      }
+
+      if (options.lean) {
+        query = query.lean();
+      }
+
+      return await query;
+    } catch (error) {
+      logger.error(`FacultyService.getDeanFacultyWithDepartments failed: ${error.message}`, {
+        deanUserId,
+        options,
+        stack: error.stack
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Check if user has dean access to a resource (faculty or department)
+   * @param {string|ObjectId} userId - User ID
+   * @param {string|ObjectId} resourceId - Faculty or Department ID
+   * @param {string} resourceType - 'faculty' or 'department'
+   * @param {Object} session - Optional mongoose session
+   * @returns {Promise<boolean>}
+   */
+  async hasDeanAccessToResource(userId, resourceId, resourceType, session = null) {
+    try {
+      // First check if user is dean at all
+      const deanFaculty = await this.getFacultyByDean(userId, { session });
+
+      if (!deanFaculty) {
+        return false;
+      }
+
+      // If accessing faculty directly
+      if (resourceType === 'faculty') {
+        return deanFaculty._id.toString() === resourceId.toString();
+      }
+
+      // If accessing department, check if department belongs to dean's faculty
+      if (resourceType === 'department') {
+        const department = await departmentModel.findById(resourceId).session(session);
+        if (!department) {
+          return false;
+        }
+        return department.faculty && department.faculty.toString() === deanFaculty._id.toString();
+      }
+
+      return false;
+    } catch (error) {
+      logger.error(`FacultyService.hasDeanAccessToResource failed: ${error.message}`, {
+        userId,
+        resourceId,
+        resourceType,
+        stack: error.stack
+      });
+      return false;
+    }
+  }
+
+
+  
 }
 
 // Create and export a singleton instance

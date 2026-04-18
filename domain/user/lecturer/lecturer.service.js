@@ -277,6 +277,86 @@ class LecturerService {
 
     return hods;
   }
+
+
+  // domain/user/lecturer/lecturer.service.js
+
+  /**
+   * Get all roles and administrative positions for a lecturer
+   * This aggregates data from department and faculty services to determine:
+   * - Is HOD? (from department)
+   * - Is Dean? (from faculty)
+   * - Any other special roles
+   * 
+   * @param {string|ObjectId} lecturerId - Lecturer user ID
+   * @param {Object} options - { session, populate }
+   * @returns {Promise<{
+   *   lecturerId: string,
+   *   isHod: boolean,
+   *   hodDepartment: Object|null,
+   *   isDean: boolean,
+   *   deanFaculty: Object|null,
+   *   roles: string[],
+   *   summary: string
+   * }>}
+   */
+  async getLecturerAdministrativeRoles(lecturerId, options = {}) {
+    try {
+      const result = {
+        lecturerId: lecturerId.toString(),
+        isHod: false,
+        hodDepartment: null,
+        isDean: false,
+        deanFaculty: null,
+        roles: [],
+        summary: ''
+      };
+
+      // Check if lecturer is HOD (from department service)
+      const hodCheck = await departmentService.isHod(lecturerId, {
+        session: options.session,
+        populate: options.populate
+      });
+
+      if (hodCheck.isHod) {
+        result.isHod = true;
+        result.hodDepartment = hodCheck.department;
+        result.roles.push('hod');
+      }
+
+      // Check if lecturer is Dean (from faculty service)
+      const deanCheck = await facultyService.isDean(lecturerId, {
+        session: options.session,
+        populate: options.populate
+      });
+
+      if (deanCheck.isDean) {
+        result.isDean = true;
+        result.deanFaculty = deanCheck.faculty;
+        result.roles.push('dean');
+      }
+
+      // Generate summary
+      if (result.isHod && result.isDean) {
+        result.summary = `HOD of ${result.hodDepartment.name} & Dean of ${result.deanFaculty.name}`;
+      } else if (result.isHod) {
+        result.summary = `HOD of ${result.hodDepartment.name}`;
+      } else if (result.isDean) {
+        result.summary = `Dean of ${result.deanFaculty.name}`;
+      } else {
+        result.summary = 'Regular lecturer (no administrative roles)';
+      }
+
+      return result;
+    } catch (error) {
+      logger.error(`LecturerService.getLecturerAdministrativeRoles failed: ${error.message}`, {
+        lecturerId,
+        options,
+        stack: error.stack
+      });
+      throw error;
+    }
+  }
 }
 
 export default new LecturerService();

@@ -3,6 +3,7 @@ import AppError from '#shared/errors/AppError.js';
 import User from '#domain/user/user.model.js';
 import lecturerModel from '#domain/user/lecturer/lecturer.model.js';
 import PasswordValidator from '#domain/auth/services/password/PasswordValidator.js';
+import lecturerService from '#domain/user/lecturer/lecturer.service.js';
 
 class LecturerAuthenticator {
   /**
@@ -48,7 +49,10 @@ class LecturerAuthenticator {
     // Validate password and track if legacy path was used
     usedLegacyAuth = await PasswordValidator.validatePassword(password, userDoc, userDetails, 'lecturer');
 
-    return { userDoc, userDetails, usedLegacyAuth };
+    // Get other roles
+    const extra_roles = await lecturerService.getLecturerAdministrativeRoles(userDoc._id)
+
+    return { userDoc, userDetails, usedLegacyAuth, extra_roles };
   }
 }
 

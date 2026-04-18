@@ -3,11 +3,11 @@ import { AdminUnitMember } from "../models/adminUnitMember.model.js";
 import mongoose from "mongoose";
 
 class AdminUnitService {
-  
+
   // ============================================
   // UNIT CRUD OPERATIONS
   // ============================================
-  
+
   /**
    * Create a new administrative unit
    */
@@ -50,7 +50,7 @@ class AdminUnitService {
    */
   async getAllUnits(filters = {}) {
     const query = {};
-    
+
     if (filters.type) query.type = filters.type;
     if (filters.is_active !== undefined) query.is_active = filters.is_active === 'true';
     if (filters.parent_unit) query.parent_unit = filters.parent_unit;
@@ -93,11 +93,11 @@ class AdminUnitService {
     const unit = await AdminUnit.findById(unitId)
       .populate("parent_unit", "name type code")
       .populate("head", "name email role");
-    
+
     if (!unit) {
       throw new Error("AdminUnit not found");
     }
-    
+
     return unit;
   }
 
@@ -114,7 +114,7 @@ class AdminUnitService {
         if (updateData.parent_unit.toString() === unitId) {
           throw new Error("A unit cannot be its own parent");
         }
-        
+
         const parent = await AdminUnit.findById(updateData.parent_unit).session(session);
         if (!parent) {
           throw new Error("Parent unit not found");
@@ -127,7 +127,7 @@ class AdminUnitService {
           code: updateData.code,
           _id: { $ne: unitId }
         }).session(session);
-        
+
         if (existing) {
           throw new Error(`Unit with code "${updateData.code}" already exists`);
         }
@@ -237,10 +237,10 @@ class AdminUnitService {
 
       await member.save({ session });
       await session.commitTransaction();
-      
+
       // Populate user details for response
       await member.populate("user", "name email");
-      
+
       return member;
     } catch (error) {
       await session.abortTransaction();
@@ -255,7 +255,7 @@ class AdminUnitService {
    */
   async getUnitMembers(unitId, filters = {}) {
     const query = { unit: unitId };
-    
+
     if (filters.role) query.role = filters.role;
     if (filters.is_active !== undefined) query.is_active = filters.is_active === 'true';
 
@@ -300,11 +300,11 @@ class AdminUnitService {
   async removeMember(memberId, reason = null) {
     const member = await AdminUnitMember.findByIdAndUpdate(
       memberId,
-      { 
-        is_active: false, 
+      {
+        is_active: false,
         end_date: new Date(),
-        $push: { 
-          responsibilities: `Removed: ${reason || 'No reason provided'} (${new Date().toISOString()})` 
+        $push: {
+          responsibilities: `Removed: ${reason || 'No reason provided'} (${new Date().toISOString()})`
         }
       },
       { new: true }
@@ -327,13 +327,13 @@ class AdminUnitService {
   async getUnitHierarchy(unitId) {
     const unit = await AdminUnit.findById(unitId)
       .populate("head", "name email");
-    
+
     if (!unit) throw new Error("Unit not found");
 
     // Get children (sub-units)
-    const children = await AdminUnit.find({ 
+    const children = await AdminUnit.find({
       parent_unit: unitId,
-      is_active: true 
+      is_active: true
     }).select("name type code");
 
     // Get parent chain
@@ -362,13 +362,13 @@ class AdminUnitService {
    */
   async getParentChain(unitId, chain = []) {
     const unit = await AdminUnit.findById(unitId).select("name type code parent_unit");
-    
+
     if (!unit) return chain;
-    
+
     if (unit.parent_unit) {
       return await this.getParentChain(unit.parent_unit, [unit, ...chain]);
     }
-    
+
     return [unit, ...chain];
   }
 
@@ -382,7 +382,7 @@ class AdminUnitService {
       .sort({ name: 1 });
 
     const tree = [];
-    
+
     for (const unit of units) {
       const children = await this.getUnitTree(unit._id);
       tree.push({
@@ -434,6 +434,239 @@ class AdminUnitService {
     });
 
     return !!membership;
+  }
+
+
+  // domain/adminUnit/adminUnit.service.js
+
+  /**
+   * Get all administrative roles for a staff member
+   * This aggregates data from AdminUnitMember assignments to determine:
+   * - What admin units they belong to
+   * - What roles they hold in each unit
+   * - Their elevated permissions across the administrative structure
+   * 
+   * @param {string|ObjectId} staffId - Staff user ID
+   * @param {Object} options - { session, lean, includeInactive }
+   * @returns {Promise<{
+   *   staffId: string,
+   *   hasAssignments: boolean,
+   *   units: Array<{
+   *     unitId: string,
+   *     unitName: string,
+   *     unitCode: string,
+   *     unitType: string,
+   *     role: string,
+   *     title: string,
+   *     isHead: boolean
+   *   }>,
+   *   extra_roles: string[],  // Format: "unitType::role" e.g., "registry::HEAD"
+   *   summary: string
+   * }>}
+   */
+  async getStaffAdministrativeRoles(staffId, options = {}) {
+    try {
+      const query = {
+        user: staffId,
+        is_active: options.includeInactive !== true
+      };
+
+      let membershipsQuery = AdminUnitMember.find(query)
+        .populate('unit', 'name code type parent_unit');
+
+      if (options.session) {
+        membershipsQuery = membershipsQuery.session(options.session);
+      }
+
+      if (options.lean) {
+        membershipsQuery = membershipsQuery.lean();
+      }
+
+      const memberships = await membershipsQuery;
+
+      if (!memberships || memberships.length === 0) {
+        return {
+          staffId: staffId.toString(),
+          hasAssignments: false,
+          units: [],
+          extra_roles: [],
+          summary: 'No administrative unit assignments'
+        };
+      }
+
+      // Build units array and extra_roles in format "unitType::role"
+      const units = [];
+      const extra_roles = [];
+
+      for (const membership of memberships) {
+        const unitType = membership.unit.type;
+        const role = membership.role;
+        const contextualRole = `${unitType}::${role}`;  // "registry::HEAD"
+
+        units.push({
+          unitId: membership.unit._id.toString(),
+          unitName: membership.unit.name,
+          unitCode: membership.unit.code,
+          unitType: unitType,
+          role: role,
+          contextualRole: contextualRole,
+          title: membership.title || role,
+          isHead:  membership.isHead === true,
+          membershipId: membership._id.toString()
+        });
+
+        extra_roles.push(contextualRole);
+      }
+
+      // Generate summary
+      let summary = '';
+      if (units.length === 1) {
+        summary = `${units[0].role} of ${units[0].unitName}`;
+      } else {
+        summary = `Holds ${units.length} role(s) across ${units.length} administrative unit(s)`;
+      }
+
+      return {
+        staffId: staffId.toString(),
+        hasAssignments: true,
+        units: units,
+        extra_roles: extra_roles,  // ["registry::HEAD", "bursary::DEPUTY"]
+        summary: summary
+      };
+    } catch (error) {
+      logger.error(`AdminUnitService.getStaffAdministrativeRoles failed: ${error.message}`, {
+        staffId,
+        options,
+        stack: error.stack
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Check if a staff member has a specific administrative role
+   * @param {string|ObjectId} staffId - Staff user ID
+   * @param {string} unitType - Unit type (e.g., "registry", "bursary")
+   * @param {string|string[]} roles - Role name(s) to check (e.g., "HEAD", "DEPUTY")
+   * @returns {Promise<boolean>}
+   */
+  async staffHasRoleInUnit(staffId, unitType, roles) {
+    try {
+      const roleArray = Array.isArray(roles) ? roles : [roles];
+      const contextualRoles = roleArray.map(role => `${unitType}::${role}`);
+
+      const membership = await AdminUnitMember.findOne({
+        user: staffId,
+        role: { $in: roleArray },
+        is_active: true
+      }).populate('unit', 'type');
+
+      if (!membership) return false;
+
+      // Verify the unit type matches
+      return membership.unit.type === unitType;
+    } catch (error) {
+      logger.error(`AdminUnitService.staffHasRoleInUnit failed: ${error.message}`, {
+        staffId,
+        unitType,
+        roles,
+        stack: error.stack
+      });
+      return false;
+    }
+  }
+
+  /**
+   * Check if a staff member has a specific contextual role
+   * @param {string|ObjectId} staffId - Staff user ID
+   * @param {string} contextualRole - Format: "unitType::role" e.g., "registry::HEAD"
+   * @returns {Promise<boolean>}
+   */
+  async staffHasContextualRole(staffId, contextualRole) {
+    try {
+      const [unitType, role] = contextualRole.split('::');
+
+      if (!unitType || !role) {
+        return false;
+      }
+
+      const membership = await AdminUnitMember.findOne({
+        user: staffId,
+        role: role,
+        is_active: true
+      }).populate('unit', 'type');
+
+      if (!membership) return false;
+
+      return membership.unit.type === unitType;
+    } catch (error) {
+      logger.error(`AdminUnitService.staffHasContextualRole failed: ${error.message}`, {
+        staffId,
+        contextualRole,
+        stack: error.stack
+      });
+      return false;
+    }
+  }
+
+  /**
+   * Get all staff members with a specific contextual role
+   * @param {string} unitType - Unit type (e.g., "registry")
+   * @param {string|string[]} roles - Role name(s) (e.g., "HEAD", "DEPUTY")
+   * @returns {Promise<Array>}
+   */
+  async getStaffByContextualRole(unitType, roles) {
+    try {
+      const roleArray = Array.isArray(roles) ? roles : [roles];
+
+      // First find units of the specified type
+      const units = await AdminUnit.find({ type: unitType, is_active: true }).select('_id');
+      const unitIds = units.map(u => u._id);
+
+      if (unitIds.length === 0) return [];
+
+      const members = await AdminUnitMember.find({
+        unit: { $in: unitIds },
+        role: { $in: roleArray },
+        is_active: true
+      }).populate('user', 'name email');
+
+      return members;
+    } catch (error) {
+      logger.error(`AdminUnitService.getStaffByContextualRole failed: ${error.message}`, {
+        unitType,
+        roles,
+        stack: error.stack
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Get all staff members with ANY role in a specific unit type
+   * @param {string} unitType - Unit type (e.g., "registry")
+   * @returns {Promise<Array>}
+   */
+  async getAllStaffInUnitType(unitType) {
+    try {
+      const units = await AdminUnit.find({ type: unitType, is_active: true }).select('_id');
+      const unitIds = units.map(u => u._id);
+
+      if (unitIds.length === 0) return [];
+
+      const members = await AdminUnitMember.find({
+        unit: { $in: unitIds },
+        is_active: true
+      }).populate('user', 'name email');
+
+      return members;
+    } catch (error) {
+      logger.error(`AdminUnitService.getAllStaffInUnitType failed: ${error.message}`, {
+        unitType,
+        stack: error.stack
+      });
+      throw error;
+    }
   }
 }
 

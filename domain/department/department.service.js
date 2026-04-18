@@ -532,6 +532,112 @@ class DepartmentService {
     }
   }
 
+
+  /**
+ * Check if a user is HOD of a department (single source of truth from department)
+ * @param {string|ObjectId} userId - User ID to check
+ * @param {Object} options - { session, departmentId (optional) }
+ * @returns {Promise<{isHod: boolean, department: Department|null, hodDepartmentId: string|null}>}
+ */
+  async isHod(userId, options = {}) {
+    try {
+      let query = Department.findOne({ hod: userId });
+
+      if (options.session) {
+        query = query.session(options.session);
+      }
+
+      if (options.populate) {
+        query = query.populate(options.populate);
+      }
+
+      const department = await query;
+
+      if (!department) {
+        return {
+          isHod: false,
+          department: null,
+          hodDepartmentId: null
+        };
+      }
+
+      return {
+        isHod: true,
+        department: department,
+        hodDepartmentId: department._id.toString()
+      };
+    } catch (error) {
+      logger.error(`DepartmentService.isHod failed: ${error.message}`, {
+        userId,
+        options,
+        stack: error.stack
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Check if user is HOD for a specific department
+   * @param {string|ObjectId} userId - User ID
+   * @param {string|ObjectId} departmentId - Department ID to check against
+   * @param {Object} session - Optional mongoose session
+   * @returns {Promise<boolean>}
+   */
+  async isHodOfDepartment(userId, departmentId, session = null) {
+    try {
+      const department = await this.getDepartmentById(departmentId, { session });
+
+      if (!department) {
+        return false;
+      }
+
+      return department.hod && department.hod.toString() === userId.toString();
+    } catch (error) {
+      logger.error(`DepartmentService.isHodOfDepartment failed: ${error.message}`, {
+        userId,
+        departmentId,
+        stack: error.stack
+      });
+      return false;
+    }
+  }
+
+  /**
+   * Get HOD of a department
+   * @param {string|ObjectId} departmentId - Department ID
+   * @param {Object} options - { session, populate }
+   * @returns {Promise<{hod: Object|null, department: Department|null}>}
+   */
+  async getDepartmentHod(departmentId, options = {}) {
+    try {
+      const department = await this.getDepartmentById(departmentId, {
+        session: options.session,
+        populate: options.populate ? 'hod' : undefined,
+        lean: options.lean
+      });
+
+      if (!department) {
+        return {
+          hod: null,
+          department: null
+        };
+      }
+
+      return {
+        hod: department.hod,
+        department: department
+      };
+    } catch (error) {
+      logger.error(`DepartmentService.getDepartmentHod failed: ${error.message}`, {
+        departmentId,
+        options,
+        stack: error.stack
+      });
+      throw error;
+    }
+  }
+
+
   /**
    * Create audit context for department operations
    */

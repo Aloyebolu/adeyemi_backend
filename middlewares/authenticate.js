@@ -7,15 +7,7 @@ import { READ_KEYS, REQUEST_INTENT } from "../domain/auditlog/auditlog.middlewar
 const AUTHORIZED_ROLES = ["admin", "hod", "lecturer", "student", "dean", "vc"];
 
 
-// Define role hierarchy (higher roles inherit access from lower roles)
-const ROLE_HIERARCHY = {
-  admin: ["admin", "dean", "hod", "lecturer", "pro", "student"], // Admin has all access
-  dean: ["dean", "hod", "lecturer", "pro", "student"], // Dean inherits from hod, lecturer, etc.
-  hod: ["hod", "lecturer", "student"], // HOD inherits from lecturer
-  lecturer: ["lecturer"], // Lecturer only
-  pro: ["pro"], // PRO only
-  student: ["student"] // Student only
-};
+
 
 // Helper function to check if user role has access to required role
 const hasPermission = (userRole, requiredRole) => {
@@ -29,37 +21,110 @@ const hasPermission = (userRole, requiredRole) => {
 };
 
 
-export const authorize = (roles = []) => {
-  const allowedRoles = Array.isArray(roles)
-    ? roles
-    : roles
-      ? [roles]
-      : [];
+// middleware/auth.js
+
+import { PERMISSIONS, roleHasPermission } from "../config/permissions.js";
+
+/**
+ * Role hierarchy for backward compatibility
+ * Higher index = higher privilege
+ */
+const ROLE_HIERARCHY = ["student", "lecturer", "staff", "hod", "dean", "admin"];
+
+/**
+ * Check if a user role has sufficient hierarchy level
+ * @param {string} userRole - Current user's role
+ * @param {string} requiredRole - Required role
+ * @returns {boolean}
+ */
+const hasHierarchyPermission = (userRole, requiredRole) => {
+  const userLevel = ROLE_HIERARCHY.indexOf(userRole);
+  const requiredLevel = ROLE_HIERARCHY.indexOf(requiredRole);
+  return userLevel >= requiredLevel;
+};
+
+/**
+ * Main authorization function
+ * Supports both legacy role arrays and new permission objects
+ * 
+ * Usage:
+ * - authorize(["admin", "hod"]) - Legacy role-based
+ * - authorize(PERMISSIONS.APPROVE_RESULTS) - New permission-based
+ * - authorize([PERMISSIONS.VIEW_USERS, PERMISSIONS.EDIT_USERS]) - Multiple permissions
+ * 
+ * @param {Array|Object} requirement - Role array OR permission object OR array of permissions
+ * @returns {Function} Express middleware
+ */
+export const authorize = (requirement = []) => {
+  // Normalize to array for consistent processing
+  let requirements = Array.isArray(requirement) ? requirement : [requirement];
+
+  // Check if we're dealing with permissions or roles
+  const isPermissionBased = requirements.length > 0 && requirements[0]?.allowedRoles;
 
   return (req, res, next) => {
     const userRole = req.user?.role;
+    const userExtraRoles = req.user?.extra_roles || [];
 
     if (!userRole) {
       return buildResponse(res, 401, "Unauthenticated", null, true);
     }
 
-    // ✅ Validate role exists
-    if (!AUTHORIZED_ROLES.includes(userRole)) {
+    // Validate base role exists in hierarchy
+    if (!ROLE_HIERARCHY.includes(userRole)) {
       auditLogger(`Invalid role: ${userRole}`)(req, res, () => { });
       return buildResponse(res, 403, "Unauthorized role", null, true);
     }
 
-    // ✅ No restriction
-    if (allowedRoles.length === 0) return next();
+    // No restriction - allow access
+    if (requirements.length === 0) return next();
 
-    // ✅ Check hierarchy
-    const hasAccess = allowedRoles.some((requiredRole) =>
-      hasPermission(userRole, requiredRole)
-    );
+    let hasAccess = false;
+
+    if (isPermissionBased) {
+      // PERMISSION-BASED AUTHORIZATION
+      // Check if user has ANY of the required permissions
+      for (const permission of requirements) {
+        // Check base role against permission
+        if (roleHasPermission(userRole, permission)) {
+          hasAccess = true;
+          break;
+        }
+
+        // Check extra_roles against permission
+        for (const extraRole of userExtraRoles) {
+          if (roleHasPermission(extraRole, permission)) {
+            hasAccess = true;
+            break;
+          }
+        }
+        if (hasAccess) break;
+      }
+    }
+    //  else {
+    //   // LEGACY ROLE-BASED AUTHORIZATION (backward compatible)
+    //   // Check hierarchy level
+    //   for (const requiredRole of requirements) {
+    //     if (hasHierarchyPermission(userRole, requiredRole)) {
+    //       hasAccess = true;
+    //       break;
+    //     }
+
+    //     // Also check extra_roles for direct matches
+    //     if (userExtraRoles.includes(requiredRole)) {
+    //       hasAccess = true;
+    //       break;
+    //     }
+    //   }
+    // }
 
     if (!hasAccess) {
+      const requiredInfo = isPermissionBased
+        ? `permissions: ${requirements.map(p => p.description || 'unknown').join(", ")}`
+        : `roles: ${requirements.join(", ")}`;
+
       auditLogger(
-        `Forbidden: ${userRole} → requires ${allowedRoles.join(", ")}`
+        `Forbidden: ${userRole} (extra: ${userExtraRoles.join(", ")}) → requires ${requiredInfo}`
       )(req, res, () => { });
 
       return buildResponse(
@@ -75,6 +140,34 @@ export const authorize = (roles = []) => {
   };
 };
 
+
+/**
+ * Higher-order function to require multiple conditions
+ * @param {Object} conditions - Conditions to check
+ * @returns {Function} Express middleware
+ */
+export const authorizeWithConditions = (conditions) => {
+  return async (req, res, next) => {
+    // Check role/permission requirements
+    if (conditions.requires) {
+      const authMiddleware = authorize(conditions.requires);
+      await authMiddleware(req, res, async () => {
+        // Check custom condition if provided
+        if (conditions.customCondition) {
+          const result = await conditions.customCondition(req);
+          if (!result) {
+            return buildResponse(res, 403, conditions.customMessage || "Custom condition failed", null, true);
+          }
+        }
+        next();
+      });
+    } else {
+      next();
+    }
+  };
+};
+
+// Backward compatible alias
 const authenticate = authorize;
 export default authenticate;
 export function blockWritesForReadOnly(req, res, next) {

@@ -22,7 +22,7 @@ class TokenBuilder {
     };
   }
 
-  async buildLecturerTokenData(lecturer, user) {
+  async buildLecturerTokenData(lecturer, user, extra_roles) {
     // SECURITY: Department name fetch is async - handle failures gracefully
     let departmentName = null;
     try {
@@ -42,6 +42,7 @@ class TokenBuilder {
       email: lecturer.email,
       role: user.role, // SECURITY: Use role from User document
       name: resolveUserName(user),
+      extra_roles,
       department: departmentName,
     };
   }
