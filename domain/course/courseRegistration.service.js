@@ -4,7 +4,7 @@ import CourseRegistration from "./courseRegistration.model.js";
 
 import { normalizeCourse } from "./course.normallizer.js";
 import AppError from "#shared/errors/AppError.js";
-import departmentService from "#domain/department/department.service.js";
+import departmentService from "#domain/organization/department/department.service.js";
 import SemesterService from "#domain/semester/semester.service.js";
 import studentService from "#domain/user/student/student.service.js";
 import courseModel from "./course.model.js";

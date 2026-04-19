@@ -13,10 +13,6 @@ import {
 } from "#domain/computation/controllers/computation.controller.js";
 import authenticate from "#middlewares/authenticate.js";
 
-import ComputationSummary from "#domain/computation/models/computation.model.js";
-import DepartmentSemester from "#domain/semester/semester.model.js";
-import departmentModel from "#domain/department/department.model.js";
-import departmentService from "#domain/department/department.service.js";
 
 const router = express.Router();
 

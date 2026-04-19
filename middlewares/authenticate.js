@@ -101,22 +101,22 @@ export const authorize = (requirement = []) => {
         if (hasAccess) break;
       }
     }
-    //  else {
-    //   // LEGACY ROLE-BASED AUTHORIZATION (backward compatible)
-    //   // Check hierarchy level
-    //   for (const requiredRole of requirements) {
-    //     if (hasHierarchyPermission(userRole, requiredRole)) {
-    //       hasAccess = true;
-    //       break;
-    //     }
+     else {
+      // LEGACY ROLE-BASED AUTHORIZATION (backward compatible)
+      // Check hierarchy level
+      for (const requiredRole of requirements) {
+        if (hasHierarchyPermission(userRole, requiredRole)) {
+          hasAccess = true;
+          break;
+        }
 
-    //     // Also check extra_roles for direct matches
-    //     if (userExtraRoles.includes(requiredRole)) {
-    //       hasAccess = true;
-    //       break;
-    //     }
-    //   }
-    // }
+        // Also check extra_roles for direct matches
+        if (userExtraRoles.includes(requiredRole)) {
+          hasAccess = true;
+          break;
+        }
+      }
+    }
 
     if (!hasAccess) {
       const requiredInfo = isPermissionBased

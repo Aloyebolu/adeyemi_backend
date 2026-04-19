@@ -1,5 +1,5 @@
 import Programme from './programme.model.js';
-import Department from '#domain/department/department.model.js';
+import Department from '#domain/organization/department/department.model.js';
 import { logger } from '#utils/logger.js';
 import AppError from '#shared/errors/AppError.js';
 import mongoose from 'mongoose';

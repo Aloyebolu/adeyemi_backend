@@ -1,7 +1,7 @@
 // computation/services/StudentService.js
 import mongoose from "mongoose";
 import Student from "./student.model.js";
-import departmentModel from "#domain/department/department.model.js";
+import departmentModel from "#domain/organization/department/department.model.js";
 import AppError from "#shared/errors/AppError.js";
 
 class StudentService {

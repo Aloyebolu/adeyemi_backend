@@ -1,7 +1,8 @@
 // computation/utils/computation.utils.js
 import ComputationSummary from "#domain/computation/models/computation.model.js";
 import MasterComputation from "#domain/computation/models/masterComputation.model.js";
-import departmentModel from "#domain/department/department.model.js";
+import departmentModel from "#domain/organization/department/department.model.js";
+import departmentService from "#domain/organization/department/department.service.js";
 import SemesterService from "#domain/semester/semester.service.js";
 import mongoose from "mongoose";
 
@@ -12,11 +13,12 @@ export async function getDepartmentsToProcess(departmentId, session) {
   let departments;
 
   if (departmentId) {
-    const department = await departmentModel.findById(departmentId).session(session);
+    const department = await departmentService.getDepartmentById(departmentId, {session})
     if (!department) return [];
     departments = [department];
   } else {
     departments = await departmentModel.find({}).session(session);
+    // departments = await departmentService.get
   }
 
   const departmentsToProcess = [];

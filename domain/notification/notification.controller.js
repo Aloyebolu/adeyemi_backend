@@ -7,7 +7,7 @@ import buildResponse from "#utils/responseBuilder.js";
 import fetchDataHelper from "#utils/fetchDataHelper.js";
 import { dataMaps } from "#config/dataMap.js";
 import { resolveUserName } from "#utils/resolveUserName.js";
-import DepartmentService from "#domain/department/department.service.js";
+import DepartmentService from "#domain/organization/department/department.service.js";
 import settingsService from "#domain/system/settings/settings.service.js";
 import courseModel from "#domain/course/course.model.js";
 import mongoose from "mongoose";

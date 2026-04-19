@@ -4,7 +4,7 @@ import createToken from '#utils/createToken.js';
 import Admin from '#domain/admin/admin.model.js';
 import lecturerModel from './lecturer/lecturer.model.js';
 import studentModel from './student/student.model.js';
-import departmentService from '#domain/department/department.service.js';
+import departmentService from '#domain/organization/department/department.service.js';
 import { resolveUserName } from '#utils/resolveUserName.js';
 import AppError from '#shared/errors/AppError.js';
 import { logDevice } from '#utils/deviceLogger.js';

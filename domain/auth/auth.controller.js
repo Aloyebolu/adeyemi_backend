@@ -13,7 +13,7 @@ import DeviceService from './services/device/DeviceManager.js';
 import PrivacyService from './services/privacy/PrivacyManager.js';
 import RecoveryService from './services/recovery/AccountRecoveryService.js';
 import AppError from '#shared/errors/AppError.js';
-import departmentService from '#domain/department/department.service.js';
+import departmentService from '#domain/organization/department/department.service.js';
 import { generate_honeytoken } from '#utils/createToken.js';
 // ======================================================================
 

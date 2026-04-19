@@ -6,7 +6,7 @@
 import AppError from '#shared/errors/AppError.js';
 import rankingService from './ranking.service.js';
 import { RANKING_CONSTANTS, RANKING_ERRORS } from './ranking.constants.js';
-import departmentService from '#domain/department/department.service.js';
+import departmentService from '#domain/organization/department/department.service.js';
 
 /**
  * @desc    Get current ranking for authenticated student's department

@@ -560,7 +560,7 @@ export async function handlePreviewJobFailure(computationSummary, department, ac
 import { BATCH_SIZE } from "#domain/computation/utils/computationConstants.js"; import { ComputationHandler } from "./computation.handler.js";
 import AppError from "#shared/errors/AppError.js";
 import programmeService from "#domain/programme/programme.service.js";
-import departmentService from "#domain/department/department.service.js";
+import departmentService from "#domain/organization/department/department.service.js";
 import { logger } from "#utils/logger.js";
 import { toProfessionalAbbreviation } from "#utils/helpers.js";
 import ComputationSummaryService from "#domain/computation/services/ComputationSummaryService.js";

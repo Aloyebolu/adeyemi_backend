@@ -1,6 +1,6 @@
 import courseAssignmentModel from "#domain/course/courseAssignment.model.js";
 import CourseAssignment from "#domain/course/courseAssignment.model.js";
-import departmentService from "#domain/department/department.service.js";
+import departmentService from "#domain/organization/department/department.service.js";
 import AppError from "#shared/errors/AppError.js";
 import Result from "#domain/result/result.model.js";
 // import User from "#domain/user/user.model.js";

@@ -1,7 +1,7 @@
 // computation/services/StudentService.js
 import mongoose from "mongoose";
 import studentModel from "#domain/user/student/student.model.js";
-import departmentModel from "#domain/department/department.model.js";
+import departmentService from "#domain/organization/department/department.service.js";
 
 class StudentService {
   /**
@@ -163,7 +163,7 @@ class StudentService {
    */
   async getDepartmentDetails(departmentId) {
     try {
-      return await departmentModel.findById(departmentId)
+      return await departmentService.getDepartmentById(departmentId)
         .select('name code hod status')
         .lean();
     } catch (error) {

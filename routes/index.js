@@ -35,7 +35,7 @@ import { rankingRoutes } from "#domain/ranking/index.js";
 import createScriptsRouter from "#domain/system/scripts/scripts.routes.js";
 import userModel from "#domain/user/user.model.js";
 import { addDepartmentJob } from "../workers/department.queue.js";
-import departmentModel from "#domain/department/department.model.js";
+import departmentModel from "#domain/organization/department/department.model.js";
 import feedbackRoutes from "#domain/feedback/feedback.routes.js";
 import databaseRoutes from "#domain/system/database/index.js";
 import studentSuspension from "#domain/user/student/studentSuspension/index.js";
@@ -103,7 +103,6 @@ router.use("/admin-units", adminUnitRoutes)
 // Models collection
 const models = {
   User: userModel,
-  Department: departmentModel
   // Result,
   // Course,
   // MasterSheet

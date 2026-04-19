@@ -1,0 +1,6582 @@
+// ============================================
+// COMBINED ROUTES - Generated: 2026-04-19T10:52:09.083Z
+// ============================================
+
+
+// ============================================
+// FILE: domain/admin/admin.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const AdminSchema = new mongoose.Schema(
+  {
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
+    admin_id: {
+      type: String,
+      required: true,
+      unique: true,
+      uppercase: true,
+      trim: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+    role: {
+      type: String,
+      default: "admin",
+    },
+    phone: {
+      type: String,
+      default: "",
+    },
+    department: {
+      type: String,
+      default: "",
+    },
+    token: {
+      type: String,
+      default: "",
+    },
+    last_login: {
+      type: Date,
+      default: null,
+    },
+  },
+  { timestamps: true }
+);
+
+// 📌 Middleware: Update last_login automatically when token changes
+AdminSchema.pre("save", function (next) {
+  if (this.isModified("token")) {
+    this.last_login = new Date();
+  }
+  next();
+});
+
+const Admin = mongoose.models.Admin || mongoose.model("Admin", AdminSchema);
+
+export default Admin;
+
+
+
+// ============================================
+// FILE: domain/admin/adminUnits/models/adminUnit.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const adminUnitSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+      index: true
+    },
+
+    code: {
+      type: String,
+      trim: true,
+      uppercase: true,
+      index: true,
+      sparse: true
+    },
+
+    type: {
+      type: String,
+      required: true,
+      enum: [
+        "registry",
+        "bursary",
+        "library",
+        "hostel",
+        "ict",
+        "admissions",
+        "security",
+        "transport",
+        "health",
+        "student_affairs",
+        "other"
+      ],
+      index: true
+    },
+
+    parent_unit: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "AdminUnit",
+      default: null,
+      index: true
+    },
+
+    head: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+      index: true
+    },
+
+    description: {
+      type: String,
+      trim: true
+    },
+
+    is_active: {
+      type: Boolean,
+      default: true,
+      index: true
+    }
+  },
+  {
+    timestamps: true
+  }
+);
+
+// Compound indexes for fast queries
+adminUnitSchema.index({ type: 1, is_active: 1 });
+adminUnitSchema.index({ parent_unit: 1, is_active: 1 });
+adminUnitSchema.index({ name: 1, type: 1 });
+
+export const AdminUnit = mongoose.model("AdminUnit", adminUnitSchema);
+
+
+// ============================================
+// FILE: domain/admin/adminUnits/models/adminUnitMember.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const adminUnitMemberSchema = new mongoose.Schema(
+  {
+    unit: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "AdminUnit",
+      required: true,
+      index: true
+    },
+
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true
+    },
+
+    role: {
+      type: String,
+      required: true,
+      enum: ["HEAD", "DEPUTY", "STAFF", "ASSISTANT", "OFFICER"],
+      index: true
+    },
+
+    title: {
+      type: String,
+      trim: true
+    },
+
+    responsibilities: [{
+      type: String,
+      trim: true
+    }],
+
+    is_active: {
+      type: Boolean,
+      default: true,
+      index: true
+    },
+
+    start_date: {
+      type: Date,
+      default: Date.now
+    },
+
+    end_date: {
+      type: Date,
+      default: null
+    }
+  },
+  {
+    timestamps: true
+  }
+);
+
+// A user can only be an active member of a specific unit ONCE
+adminUnitMemberSchema.index(
+  { unit: 1, user: 1 }, 
+  { unique: true, partialFilterExpression: { is_active: true } }
+);
+
+// Compound indexes
+adminUnitMemberSchema.index({ unit: 1, role: 1 });
+adminUnitMemberSchema.index({ unit: 1, is_active: 1 });
+adminUnitMemberSchema.index({ user: 1, is_active: 1 });
+
+// Virtual: Check if membership is current
+adminUnitMemberSchema.virtual("is_current").get(function() {
+  return this.is_active && (!this.end_date || this.end_date > new Date());
+});
+
+// Pre-save hook: Ensure only ONE active HEAD per unit
+adminUnitMemberSchema.pre("save", async function(next) {
+  if (this.role === "HEAD" && this.is_active) {
+    const existingHead = await this.constructor.findOne({
+      unit: this.unit,
+      role: "HEAD",
+      is_active: true,
+      _id: { $ne: this._id }
+    });
+    
+    if (existingHead) {
+      throw new Error(`Unit already has an active HEAD: ${existingHead.title || existingHead._id}`);
+    }
+  }
+  next();
+});
+
+// Pre-save hook: Sync unit.head reference when HEAD is added/removed
+adminUnitMemberSchema.post("save", async function(doc) {
+  const AdminUnit = mongoose.model("AdminUnit");
+  
+  if (doc.role === "HEAD" && doc.is_active) {
+    // Set this user as the unit's head
+    await AdminUnit.findByIdAndUpdate(doc.unit, { head: doc.user });
+  }
+});
+
+adminUnitMemberSchema.post("findOneAndUpdate", async function(doc) {
+  if (!doc) return;
+  
+  const AdminUnit = mongoose.model("AdminUnit");
+  
+  if (doc.role === "HEAD" && doc.is_active) {
+    await AdminUnit.findByIdAndUpdate(doc.unit, { head: doc.user });
+  } else if (doc.role !== "HEAD" || !doc.is_active) {
+    // If this member is no longer HEAD, check if unit.head still points to them
+    const unit = await AdminUnit.findById(doc.unit);
+    if (unit && unit.head.toString() === doc.user.toString()) {
+      // Find another HEAD or set to null
+      const otherHead = await this.constructor.findOne({
+        unit: doc.unit,
+        role: "HEAD",
+        is_active: true,
+        _id: { $ne: doc._id }
+      });
+      
+      await AdminUnit.findByIdAndUpdate(doc.unit, { 
+        head: otherHead ? otherHead.user : null 
+      });
+    }
+  }
+});
+
+export const AdminUnitMember = mongoose.model("AdminUnitMember", adminUnitMemberSchema);
+
+
+// ============================================
+// FILE: domain/admission/admissionSettings.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+/**
+ * 🎯 Admission Settings
+ * ----------------------
+ * Stores the current Post-JAMB cutoff mark and related metadata.
+ */
+const admissionSettingsSchema = new mongoose.Schema(
+  {
+    cutoffMark: { type: Number, required: true, default: 180 },
+    lastUpdatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  },
+  { timestamps: true }
+);
+
+export default mongoose.model("AdmissionSettings", admissionSettingsSchema);
+
+
+
+// ============================================
+// FILE: domain/admission/models/admissionAcceptance.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const admissionAcceptanceSchema = new mongoose.Schema(
+  {
+    admissionApplicationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "AdmissionApplication",
+      required: true,
+      unique: true
+    },
+
+    accepted: {
+      type: Boolean,
+      required: true
+    },
+
+    acceptedAt: {
+      type: Date
+    }
+  },
+  { timestamps: true }
+);
+
+export default mongoose.model(
+  "AdmissionAcceptance",
+  admissionAcceptanceSchema
+);
+
+
+
+// ============================================
+// FILE: domain/admission/models/admissionApplication.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const admissionApplicationSchema = new mongoose.Schema(
+  {
+    applicantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Applicant",
+      required: true
+    },
+
+    admissionCycleId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "AdmissionCycle",
+      required: true
+    },
+
+    programmeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Programme",
+      required: true
+    },
+
+    departmentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Department",
+      required: true
+    },
+
+    status: {
+      type: String,
+      enum: [
+        "draft",
+        "submitted",
+        "underReview",
+        "admitted",
+        "rejected",
+        "waitlisted"
+      ],
+      default: "draft"
+    },
+
+    score: {
+      type: Number
+    },
+
+    submittedAt: {
+      type: Date
+    }
+  },
+  { timestamps: true }
+);
+
+export default mongoose.model(
+  "AdmissionApplication",
+  admissionApplicationSchema
+);
+
+
+
+// ============================================
+// FILE: domain/admission/models/admissionCycle.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const admissionCycleSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true
+    },
+
+    academicSessionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "AcademicSession",
+      required: true
+    },
+
+    admissionType: {
+      type: String,
+      enum: ["utme", "directEntry", "postgraduate"],
+      required: true
+    },
+
+    startDate: {
+      type: Date,
+      required: true
+    },
+
+    endDate: {
+      type: Date,
+      required: true
+    },
+
+    isActive: {
+      type: Boolean,
+      default: false
+    }
+  },
+  { timestamps: true }
+);
+
+export default mongoose.model("AdmissionCycle", admissionCycleSchema);
+
+
+
+// ============================================
+// FILE: domain/admission/models/admissionDecision.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const admissionDecisionSchema = new mongoose.Schema(
+  {
+    admissionApplicationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "AdmissionApplication",
+      required: true
+    },
+
+    decision: {
+      type: String,
+      enum: ["admitted", "rejected", "waitlisted"],
+      required: true
+    },
+
+    decidedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
+
+    notes: {
+      type: String
+    },
+
+    decisionDate: {
+      type: Date,
+      default: Date.now
+    }
+  },
+  { timestamps: true }
+);
+
+export default mongoose.model(
+  "AdmissionDecision",
+  admissionDecisionSchema
+);
+
+
+
+// ============================================
+// FILE: domain/admission/models/admissionDocument.model.js
+// ============================================
+
+import mongoose from "mongoose";
+import { DOCUMENT_STATUS } from "#domain/admission/constants/admissionDocument.constants.js";
+import { DOCUMENT_CATEGORIES } from "#domain/admission/constants/admission.constants.js";
+
+const admissionDocumentSchema = new mongoose.Schema(
+  {
+    admissionApplicationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "AdmissionApplication",
+      required: true,
+      index: true
+    },
+
+    category: {
+      type: String,
+      enum: Object.values(DOCUMENT_CATEGORIES),
+      required: true,
+      index: true
+    },
+
+    status: {
+      type: String,
+      enum: Object.values(DOCUMENT_STATUS),
+      default: DOCUMENT_STATUS.NOT_STARTED,
+      index: true
+    },
+
+    fileId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "File",
+      index: true
+    },
+
+    uploadedAt: {
+      type: Date
+    },
+
+    verifiedAt: {
+      type: Date
+    },
+
+    verifiedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    },
+
+    rejectionReason: {
+      type: String,
+      enum: [
+        'blurry',
+        'incomplete',
+        'expired',
+        'fake',
+        'wrongDocument',
+        'other'
+      ]
+    },
+
+    rejectionNotes: {
+      type: String,
+      maxlength: 500
+    },
+
+    verificationScore: {
+      type: Number,
+      min: 0,
+      max: 1
+    },
+
+    metadata: {
+      type: Map,
+      of: mongoose.Schema.Types.Mixed,
+      default: {}
+    },
+
+    // For tracking re-uploads
+    uploadAttempts: {
+      type: Number,
+      default: 0
+    },
+
+    lastUploadedAt: {
+      type: Date
+    }
+  },
+  { 
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+  }
+);
+
+// Virtual for file URL
+admissionDocumentSchema.virtual('fileUrl').get(function() {
+  return this.fileId ? `/api/admission/documents/${this._id}/file` : null;
+});
+
+// Indexes
+admissionDocumentSchema.index({ admissionApplicationId: 1, category: 1 }, { unique: true });
+admissionDocumentSchema.index({ status: 1, updatedAt: -1 });
+
+// Pre-save middleware
+admissionDocumentSchema.pre('save', function(next) {
+  if (this.isModified('status')) {
+    if (this.status === DOCUMENT_STATUS.UPLOADED) {
+      this.uploadedAt = new Date();
+      this.uploadAttempts += 1;
+      this.lastUploadedAt = new Date();
+    } else if (this.status === DOCUMENT_STATUS.VERIFIED) {
+      this.verifiedAt = new Date();
+    }
+  }
+  next();
+});
+
+export default mongoose.model("AdmissionDocument", admissionDocumentSchema);
+
+
+// ============================================
+// FILE: domain/admission/models/admissionPayment.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const admissionPaymentSchema = new mongoose.Schema(
+  {
+    admissionApplicationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "AdmissionApplication",
+      required: true,
+      unique: true
+    },
+
+    acceptanceFee: {
+      amount: {
+        type: Number,
+        required: true
+      },
+      currency: {
+        type: String,
+        default: 'NGN'
+      },
+      paid: {
+        type: Boolean,
+        default: false
+      },
+      paidAt: {
+        type: Date
+      },
+      transactionReference: {
+        type: String,
+        index: true
+      },
+      paymentMethod: {
+        type: String,
+        enum: ['card', 'bankTransfer', 'online']
+      }
+    },
+
+    processingFee: {
+      amount: {
+        type: Number,
+        required: true
+      },
+      currency: {
+        type: String,
+        default: 'NGN'
+      },
+      paid: {
+        type: Boolean,
+        default: false
+      },
+      paidAt: {
+        type: Date
+      },
+      transactionReference: {
+        type: String,
+        index: true
+      }
+    },
+
+    // Payment verification
+    verifiedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    },
+    verifiedAt: {
+      type: Date
+    },
+
+    // Payment metadata
+    paymentGatewayResponse: {
+      type: Map,
+      of: mongoose.Schema.Types.Mixed
+    }
+  },
+  { timestamps: true }
+);
+
+// Indexes
+admissionPaymentSchema.index({ 'acceptanceFee.paid': 1 });
+admissionPaymentSchema.index({ 'processingFee.paid': 1 });
+admissionPaymentSchema.index({ createdAt: -1 });
+
+export default mongoose.model("AdmissionPayment", admissionPaymentSchema);
+
+
+// ============================================
+// FILE: domain/admission/models/admissionSettings.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+/**
+ * 🎯 Admission Settings
+ * ----------------------
+ * Stores the current Post-JAMB cutoff mark and related metadata.
+ */
+const admissionSettingsSchema = new mongoose.Schema(
+  {
+    cutoffMark: { type: Number, required: true, default: 180 },
+    lastUpdatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  },
+  { timestamps: true }
+);
+
+export default mongoose.model("AdmissionSettings", admissionSettingsSchema);
+
+
+
+// ============================================
+// FILE: domain/admission/models/applicant.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const applicantSchema = new mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      required: true,
+      trim: true
+    },
+
+    lastName: {
+      type: String,
+      required: true,
+      trim: true
+    },
+
+    email: {
+      type: String,
+      required: true,
+      lowercase: true,
+      index: true
+    },
+
+    phone: {
+      type: String,
+      required: true
+    },
+
+    dateOfBirth: {
+      type: Date,
+      required: true
+    }
+  },
+  { timestamps: true }
+);
+
+export default mongoose.model("Applicant", applicantSchema);
+
+
+
+// ============================================
+// FILE: domain/ai/models/audit.log.model.js
+// ============================================
+
+// src/modules/ai/models/audit.log.model.js
+
+import mongoose from 'mongoose';
+
+const auditLogSchema = new mongoose.Schema({
+  type: {
+    type: String,
+    enum: ['query', 'action', 'conversation', 'error', 'export'],
+    required: true,
+    index: true,
+  },
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    index: true,
+  },
+  conversation_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Conversation',
+    index: true,
+  },
+  action: {
+    type: String,
+    required: true,
+  },
+  details: {
+    type: mongoose.Schema.Types.Mixed,
+    default: {},
+  },
+  metadata: {
+    ip: String,
+    user_agent: String,
+    duration_ms: Number,
+    status_code: Number,
+    timestamp: Date,
+  },
+  created_at: {
+    type: Date,
+    default: Date.now,
+    index: true,
+  },
+});
+
+// Compound indexes for common queries
+auditLogSchema.index({ user_id: 1, created_at: -1 });
+auditLogSchema.index({ type: 1, created_at: -1 });
+auditLogSchema.index({ action: 1, created_at: -1 });
+
+// TTL index to auto-delete old logs (after 90 days)
+auditLogSchema.index({ created_at: 1 }, { expireAfterSeconds: 90 * 24 * 60 * 60 });
+
+const AuditLog = mongoose.model('AiAuditLog', auditLogSchema);
+
+export default AuditLog;
+
+
+// ============================================
+// FILE: domain/ai/models/conversation.model.js
+// ============================================
+
+// src/modules/ai/models/conversation.model.js
+
+import mongoose from 'mongoose';
+
+const messageSchema = new mongoose.Schema({
+  role: {
+    type: String,
+    enum: ['user', 'assistant', 'system'],
+    required: true,
+  },
+  content: {
+    type: String,
+    required: true,
+  },
+  tool_calls: [{
+    tool_name: String,
+    input: mongoose.Schema.Types.Mixed,
+    result: mongoose.Schema.Types.Mixed,
+    formatted: mongoose.Schema.Types.Mixed,
+    timestamp: Date,
+  }],
+  actions: [{
+    endpoint: String,
+    method: String,
+    payload: mongoose.Schema.Types.Mixed,
+    label: String,
+    executed: {
+      type: Boolean,
+      default: false,
+    },
+    executed_at: Date,
+  }],
+  timestamp: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const conversationSchema = new mongoose.Schema({
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    index: true,
+  },
+  title: {
+    type: String,
+    default: 'New Conversation',
+    trim: true,
+  },
+  messages: [messageSchema],
+  
+  // Context for the conversation
+  context: {
+    current_intent: {
+      type: String,
+      enum: ['read', 'write', 'analysis', 'export', null],
+      default: null,
+    },
+    pending_action: mongoose.Schema.Types.Mixed,
+    last_search_results: mongoose.Schema.Types.Mixed,
+    temp_buffer: {
+      type: String,
+      default: '',
+    },
+  },
+  
+  // Metadata
+  message_count: {
+    type: Number,
+    default: 0,
+  },
+  last_activity: {
+    type: Date,
+    default: Date.now,
+  },
+  
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+// Indexes for performance
+conversationSchema.index({ user_id: 1, updated_at: -1 });
+conversationSchema.index({ user_id: 1, created_at: -1 });
+
+// Update timestamps on save
+conversationSchema.pre('save', function(next) {
+  this.updated_at = new Date();
+  this.message_count = this.messages.length;
+  next();
+});
+
+// Instance methods
+conversationSchema.methods.addMessage = function(role, content, metadata = {}) {
+  const message = {
+    role,
+    content,
+    timestamp: new Date(),
+    ...metadata,
+  };
+  
+  this.messages.push(message);
+  this.last_activity = new Date();
+  
+  return message;
+};
+
+conversationSchema.methods.getRecentMessages = function(limit = 20) {
+  return this.messages.slice(-limit);
+};
+
+conversationSchema.methods.clearTempBuffer = function() {
+  this.context.temp_buffer = '';
+  return this;
+};
+
+const Conversation = mongoose.model('Conversation', conversationSchema);
+
+export default Conversation;
+
+
+// ============================================
+// FILE: domain/ai/models/export.job.model.js
+// ============================================
+
+// src/modules/ai/models/export.job.model.js
+
+import mongoose from 'mongoose';
+
+const exportJobSchema = new mongoose.Schema({
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    index: true,
+  },
+  conversation_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Conversation',
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'processing', 'completed', 'failed', 'expired'],
+    default: 'pending',
+    index: true,
+  },
+  format: {
+    type: String,
+    enum: ['excel', 'csv', 'json'],
+    required: true,
+  },
+  query: {
+    type: mongoose.Schema.Types.Mixed,
+    required: true,
+  },
+  file_info: {
+    file_id: String,
+    file_name: String,
+    file_size: Number,
+    file_url: String,
+    mime_type: String,
+  },
+  record_count: {
+    type: Number,
+    default: 0,
+  },
+  error: {
+    message: String,
+    stack: String,
+  },
+  expires_at: {
+    type: Date,
+    required: true,
+    index: true,
+  },
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  completed_at: Date,
+});
+
+// TTL index to auto-delete old jobs
+exportJobSchema.index({ expires_at: 1 }, { expireAfterSeconds: 0 });
+
+const ExportJob = mongoose.model('ExportJob', exportJobSchema);
+
+export default ExportJob;
+
+
+// ============================================
+// FILE: domain/ai/models/user.preferences.model.js
+// ============================================
+
+// src/modules/ai/models/user.preferences.model.js
+
+import mongoose from 'mongoose';
+
+const userPreferencesSchema = new mongoose.Schema({
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    unique: true,
+    index: true,
+  },
+  
+  // Display preferences
+  display: {
+    default_format: {
+      type: String,
+      enum: ['table', 'summary', 'analysis', 'auto'],
+      default: 'auto',
+    },
+    table_threshold: {
+      type: Number,
+      default: 20,
+      min: 1,
+      max: 100,
+    },
+    summary_threshold: {
+      type: Number,
+      default: 50,
+      min: 10,
+      max: 200,
+    },
+    auto_export_threshold: {
+      type: Number,
+      default: 100,
+      min: 50,
+      max: 1000,
+    },
+    show_previews: {
+      type: Boolean,
+      default: true,
+    },
+    compact_mode: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  
+  // Export preferences
+  export: {
+    default_format: {
+      type: String,
+      enum: ['excel', 'csv', 'json'],
+      default: 'excel',
+    },
+    include_headers: {
+      type: Boolean,
+      default: true,
+    },
+    date_format: {
+      type: String,
+      default: 'YYYY-MM-DD',
+    },
+  },
+  
+  // Analysis preferences
+  analysis: {
+    auto_analyze: {
+      type: Boolean,
+      default: false,
+    },
+    max_depth: {
+      type: Number,
+      enum: [1, 2, 3],
+      default: 2,
+    },
+    include_recommendations: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  
+  // Privacy & safety
+  privacy: {
+    hide_sensitive_fields: {
+      type: Boolean,
+      default: true,
+    },
+    require_confirmation_for: {
+      type: [String],
+      default: ['terminate', 'delete', 'update_role'],
+    },
+  },
+  
+  // Saved queries & templates
+  saved_queries: [{
+    name: {
+      type: String,
+      required: true,
+    },
+    description: String,
+    query: mongoose.Schema.Types.Mixed,
+    last_used: Date,
+    usage_count: {
+      type: Number,
+      default: 0,
+    },
+  }],
+  
+  // User context
+  context: {
+    default_department: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Department',
+    },
+    default_role_filters: [String],
+  },
+  
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+// Update timestamp on save
+userPreferencesSchema.pre('save', function(next) {
+  this.updated_at = new Date();
+  next();
+});
+
+// Instance method to get effective preferences with defaults
+userPreferencesSchema.methods.getEffective = function() {
+  const defaults = {
+    display: {
+      default_format: 'auto',
+      table_threshold: 20,
+      summary_threshold: 50,
+      auto_export_threshold: 100,
+      show_previews: true,
+      compact_mode: false,
+    },
+    export: {
+      default_format: 'excel',
+      include_headers: true,
+      date_format: 'YYYY-MM-DD',
+    },
+    analysis: {
+      auto_analyze: false,
+      max_depth: 2,
+      include_recommendations: true,
+    },
+  };
+  
+  return {
+    ...defaults,
+    ...this.toObject(),
+  };
+};
+
+const UserPreferences = mongoose.model('UserPreferences', userPreferencesSchema);
+
+export default UserPreferences;
+
+
+// ============================================
+// FILE: domain/announcement/announcement.model.js
+// ============================================
+
+import { Schema, model } from 'mongoose';
+
+const announcementSchema = new Schema({
+  title: {
+    type: String,
+    required: [true, 'Title is required'],
+    trim: true,
+    maxlength: [200, 'Title cannot exceed 200 characters']
+  },
+  description: {
+    type: String,
+    required: [true, 'Description is required'],
+    maxlength: [1000, 'Description cannot exceed 1000 characters']
+  },
+  content: {
+    type: String,
+    required: [true, 'Content is required']
+  },
+  category: {
+    type: String,
+    required: [true, 'Category is required'],
+    enum: {
+      values: ['Academic', 'Financial', 'Event', 'Accommodation'],
+      message: 'Category must be Academic, Financial, Event, or Accommodation'
+    }
+  },
+  priority: {
+    type: String,
+    required: [true, 'Priority is required'],
+    enum: {
+      values: ['low', 'medium', 'high'],
+      message: 'Priority must be low, medium, or high'
+    },
+    default: 'medium'
+  },
+  image: {
+    type: String,
+    required: [true, 'Image URL is required']
+  },
+  date: {
+    type: Date,
+    default: Date.now
+  },
+  expiresAt: {
+    type: Date,
+    required: [true, 'Expiration date is required']
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  createdBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'Creator is required']
+  },
+  targetAudience: {
+    type: [String],
+    enum: ['all', 'undergraduate', 'postgraduate', 'international', 'domestic'],
+    default: ['all']
+  },
+  tags: [{
+    type: String,
+    trim: true
+  }]
+}, {
+  timestamps: true
+});
+
+// Index for better query performance
+announcementSchema.index({ category: 1, isActive: 1, date: -1 });
+announcementSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+announcementSchema.index({ isActive: 1, date: -1 });
+
+// Virtual for checking if announcement is expired
+announcementSchema.virtual('isExpired').get(function() {
+  return this.expiresAt < new Date();
+});
+
+// Method to check if announcement is viewable
+announcementSchema.methods.isViewable = function() {
+  return this.isActive && !this.isExpired;
+};
+
+// Static method to get active announcements by category
+announcementSchema.statics.getActiveByCategory = function(category = 'all') {
+  const query = { 
+    isActive: true, 
+    expiresAt: { $gt: new Date() } 
+  };
+  
+  if (category !== 'all') {
+    query.category = category;
+  }
+  
+  return this.find(query)
+    .sort({ date: -1, priority: -1 })
+    .populate('createdBy', 'name email');
+};
+
+export default model('Announcement', announcementSchema);
+
+
+// ============================================
+// FILE: domain/applicant/applicant.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+/**
+ * 🧾 Applicant Schema
+ * -------------------
+ * Stores Post-JAMB applicants before admission.
+ */
+const applicantSchema = new mongoose.Schema(
+  {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    jambRegNumber: { type: String, required: true, unique: true },
+    score: { type: Number, default: null },
+    programChoice: { type: mongoose.Schema.Types.ObjectId, ref: "Department" },
+    admissionStatus: {
+      type: String,
+      enum: ["pending", "admitted", "rejected"],
+      default: "pending",
+    },
+  },
+  { timestamps: true }
+);
+
+export default mongoose.model("Applicant", applicantSchema);
+
+
+
+// ============================================
+// FILE: domain/auditlog/auditlog.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const auditLogSchema = new mongoose.Schema(
+  {
+    timestamp: {
+      type: Date,
+      default: Date.now,
+      required: true,
+      index: true
+    },
+    actor: {
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+      },
+      username: String,
+      email: String,
+      role: {
+        type: String,
+        // enum: ["admin", "dean", "hod", "lecturer", "student", "applicant", "staff"],
+        required: true
+      },
+      department: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Department",
+        required: false
+      },
+      matricNo: String,
+      staffId: String,
+      ipAddress: String
+    },
+    action: {
+      type: String,
+      // enum: [
+      //   // CRUD operations
+      //   "CREATE", "READ", "UPDATE", "DELETE", "RESTORE",
+      //   // Authentication
+      //   "LOGIN", "LOGOUT", "LOGIN_FAILED", "PASSWORD_CHANGE", "TOKEN_REFRESH",
+      //   // Academic operations
+      //   "ENROLL", "WITHDRAW", "REGISTER", "DROP", "GRADE_UPDATE", "RESULT_UPLOAD",
+      //   "APPROVE", "REJECT", "ASSIGN", "UNASSIGN", "PROMOTE", "SUSPEND",
+      //   // Financial operations
+      //   "PAYMENT_INITIATED", "PAYMENT_COMPLETED", "PAYMENT_FAILED", "REFUND",
+      //   // System operations
+      //   "EXPORT", "IMPORT", "DOWNLOAD", "UPLOAD", "BACKUP", "RESTORE",
+      //   "CONFIG_CHANGE", "PERMISSION_CHANGE", "ROLE_CHANGE",
+      //   // Custom actions (you can add more)
+      //   "CUSTOM", "REMOVE_HOD", "ASSIGN_HOD"
+      // ],
+      required: true,
+      index: true
+    },
+    entity: {
+      type: String, // Model name: "User", "Course", "Student", "Payment", etc.
+      required: true,
+      index: true
+    },
+    entityId: {
+      type: mongoose.Schema.Types.ObjectId,
+      index: true,
+    },
+    entityName: String, // Human-readable name
+    changes: {
+      before: mongoose.Schema.Types.Mixed,
+      after: mongoose.Schema.Types.Mixed,
+      changedFields: [String],
+      delta: mongoose.Schema.Types.Mixed
+    },
+    context: {
+      endpoint: String,
+      method: String,
+      requestId: String,
+      userAgent: String,
+      queryParams: mongoose.Schema.Types.Mixed,
+      requestBody: mongoose.Schema.Types.Mixed,
+      responseTime: Number,
+      statusCode: Number,
+      errorMessage: String
+    },
+    status: {
+      type: String,
+      enum: ["SUCCESS", "FAILURE", "UNAUTHORIZED", "FORBIDDEN", "ERROR", "PENDING", "BLOCKED", "PARTIAL_SUCCESS"],
+      default: "SUCCESS"
+    },
+    metadata: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {}
+    },
+    severity: {
+      type: String,
+      enum: ["INFO", "LOW", "MEDIUM", "HIGH", "CRITICAL"],
+      default: "INFO"
+    },
+    isSuspicious: {
+      type: Boolean,
+      default: false,
+      index: true
+    },
+    requiresReview: {
+      type: Boolean,
+      default: false
+    },
+    tags: [String],
+    // For cascading deletions or related operations
+    relatedEntities: [{
+      entity: String,
+      entityId: mongoose.Schema.Types.ObjectId
+    }]
+  },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+  }
+);
+
+// Compound indexes
+auditLogSchema.index({ timestamp: -1, "actor.userId": 1 });
+auditLogSchema.index({ entity: 1, entityId: 1 });
+auditLogSchema.index({ "actor.role": 1, timestamp: -1 });
+auditLogSchema.index({ severity: 1, isSuspicious: 1 });
+
+// Virtuals for UI display
+auditLogSchema.virtual("displayTime").get(function () {
+  return this.timestamp.toLocaleString();
+});
+
+auditLogSchema.virtual("actionIcon").get(function () {
+  const icons = {
+    CREATE: "add",
+    UPDATE: "edit",
+    DELETE: "delete",
+    READ: "visibility",
+    LOGIN: "login",
+    LOGOUT: "logout",
+    GRADE_UPDATE: "grade",
+    PAYMENT_COMPLETED: "payment"
+  };
+  return icons[this.action] || "info";
+});
+
+// Auto-tagging based on entity and action
+auditLogSchema.pre("save", function (next) {
+  // Auto-generate tags if not provided
+  if (!this.tags || this.tags.length === 0) {
+    this.tags = this.generateAutoTags();
+  }
+
+  // Auto-detect severity if not set
+  if (this.severity === "INFO") {
+    this.severity = this.determineAutoSeverity();
+  }
+
+  // Auto-detect suspicious activities
+  this.detectSuspiciousActivity();
+
+  next();
+});
+
+// Instance methods
+auditLogSchema.methods.generateAutoTags = function () {
+  const tags = [];
+
+  // Entity-based tags
+  tags.push(this.entity.toLowerCase());
+
+  // Action-based tags
+  if (this.action.includes("LOGIN")) tags.push("authentication");
+  if (this.action.includes("PAYMENT")) tags.push("financial");
+  if (["GRADE_UPDATE", "RESULT_UPLOAD"].includes(this.action)) tags.push("academic");
+  if (["CREATE", "UPDATE", "DELETE"].includes(this.action)) tags.push("data-modification");
+
+  // Status-based tags
+  if (this.status === "UNAUTHORIZED" || this.status === "FORBIDDEN") tags.push("security");
+  if (this.status === "ERROR") tags.push("error");
+
+  return [...new Set(tags)];
+};
+
+auditLogSchema.methods.determineAutoSeverity = function () {
+  // High severity entities
+  const highSeverityEntities = ["User", "Grade", "Result", "Payment", "Salary", "Exam"];
+
+  // Critical actions
+  const criticalActions = ["DELETE", "ROLE_CHANGE", "PASSWORD_CHANGE", "GRADE_UPDATE"];
+
+  if (criticalActions.includes(this.action) && highSeverityEntities.includes(this.entity)) {
+    return "CRITICAL";
+  }
+
+  if (this.action === "DELETE" || this.status === "UNAUTHORIZED") {
+    return "HIGH";
+  }
+
+  if (["UPDATE", "CREATE"].includes(this.action) && highSeverityEntities.includes(this.entity)) {
+    return "MEDIUM";
+  }
+
+  return "LOW";
+};
+
+auditLogSchema.methods.detectSuspiciousActivity = function () {
+  // Multiple failed logins from same IP (handled in service)
+  if (this.action === "LOGIN_FAILED") {
+    this.isSuspicious = true;
+  }
+
+  // Grade changes outside normal hours
+  if (this.entity === "Grade" && this.action === "GRADE_UPDATE") {
+    const hour = this.timestamp.getHours();
+    if (hour < 8 || hour > 18) {
+      this.isSuspicious = true;
+    }
+  }
+
+  // Bulk deletions
+  if (this.action === "DELETE" && this.metadata?.itemCount > 10) {
+    this.isSuspicious = true;
+    this.requiresReview = true;
+  }
+
+  // Unauthorized access attempts
+  if (this.status === "UNAUTHORIZED" || this.status === "FORBIDDEN") {
+    this.isSuspicious = true;
+  }
+};
+
+// Static methods
+auditLogSchema.statics.findByEntity = function (entity, entityId) {
+  return this.find({ entity, entityId })
+    .sort({ timestamp: -1 })
+    .populate("actor.userId", "name email role")
+    .lean();
+};
+
+auditLogSchema.statics.getEntityHistory = function (entity, entityId, limit = 50) {
+  return this.find({
+    $or: [
+      { entity, entityId },
+      { "relatedEntities.entity": entity, "relatedEntities.entityId": entityId }
+    ]
+  })
+    .sort({ timestamp: -1 })
+    .limit(limit)
+    .lean();
+};
+
+const AuditLog = mongoose.model("AuditLog", auditLogSchema);
+export default AuditLog;
+
+
+// ============================================
+// FILE: domain/chat/chat.message.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const messageSchema = new mongoose.Schema({
+  session_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ChatSession',
+    required: true,
+    index: true
+  },
+  
+  sender_type: {
+    type: String,
+    enum: ["user", "attendant", "system"],
+    required: true
+  },
+  
+  sender_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    sparse: true // Can be null for system messages
+  },
+  
+  content: {
+    type: String,
+    required: true
+  },
+  
+  message_type: {
+    type: String,
+    enum: ["text", "image", "file", "system_notification"],
+    default: "text"
+  },
+  
+  attachments: [{
+    filename: String,
+    url: String,
+    size: Number,
+    mime_type: String,
+    uploaded_at: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+  
+  read_by: [{
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    read_at: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+  
+  delivered: {
+    type: Boolean,
+    default: false
+  },
+  
+  metadata: {
+    quick_reply: Boolean,
+    is_auto_response: Boolean,
+    sentiment: String // positive, negative, neutral
+  }
+}, {
+  timestamps: true
+});
+
+// Compound index for efficient chat history retrieval
+messageSchema.index({ session_id: 1, created_at: 1 });
+
+const Message = mongoose.model("Message", messageSchema);
+export default Message;
+
+
+// ============================================
+// FILE: domain/chat/chat.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const chatSessionSchema = new mongoose.Schema({
+  session_id: {
+    type: String,
+    unique: true,
+    required: true
+  },
+  
+  // User can be either registered or guest
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    sparse: true // Allows null for guest users
+  },
+  
+  // Guest user information (when not registered)
+  guest_info: {
+    email: {
+      type: String,
+      sparse: true,
+      lowercase: true
+    },
+    name: String,
+    phone: String,
+    ip_address: String,
+    user_agent: String
+  },
+  
+  status: {
+    type: String,
+    enum: ["active", "waiting", "closed", "resolved"],
+    default: "waiting"
+  },
+  
+  assigned_to: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    sparse: true
+  },
+  
+  department: {
+    type: String,
+    default: "general"
+  },
+  
+  last_message_at: {
+    type: Date,
+    default: Date.now
+  },
+  
+  created_at: {
+    type: Date,
+    default: Date.now
+  },
+  
+  closed_at: Date,
+  
+  metadata: {
+    page_url: String,
+    browser: String,
+    os: String,
+    device: String
+  }
+}, {
+  timestamps: true
+});
+
+// Indexes for performance
+chatSessionSchema.index({ status: 1, created_at: -1 });
+chatSessionSchema.index({ assigned_to: 1, status: 1 });
+chatSessionSchema.index({ "guest_info.email": 1 });
+
+const ChatSession = mongoose.model("ChatSession", chatSessionSchema);
+export default ChatSession;
+
+
+// ============================================
+// FILE: domain/computation/models/computation.model.js
+// ============================================
+
+import mongoose from "mongoose";
+//  IMPORTANT: Clear cached model to force schema refresh
+// delete mongoose.connection.models['ComputationSummary'];
+// delete mongoose.models['ComputationSummary'];
+// Define a subdocument schema
+const courseKeySchema = new mongoose.Schema({
+
+  courseId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Course"
+  },
+  courseCode: String,
+  title: String,
+  unit: Number,
+  level: Number,
+  type: String,
+  isCoreCourse: Boolean,
+  isBorrowed: Boolean
+}, { _id: false });  // No _id for subdocuments
+const computationSummarySchema = new mongoose.Schema({
+  department: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Department",
+    required: true
+  },
+
+  programme: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Programme",
+    required: true
+  },
+
+  departmentDetails: {
+    type: mongoose.Schema.Types.Mixed,
+    default: null
+  },
+  // Then use it in your main schema
+  keyToCoursesByLevel: {
+    type: Map,
+    of: [courseKeySchema],  // Use the subdocument schema
+    default: new Map()
+  },
+  failedStudents: {
+    type: mongoose.Schema.Types.Mixed,
+    default: null
+  },
+  semester: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "AcademicSemester",
+    required: true
+  },
+
+  // Master computation reference
+  masterComputationId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "MasterComputation"
+  },
+
+
+  // Overall department statistics
+  totalStudents: { type: Number, default: 0 },
+  studentsWithResults: { type: Number, default: 0 },
+  studentsProcessed: { type: Number, default: 0 },
+
+  averageGPA: { type: Number, default: 0 },
+  highestGPA: { type: Number, default: 0 },
+  lowestGPA: { type: Number, default: 0 },
+
+  // Overall grade distribution
+  gradeDistribution: {
+    firstClass: { type: Number, default: 0 },
+    secondClassUpper: { type: Number, default: 0 },
+    secondClassLower: { type: Number, default: 0 },
+    thirdClass: { type: Number, default: 0 },
+    fail: { type: Number, default: 0 }
+  },
+
+  // Summary of results by level
+  summaryOfResultsByLevel: {
+    type: Map,
+    of: {
+      totalStudents: { type: Number, default: 0 },
+      studentsWithResults: { type: Number, default: 0 },
+
+      gpaStatistics: {
+        average: { type: Number, default: 0 },
+        highest: { type: Number, default: 0 },
+        lowest: { type: Number, default: 0 }
+      },
+
+      classDistribution: {
+        firstClass: { type: Number, default: 0 },
+        secondClassUpper: { type: Number, default: 0 },
+        secondClassLower: { type: Number, default: 0 },
+        thirdClass: { type: Number, default: 0 },
+        pass: { type: Number, default: 0 },
+        fail: { type: Number, default: 0 }
+      }
+    },
+    default: new Map()
+  },
+
+  // Status tracking
+  status: {
+    type: String,
+    enum: [
+      "pending",
+      "processing",
+      "completed",
+      "completed_with_errors",
+      "failed",
+      "cancelled"
+    ],
+    default: "pending"
+  },
+
+  startedAt: { type: Date, default: Date.now },
+  completedAt: { type: Date },
+  duration: { type: Number },
+
+  error: { type: String },
+  retryCount: { type: Number, default: 0 },
+  lastRetryAt: Date,
+
+  computedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  },
+
+  purpose: {
+    type: String,
+    enum: ["final", "preview", "simulation"],
+    default: "final"
+  },
+
+
+  metadata: {
+    type: Map,
+    of: mongoose.Schema.Types.Mixed,
+    default: new Map()
+  },
+
+  approval_dates: {
+    departmental_board: {
+      type: Date
+    },
+    faculty_board: {
+      type: Date
+    },
+    senate_committee: {
+      type: Date
+    },
+    senate: {
+      type: Date
+    }
+  },
+
+  masterSheetGeneratedAt: Date
+}, { timestamps: true });
+
+// Indexes for performance
+computationSummarySchema.index(
+  {
+    department: 1,
+    programme: 1,
+    semester: 1,
+    purpose: 1
+  },
+  { unique: true }
+);
+computationSummarySchema.index({ masterComputationId: 1 });
+computationSummarySchema.index({ isPreview: 1, purpose: 1 });
+computationSummarySchema.index({ status: 1 });
+
+
+const ComputationSummary = mongoose.model("ComputationSummary", computationSummarySchema);
+export default ComputationSummary;
+
+
+// ============================================
+// FILE: domain/computation/models/masterComputation.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const masterComputationSchema = new mongoose.Schema({
+  semester: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "AcademicSemester"
+  },
+  totalDepartments: {
+    type: Number,
+    default: 0
+  },
+  departmentsProcessed: {
+    type: Number,
+    default: 0
+  },
+  totalStudents: {
+    type: Number,
+    default: 0
+  },
+  overallAverageGPA: {
+    type: Number,
+    default: 0
+  },
+  totalCarryovers: {
+    type: Number,
+    default: 0
+  },
+  totalFailedStudents: {
+    type: Number,
+    default: 0
+  },
+  departmentsLocked: {
+    type: Number,
+    default: 0
+  },
+  departmentSummaries: {
+    type: Map,
+    of: new mongoose.Schema({
+      studentsProcessed: Number,
+      passListCount: Number,
+      probationListCount: Number,
+      withdrawalListCount: Number,
+      terminationListCount: Number,
+      // FEB18
+      notRegisteredListCount: Number,
+      leaveOfAbsenceListCount: Number,
+      carryoverCount: Number,
+      averageGPA: Number,
+      failedStudentsCount: Number,
+      status: String,
+      processed: { type: Boolean, default: false },
+      isPreview: { type: Boolean, default: false },
+      updatedAt: { type: Date, default: Date.now }
+    }, { _id: false })
+  },
+  status: {
+    type: String,
+    enum: ["pending", "processing", "completed", "completed_with_errors", "failed", "cancelled", "locked"],
+    default: "pending"
+  },
+  startedAt: {
+    type: Date,
+    default: Date.now
+  },
+  completedAt: {
+    type: Date
+  },
+  duration: {
+    type: Number
+  },
+  computedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
+  semesterLocked: {
+    type: Boolean,
+    default: false
+  },
+  semesterLockedAt: {
+    type: Date
+  },
+  metadata: {
+    type: mongoose.Schema.Types.Mixed,
+    default: {}
+  },
+  purpose: {
+    type: String,
+    enum: ['preview', 'final'],
+    default: 'preview'
+  },
+  academicBoardDate: {
+    type: Date,
+    required: true
+  }
+  
+}, { timestamps: true });
+
+// Add index for better query performance
+masterComputationSchema.index({ semester: 1, status: 1 });
+masterComputationSchema.index({ computedBy: 1 });
+masterComputationSchema.index({ isPreview: 1, purpose: 1 });
+
+const MasterComputation = mongoose.model("MasterComputation", masterComputationSchema);
+export default MasterComputation;
+
+
+// ============================================
+// FILE: domain/course/course.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const courseSchema = new mongoose.Schema({
+  // ---------------------
+  // BASIC INFO (only allowed when NOT borrowed)
+  // ---------------------
+  courseCode: { type: String, uppercase: true},
+  title: { type: String, trim: true },
+  description: { type: String, default: "" },
+
+  // ---------------------
+  // ACADEMIC FIELDS (only allowed when NOT borrowed)
+  // ---------------------
+  unit: { type: Number, min: 0 },
+  level: {
+    type: Number,
+    enum: [100, 200, 300, 400, 500, 600],
+    required: function () {
+      return this.borrowedId === null;
+    },
+  },
+  semester: {
+    type: String,
+    enum: ["first", "second", null],
+    required: function () {
+      return this.borrowedId === null;
+    },
+  },
+
+  // ---------------------
+  // COURSE TYPE (always allowed)
+  // ---------------------
+  type: {
+    type: String,
+    enum: ["core", "elective"],
+    required: function () {
+      return this.borrowedId === null;
+    },
+  },
+  elective_category: {
+    type: String,
+    enum: ["required", "optional"],
+    default: function () {
+      if (this.borrowedId !== null) return undefined;
+      return this.type === "elective" ? "optional" : undefined;
+    },
+    validate: {
+      validator: function (v) {
+        if (this.borrowedId !== null) return true;
+        if (this.type === "core") return v === undefined;
+        return true;
+      },
+      message: "elective_category is only applicable to elective courses.",
+    },
+  },
+
+
+  overrides: {
+    allowed_levels: [{
+      type: Number,
+      enum: [100, 200, 300, 400, 500, 600]
+    }],
+
+    allowed_programmes: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Programme"
+    }],
+
+    excluded_programmes: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Programme"
+    }],
+
+    allowed_departments: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Department"
+    }],
+
+    excluded_departments: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Department"
+    }]
+  },
+
+
+  // ---------------------
+  // ROOT-LEVEL SCOPES
+  // ---------------------
+  faculty: { type: mongoose.Schema.Types.ObjectId, ref: "Faculty", default: null },
+  department: { type: mongoose.Schema.Types.ObjectId, ref: "Department", required: true },
+  programme: { type: mongoose.Schema.Types.ObjectId, ref: "Programme", default: null },
+
+  scope: {
+    type: String,
+    enum: ["department", "programme", "faculty", "general"],
+    default: "department",
+  },
+
+  // ---------------------
+  // BORROWED SYSTEM
+  // ---------------------
+  borrowedId: { type: mongoose.Schema.Types.ObjectId, ref: "Course", default: null },
+
+  // ---------------------
+  // OTHER FIELDS
+  // ---------------------
+  status: { type: String, enum: ["active", "inactive"], default: "active" },
+  replacement_course_id: { type: mongoose.Schema.Types.ObjectId, ref: "Course", default: null },
+  prerequisites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+  lecture_hours: { type: Number, default: 0 },
+  practical_hours: { type: Number, default: 0 },
+  deletedAt: { type: Date, default: null },
+  deletedBy: {
+    type: mongoose.Schema.Types.ObjectId, ref: "User", default: null, validate: {
+      validator: function (v) {
+        // deletedBy should only be set if deletedAt is set
+        if (v && !this.deletedAt) return false;
+        return true;
+      },
+      message: "deletedBy can only be set if deletedAt is also set."
+    }
+  },
+
+}, { timestamps: true });
+
+// ---------------------
+// PRE-VALIDATION FOR BORROWED COURSES
+// ---------------------
+courseSchema.pre("validate", function (next) {
+  if (this.courseCode && typeof this.courseCode === "string") {
+    this.courseCode = this.courseCode.replace(/\s+/g, "");
+  }
+
+  if (this.borrowedId !== null) {
+    this.courseCode = null;
+    this.title = null;
+    this.description = null;
+    this.unit = null;
+    this.level = null;
+    this.semester = null;
+  }
+  next();
+});
+
+// ---------------------
+// PARTIAL INDEX
+// ---------------------
+courseSchema.index(
+  { courseCode: 1 },
+  { unique: true, partialFilterExpression: { courseCode: { $type: "string" } } }
+);
+
+// ---------------------
+// TOJSON TRANSFORM: auto-resolve borrowed courses everywhere
+// ---------------------
+// courseSchema.set("toJSON", {
+//   virtuals: true,
+//   transform(doc, ret) {
+//     if (ret.borrowedId) {
+//       const base = ret.borrowedId;
+//       ret.courseCode = base.courseCode;
+//       ret.title = base.title;
+//       ret.description = base.description;
+//       ret.unit = base.unit;
+//       ret.level = base.level;
+//       ret.semester = base.semester;
+//       ret.type = base.type;
+//       ret.elective_category = base.elective_category;
+//       ret.lecture_hours = base.lecture_hours;
+//       ret.practical_hours = base.practical_hours;
+//       ret.__resolvedBorrowed = true; // optional flag for debugging
+//     }
+//     return ret;
+//   }
+// });
+
+
+// 🧹 Auto-exclude deleted courses from default queries
+courseSchema.pre(/^find/, function () {
+  // this.populate("borrowedId");
+  const archiveMode = this.getOptions()?.archiveMode;
+
+  if (archiveMode === "only") {
+    this.where({ deletedAt: { $ne: null } });
+    return;
+  }
+
+  if (archiveMode === "all") {
+    // no filter
+    return;
+  }
+
+  // default
+  this.where({ deletedAt: null });
+});
+export default mongoose.model("Course", courseSchema);
+
+
+
+// ============================================
+// FILE: domain/course/courseAssignment.model.js
+// ============================================
+
+import mongoose, { Schema } from "mongoose";
+import { SYSTEM_USER_ID } from "#config/system.js";
+
+const courseAssignmentSchema = new mongoose.Schema(
+  {
+    course: { type: mongoose.Schema.Types.ObjectId, ref: "Course", required: true },
+    lecturer: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Changed to single lecturer
+    semester: { type: mongoose.Schema.Types.ObjectId, ref: "AcademicSemester", required: true },
+    session: { type: String, required: true },
+    department: { type: mongoose.Schema.Types.ObjectId, ref: "Department", required: true },
+    assignedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" , default: SYSTEM_USER_ID},
+    status: { type: String, enum: ["Active", "Completed", "Cancelled"], default: "Active" },
+    // Instructor assignment
+    instructor: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: false
+    },
+    teachingAssistants: [{
+      type: Schema.Types.ObjectId,
+      ref: "User"
+    }],
+  },
+  { timestamps: true }
+);
+
+// ✅ Prevent same course from being assigned twice in same semester/session/department
+courseAssignmentSchema.index(
+  { course: 1, semester: 1, session: 1, department: 1 },
+  { unique: true }
+);
+
+export default mongoose.model("CourseAssignment", courseAssignmentSchema);
+
+
+
+// ============================================
+// FILE: domain/course/courseRegistration.model.js
+// ============================================
+
+import mongoose from "mongoose";
+import { SYSTEM_USER_ID } from "#config/system.js";
+import AppError from "#shared/errors/AppError.js";
+import studentModel from "#domain/user/student/student.model.js";
+import courseModel from "./course.model.js";
+
+const courseRegistrationSchema = new mongoose.Schema(
+  {
+    student: { type: mongoose.Schema.Types.ObjectId, ref: "Student", required: true },
+    courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course", required: true }],
+    semester: { type: mongoose.Schema.Types.ObjectId, ref: "AcademicSemester", required: true },
+    session: { type: String, required: true },
+    level: { type: Number, required: true },
+    totalUnits: { type: Number, default: 0 },
+    status: {
+      type: String,
+      enum: ["Pending", "Approved", "Rejected"],
+      default: "Approved",
+    },
+    attamptNumber: { type: Number, default: 1 },
+    approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+    carryOverId: { type: mongoose.Schema.Types.ObjectId, ref: "CarryoverCourse", default: null },  // This would be linked to a carryover document in case they are carrying the coursse over
+
+    // Details in case it was registered or re-registerd by an hod
+    notes: { type: String, default: null },
+    registeredBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: SYSTEM_USER_ID },
+    department: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Department",
+      required: true,
+    },
+    exceededMaxUnits: {
+      type: Boolean,
+      default: false
+    },
+    belowMinUnits: {
+      type: Boolean,
+      default: false
+    },
+
+  },
+  { timestamps: true }
+);
+
+courseRegistrationSchema.pre('save', function (next) {
+  // Check for duplicates in courses array
+  const courseStrings = this.courses.map(c => c.toString());
+  const uniqueCourses = new Set(courseStrings);
+
+  if (uniqueCourses.size !== courseStrings.length) {
+    next(new Error('Cannot register for the same course twice in one semester'));
+  }
+
+  // Validate totalUnits against courses (if you have course details)
+  // This would require populating courses or storing unit info
+  next();
+});
+
+// ✅ Prevent a student from registering twice for same semester/session
+courseRegistrationSchema.index(
+  { student: 1, semester: 1, session: 1 },
+  { unique: true }
+);
+
+courseRegistrationSchema.pre('validate', async function (next) {
+  try {
+    // Get student's department
+    const student = await studentModel.findById(this.student)
+      .populate('departmentId');
+
+    if (!student) {
+      return next(new AppError(`Student with ID ${this.student} not found`, 404, null, { studentId: this.student, ctx: 'CourseRegistration.pre.validate' }));
+    }
+
+    const studentDepartmentId = student.departmentId._id.toString();
+
+    // Check each course belongs to student's department
+    const courses = await courseModel.find({
+      _id: { $in: this.courses }
+    }).populate('department');
+
+    const invalidCourses = courses.filter(
+      course => course.department._id.toString() !== studentDepartmentId
+    );
+
+    if (invalidCourses.length > 0) {
+      const invalidCodes = invalidCourses.map(c => c.courseCode).join(', ');
+      return next(new Error(
+        `Cannot register for courses from other departments: ${invalidCodes}`
+      ));
+    }
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+export default mongoose.model("CourseRegistration", courseRegistrationSchema);
+
+
+
+// ============================================
+// FILE: domain/course/material/courseMaterial.model.js
+// ============================================
+
+// courseMaterial.model.js
+import { Schema, model } from "mongoose";
+
+const courseMaterialSchema = new Schema(
+  {
+    courseAssignment: {
+      type: Schema.Types.ObjectId,
+      ref: "CourseAssignment",
+      required: true
+    },
+
+    file: {
+      type: Schema.Types.ObjectId,
+      ref: "File",
+      required: true
+    },
+
+    title: { type: String, required: true },
+    description: String,
+
+    // Academic context
+    week: { type: Number }, // Week number in the syllabus
+    lectureNumber: { type: Number }, // Lecture sequence
+    topic: { type: String }, // e.g., "Introduction to Algorithms"
+
+    // Display & ordering
+    order: { type: Number, default: 0 },
+    materialType: { 
+      type: String, 
+      enum: ['lecture_notes', 'slides', 'video', 'assignment', 'reading', 'quiz', 'resource'],
+      default: 'resource'
+    },
+
+    // Access control - Pedagogy rules
+    isPreview: { type: Boolean, default: false }, // Free preview for non-enrolled
+    isPublished: { type: Boolean, default: true }, // Hidden from students
+    availableFrom: { type: Date }, // Start date for availability
+    availableTo: { type: Date }, // End date for availability
+
+    // Tracking
+    viewsCount: { type: Number, default: 0 },
+    downloadCount: { type: Number, default: 0 },
+
+    // Metadata
+    tags: [{ type: String }],
+    estimatedDuration: { type: Number }, // in minutes
+
+    // Audit
+    uploadedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
+    lastUpdatedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User"
+    }
+  },
+  { 
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+  }
+);
+
+// Indexes for performance
+courseMaterialSchema.index({ courseAssignment: 1, order: 1 });
+courseMaterialSchema.index({ courseAssignment: 1, week: 1 });
+courseMaterialSchema.index({ courseAssignment: 1, isPublished: 1 });
+courseMaterialSchema.index({ courseAssignment: 1, materialType: 1 });
+courseMaterialSchema.index({ availableFrom: 1, availableTo: 1 });
+courseMaterialSchema.index({ tags: 1 });
+
+// Virtual for checking availability
+courseMaterialSchema.virtual('isAvailable').get(function() {
+  const now = new Date();
+  if (!this.isPublished) return false;
+  if (this.availableFrom && now < this.availableFrom) return false;
+  if (this.availableTo && now > this.availableTo) return false;
+  return true;
+});
+
+// Pre-save to update order if needed
+courseMaterialSchema.pre('save', async function(next) {
+  if (this.isNew && this.order === 0) {
+    const lastMaterial = await this.constructor.findOne(
+      { courseAssignment: this.courseAssignment },
+      { order: 1 },
+      { sort: { order: -1 } }
+    );
+    this.order = lastMaterial ? lastMaterial.order + 1 : 0;
+  }
+  next();
+});
+
+export default model("CourseMaterial", courseMaterialSchema);
+
+
+// ============================================
+// FILE: domain/department/department.model.js
+// ============================================
+
+// department.model.js
+import mongoose from "mongoose";
+
+const departmentSchema = new mongoose.Schema({
+  name: { type: String, required: true, trim: true },
+  code: {
+    type: String,
+    required: true,
+    unique: true, // ✅ Enforce uniqueness at DB level
+    trim: true,
+    uppercase: true, // optional: helps keep codes consistent (like "SCI", "ENG")
+  },
+  faculty: { type: mongoose.Schema.Types.ObjectId, ref: "Faculty", required: true },
+  hod: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+  // borrowed: {
+  //   _id: ref: "Course",
+  //   type: 
+  // }
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
+
+},
+  { timestamps: true });
+
+export default mongoose.model("Department", departmentSchema);
+
+
+
+// ============================================
+// FILE: domain/faculty/faculty.model.js
+// ============================================
+
+// faculty.model.js
+import mongoose from "mongoose";
+
+const facultySchema = new mongoose.Schema({
+  name: { type: String, required: true, unique: true, trim: true },
+      code: {
+      type: String,
+      required: true,
+      unique: true, // ✅ Enforce uniqueness at DB level
+      trim: true,
+      uppercase: true, // optional: helps keep codes consistent (like "SCI", "ENG")
+    },
+    dean: { type: mongoose.Schema.Types.ObjectId, ref: "Lecturer", default: null },
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
+}, { timestamps: true });
+
+export default mongoose.model("Faculty", facultySchema);
+ 
+
+
+// ============================================
+// FILE: domain/feedback/feedback.analytics.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const feedbackAnalyticsSchema = new mongoose.Schema({
+  date: {
+    type: Date,
+    required: true,
+    unique: true,
+    index: true
+  },
+  
+  // Summary statistics
+  summary: {
+    total: { type: Number, default: 0 },
+    pending: { type: Number, default: 0 },
+    reviewed: { type: Number, default: 0 },
+    in_progress: { type: Number, default: 0 },
+    resolved: { type: Number, default: 0 },
+    rejected: { type: Number, default: 0 }
+  },
+  
+  // By type
+  by_type: {
+    bug_report: { type: Number, default: 0 },
+    feature_request: { type: Number, default: 0 },
+    complaint: { type: Number, default: 0 },
+    praise: { type: Number, default: 0 },
+    question: { type: Number, default: 0 },
+    suggestion: { type: Number, default: 0 }
+  },
+  
+  // By category
+  by_category: {
+    user_interface: { type: Number, default: 0 },
+    user_experience: { type: Number, default: 0 },
+    performance: { type: Number, default: 0 },
+    functionality: { type: Number, default: 0 },
+    billing: { type: Number, default: 0 },
+    security: { type: Number, default: 0 },
+    documentation: { type: Number, default: 0 },
+    customer_service: { type: Number, default: 0 },
+    mobile_app: { type: Number, default: 0 },
+    api: { type: Number, default: 0 },
+    other: { type: Number, default: 0 }
+  },
+  
+  // By priority
+  by_priority: {
+    urgent: { type: Number, default: 0 },
+    high: { type: Number, default: 0 },
+    medium: { type: Number, default: 0 },
+    low: { type: Number, default: 0 },
+    backlog: { type: Number, default: 0 }
+  },
+  
+  // By severity (for bugs)
+  by_severity: {
+    critical: { type: Number, default: 0 },
+    high: { type: Number, default: 0 },
+    medium: { type: Number, default: 0 },
+    low: { type: Number, default: 0 },
+    cosmetic: { type: Number, default: 0 }
+  },
+  
+  // Rating distribution
+  ratings: {
+    '1': { type: Number, default: 0 },
+    '2': { type: Number, default: 0 },
+    '3': { type: Number, default: 0 },
+    '4': { type: Number, default: 0 },
+    '5': { type: Number, default: 0 }
+  },
+  
+  // Performance metrics
+  performance: {
+    avg_response_time: Number,        // Average time to first response (ms)
+    avg_resolution_time: Number,      // Average time to resolution (ms)
+    max_response_time: Number,
+    max_resolution_time: Number,
+    resolved_same_day: { type: Number, default: 0 },
+    resolved_next_day: { type: Number, default: 0 },
+    resolved_within_week: { type: Number, default: 0 }
+  },
+  
+  // Sentiment analysis
+  sentiment: {
+    positive: { type: Number, default: 0 },
+    negative: { type: Number, default: 0 },
+    neutral: { type: Number, default: 0 },
+    avg_sentiment_score: Number
+  },
+  
+  // User engagement
+  user_engagement: {
+    registered_users: { type: Number, default: 0 },
+    guest_users: { type: Number, default: 0 },
+    returning_users: { type: Number, default: 0 }
+  },
+  
+  // Top tags
+  top_tags: [{
+    tag: String,
+    count: Number
+  }],
+  
+  // By platform
+  by_platform: {
+    web: { type: Number, default: 0 },
+    mobile_ios: { type: Number, default: 0 },
+    mobile_android: { type: Number, default: 0 },
+    api: { type: Number, default: 0 }
+  },
+  
+  updated_at: {
+    type: Date,
+    default: Date.now
+  }
+}, {
+  timestamps: true
+});
+
+const FeedbackAnalytics = mongoose.model("FeedbackAnalytics", feedbackAnalyticsSchema);
+export default FeedbackAnalytics;
+
+
+// ============================================
+// FILE: domain/feedback/feedback.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const feedbackSchema = new mongoose.Schema({
+  // Reference ID for tracking
+  feedback_id: {
+    type: String,
+    unique: true,
+    required: true,
+    index: true
+  },
+  
+  // User can be either registered or guest
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    sparse: true
+  },
+  
+  // Guest information
+  guest_info: {
+    email: {
+      type: String,
+      lowercase: true,
+      trim: true
+    },
+    name: String,
+    phone: String,
+    ip_address: String,
+    user_agent: String
+  },
+  
+  // Core feedback data
+  type: {
+    type: String,
+    enum: ['bug_report', 'feature_request', 'complaint', 'praise', 'question', 'suggestion'],
+    required: true,
+    index: true
+  },
+  
+  category: {
+    type: String,
+    // enum: [
+    //   'user_interface',
+    //   'user_experience',
+    //   'performance',
+    //   'functionality',
+    //   'billing',
+    //   'security',
+    //   'documentation',
+    //   'customer_service',
+    //   'mobile_app',
+    //   'api',
+    //   'other'
+    // ],
+    default: 'other'
+  },
+  
+  subject: {
+    type: String,
+    required: true,
+    trim: true,
+    maxlength: 200
+  },
+  
+  message: {
+    type: String,
+    required: true,
+    trim: true,
+    maxlength: 5000
+  },
+  
+  // Rating (for satisfaction/rating type feedback)
+  rating: {
+    type: Number,
+    min: 1,
+    max: 5,
+    sparse: true
+  },
+  
+  // Severity (for bugs/issues)
+  severity: {
+    type: String,
+    enum: ['critical', 'high', 'medium', 'low', 'cosmetic'],
+    sparse: true
+  },
+  
+  // Priority (set by admins)
+  priority: {
+    type: String,
+    enum: ['urgent', 'high', 'medium', 'low', 'backlog'],
+    default: 'medium'
+  },
+  
+  // Status tracking
+  status: {
+    type: String,
+    enum: [
+      'pending',        // New feedback, not yet reviewed
+      'reviewed',       // Reviewed by team
+      'in_progress',    // Being worked on
+      'resolved',       // Issue fixed/feature implemented
+      'rejected',       // Not actionable/won't implement
+      'duplicate',      // Already reported
+      'archived'        // Old/closed
+    ],
+    default: 'pending',
+    index: true
+  },
+  
+  // Assignment
+  assigned_to: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    sparse: true
+  },
+  
+  assigned_at: Date,
+  
+  // Resolution
+  resolved_at: Date,
+  resolved_by: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  resolution_notes: String,
+  
+  // Related items
+  related_chat_session: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ChatSession',
+    sparse: true
+  },
+  
+  related_feedback: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Feedback'
+  }],
+  
+  // Attachments
+  attachments: [{
+    filename: String,
+    url: String,
+    size: Number,
+    mime_type: String,
+    uploaded_at: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+  
+  // Metadata
+  metadata: {
+    page_url: String,
+    browser: String,
+    browser_version: String,
+    os: String,
+    os_version: String,
+    device: String,
+    screen_resolution: String,
+    app_version: String,
+    timestamp: {
+      type: Date,
+      default: Date.now
+    }
+  },
+  
+  // Analytics
+  analytics: {
+    sentiment: {
+      type: String,
+      enum: ['positive', 'negative', 'neutral'],
+      sparse: true
+    },
+    sentiment_score: Number,
+    tags: [String],
+    ai_processed: {
+      type: Boolean,
+      default: false
+    },
+    ai_processed_at: Date
+  },
+  
+  // Timestamps
+  submitted_at: {
+    type: Date,
+    default: Date.now,
+    index: true
+  },
+  
+  last_updated: {
+    type: Date,
+    default: Date.now
+  }
+}, {
+  timestamps: true
+});
+
+// Indexes for performance
+feedbackSchema.index({ status: 1, priority: 1, submitted_at: -1 });
+feedbackSchema.index({ assigned_to: 1, status: 1 });
+feedbackSchema.index({ type: 1, category: 1 });
+feedbackSchema.index({ user_id: 1, submitted_at: -1 });
+feedbackSchema.index({ "guest_info.email": 1 });
+feedbackSchema.index({ rating: 1 });
+feedbackSchema.index({ "metadata.browser": 1, "metadata.os": 1 });
+
+// Virtual for response count
+feedbackSchema.virtual('response_count', {
+  ref: 'FeedbackResponse',
+  localField: '_id',
+  foreignField: 'feedback_id',
+  count: true
+});
+
+// Virtual for average response time
+feedbackSchema.virtual('response_time', {
+  ref: 'FeedbackResponse',
+  localField: '_id',
+  foreignField: 'feedback_id'
+});
+
+// Pre-save middleware
+feedbackSchema.pre('save', function(next) {
+  this.last_updated = new Date();
+  // Normalize type field to match enum values
+  if (this.type === 'bugreport') {
+    this.type = 'bug_report';
+  } else if (this.type === 'featurerequest') {
+    this.type = 'feature_request';
+  }
+  next();
+});
+
+// Pre-validate middleware to normalize type before validation
+feedbackSchema.pre('validate', function(next) {
+  if (this.type === 'bugreport') {
+    this.type = 'bug_report';
+  } else if (this.type === 'featurerequest') {
+    this.type = 'feature_request';
+  }
+  next();
+});
+
+
+const Feedback = mongoose.model("Feedback", feedbackSchema);
+export default Feedback;
+
+
+// ============================================
+// FILE: domain/feedback/feedback.response.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const feedbackResponseSchema = new mongoose.Schema({
+  response_id: {
+    type: String,
+    unique: true,
+    required: true
+  },
+  
+  feedback_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Feedback',
+    required: true,
+    index: true
+  },
+  
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  
+  message: {
+    type: String,
+    required: true,
+    trim: true,
+    maxlength: 2000
+  },
+  
+  is_internal: {
+    type: Boolean,
+    default: false  // Internal notes (only visible to staff)
+  },
+  
+  is_system_generated: {
+    type: Boolean,
+    default: false
+  },
+  
+  attachments: [{
+    filename: String,
+    url: String,
+    size: Number,
+    mime_type: String
+  }],
+  
+  // Email notification tracking
+  email_sent: {
+    type: Boolean,
+    default: false
+  },
+  
+  email_sent_at: Date,
+  
+  // Read status
+  read_by: [{
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    read_at: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+  
+  // Metadata
+  metadata: {
+    ip_address: String,
+    user_agent: String
+  }
+}, {
+  timestamps: true
+});
+
+// Indexes
+feedbackResponseSchema.index({ feedback_id: 1, created_at: 1 });
+
+const FeedbackResponse = mongoose.model("FeedbackResponse", feedbackResponseSchema);
+export default FeedbackResponse;
+
+
+// ============================================
+// FILE: domain/files/files.model.js
+// ============================================
+
+import { Schema, model } from "mongoose";
+
+const fileSchema = new Schema({
+  // Core file information
+  name: { type: String, required: true },
+  originalName: { type: String, required: true },
+  url: { type: String, required: true },
+  type: { type: String, required: true }, // MIME type
+  extension: { type: String, required: true },
+  size: { type: Number, required: true }, // in bytes
+  
+  // Flexible domain reference
+  domain: { 
+    type: String, 
+    required: true,
+    enum: ['course', 'user', 'product', 'blog', 'message', 'custom', 'feedback'] // Add as needed
+  },
+  domainId: { 
+    type: Schema.Types.ObjectId, 
+    required: false, // Optional for files not tied to specific domain
+    refPath: 'domain' // Dynamic reference based on domain field
+  },
+  
+  // Uploader info
+  uploadedBy: { 
+    type: Schema.Types.ObjectId, 
+    ref: "User", 
+    required: true 
+  },
+  
+  // Security and access control
+  isPublic: { type: Boolean, default: true },
+  accessRoles: [{ type: String }], // e.g., ['admin', 'teacher', 'student']
+  accessUsers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  
+  // Custom metadata for flexible usage
+  metadata: {
+    type: Map,
+    of: Schema.Types.Mixed,
+    default: {}
+  },
+  
+  // Timestamps
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+  expiresAt: { type: Date }, // Optional expiration date
+  
+  // File categorization
+  category: { type: String }, // e.g., 'profile', 'assignment', 'product_image'
+  tags: [{ type: String }],
+  
+  // Firebase storage info
+  storagePath: { type: String, required: true },
+  bucketName: { type: String, required: true },
+});
+
+// Indexes for efficient queries
+fileSchema.index({ domain: 1, domainId: 1 });
+fileSchema.index({ uploadedBy: 1 });
+fileSchema.index({ createdAt: -1 });
+fileSchema.index({ isPublic: 1 });
+fileSchema.index({ category: 1 });
+fileSchema.index({ tags: 1 });
+
+// Update updatedAt on save
+fileSchema.pre('save', function(next) {
+  this.updatedAt = Date.now();
+  next();
+});
+
+export default model("File", fileSchema);
+
+
+// ============================================
+// FILE: domain/notification/models/whatsapp.model.js
+// ============================================
+
+import mongoose from 'mongoose';
+
+// Auth storage schema
+const whatsappAuthSchema = new mongoose.Schema({
+  _id: { type: String, required: true },
+  value: { type: mongoose.Schema.Types.Mixed },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+}, { timestamps: true });
+
+// Login History Schema
+const loginHistorySchema = new mongoose.Schema({
+  sessionId: { type: String, required: true, default: 'default' },
+  action: { 
+    type: String, 
+    // enum: ['login', 'logout', 'qr_generated', 'connection_lost', 'reconnected', 'session_expired', 'paused', 'pause', 'resumed', 'resume', 'res'],
+    required: true 
+  },
+  timestamp: { type: Date, default: Date.now },
+  metadata: mongoose.Schema.Types.Mixed
+});
+
+// Session Status Schema
+const sessionStatusSchema = new mongoose.Schema({
+  sessionId: { type: String, required: true, unique: true },
+  isActive: { type: Boolean, default: false },
+  isPaused: { type: Boolean, default: false },
+  lastActive: { type: Date, default: Date.now },
+  connectionStatus: {
+    type: String,
+    enum: ['disconnected', 'connecting', 'connected', 'qr_pending', 'error', 'paused'],
+    default: 'disconnected'
+  },
+  phoneNumber: String,
+  deviceInfo: mongoose.Schema.Types.Mixed,
+  createdAt: { type: Date, default: Date.now }
+});
+
+// Worker Heartbeat Schema
+const workerHeartbeatSchema = new mongoose.Schema({
+  workerId: { type: String, required: true, unique: true },
+  sessionId: { type: String, default: 'default' },
+  lastHeartbeat: { type: Date, default: Date.now },
+  status: {
+    type: String,
+    enum: ['online', 'offline', 'paused', 'error'],
+    default: 'online'
+  },
+  metadata: mongoose.Schema.Types.Mixed,
+  createdAt: { type: Date, default: Date.now }
+});
+
+// Worker Commands Schema
+const workerCommandSchema = new mongoose.Schema({
+  workerId: { type: String, required: true },
+  sessionId: { type: String, required: true },
+  command: {
+    type: String,
+    enum: ['pause', 'resume', 'restart', 'logout', 'reconnect'],
+    required: true
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'processing', 'completed', 'failed'],
+    default: 'pending'
+  },
+  requestedBy: String,
+  requestedAt: { type: Date, default: Date.now },
+  processedAt: Date,
+  result: mongoose.Schema.Types.Mixed,
+  error: String
+});
+
+export const WaAuth = mongoose.model('WaAuth', whatsappAuthSchema);
+export const LoginHistory = mongoose.model('LoginHistory', loginHistorySchema);
+export const SessionStatus = mongoose.model('SessionStatus', sessionStatusSchema);
+export const WorkerHeartbeat = mongoose.model('WorkerHeartbeat', workerHeartbeatSchema);
+export const WorkerCommand = mongoose.model('WorkerCommand', workerCommandSchema);
+
+
+// ============================================
+// FILE: domain/notification/notification.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const notificationSchema = new mongoose.Schema({
+  recipient_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  title: { type: String, required: true },
+  message: { type: String, required: true },
+  type: { type: String, enum: ["email", "system", "both", "whatsapp"], default: "system" },
+  is_read: { type: Boolean, default: false },
+  created_at: { type: Date, default: Date.now }
+});
+
+export default mongoose.model("Notification", notificationSchema);
+
+
+
+// ============================================
+// FILE: domain/notification/template.model.js
+// ============================================
+
+// const mongoose = require('mongoose');
+import mongoose from "mongoose";
+
+const templateSchema = new mongoose.Schema({
+  name: { type: String, required: true }, // e.g. "welcome_message"
+  channel: { type: String, enum: ['email', 'whatsapp', 'both'], default: 'both' },
+  email_template: { type: String }, // HTML body
+  whatsapp_template: { type: String }, // Text with variables {{user.first_name}}, {{course.title}}
+  variables: [String], // Optional: store expected variables like ['user.first_name', 'course.title']
+  created_by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+}, { timestamps: true });
+
+export const Template = mongoose.model('Template', templateSchema);
+
+
+
+// ============================================
+// FILE: domain/payment/payment-fee.model.js
+// ============================================
+
+// domain/payment/payment-fee.model.js
+import mongoose from "mongoose";
+
+const paymentFeeSchema = new mongoose.Schema({
+  purpose: {
+    type: String,
+    enum: [
+      "COURSE_REGISTRATION",
+      "EXAM_REGISTRATION",
+      "SCHOOL_FEES",
+      "TRANSCRIPT",
+      "ADMISSION",
+      "OTHER",
+    ],
+    required: true,
+    index: true,
+  },
+
+  department: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Department",
+    required: true,
+    index: true,
+  },
+
+  level: {
+    type: Number,
+    required: true,
+    min: 100,
+    max: 500,
+    index: true,
+  },
+
+  session: {
+    type: String,
+    required: true,
+    match: /^\d{4}\/\d{4}$/, // Matches "2023/2024" format
+    index: true,
+  },
+
+  amount: {
+    type: Number,
+    required: true,
+    min: 0,
+  },
+
+  currency: {
+    type: String,
+    default: "NGN",
+  },
+
+  isActive: {
+    type: Boolean,
+    default: true,
+    index: true,
+  },
+
+  description: String,
+
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+}, {
+  timestamps: true,
+});
+
+// Ensure unique fee per combination
+paymentFeeSchema.index(
+  { purpose: 1, department: 1, level: 1, session: 1 },
+  { unique: true }
+);
+
+const PaymentFee = mongoose.model("PaymentFee", paymentFeeSchema);
+export default PaymentFee;
+
+
+// ============================================
+// FILE: domain/payment/payment.model.js
+// ============================================
+
+// domain/payment/payment.model.js
+import mongoose from "mongoose";
+
+const { Schema } = mongoose;
+
+const paymentSchema = new Schema(
+  {
+    student: {
+      type: Schema.Types.ObjectId,
+      ref: "Student",
+      required: true,
+      index: true,
+    },
+
+    purpose: {
+      type: String,
+      enum: [
+        "COURSE_REGISTRATION",
+        "EXAM_REGISTRATION",
+        "SCHOOL_FEES",
+        "TRANSCRIPT",
+        "ADMISSION",
+        "OTHER",
+      ],
+      required: true,
+      index: true,
+    },
+
+    session: {
+      type: String,
+      required: true,
+      match: /^\d{4}\/\d{4}$/,
+      index: true,
+    },
+
+    semester: {
+      type: String,
+      enum: ["first", "second"],
+      index: true,
+    },
+
+    expectedAmount: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+
+    paidAmount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    currency: {
+      type: String,
+      default: "NGN",
+    },
+
+    provider: {
+      type: String,
+      enum: ["REMITA", "PAYSTACK"],
+      default: "REMITA",
+      index: true,
+    },
+
+    transactionRef: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
+
+    providerPaymentId: {
+      type: String,
+      index: true,
+    },
+
+    status: {
+      type: String,
+      enum: ["PENDING", "SUCCESSFUL", "FAILED"],
+      default: "PENDING",
+      index: true,
+    },
+
+    paidAt: {
+      type: Date,
+      default: null,
+    },
+
+    studentLevel: {
+      type: Number,
+      required: true,
+    },
+
+    studentDepartment: {
+      type: Schema.Types.ObjectId,
+      ref: "Department",
+      required: true,
+    },
+
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+
+    verifiedAt: {
+      type: Date,
+      default: null,
+    },
+
+    errorDetails: {
+      type: Schema.Types.Mixed,
+      default: null,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+// Prevent duplicate successful payments
+paymentSchema.index(
+  { student: 1, purpose: 1, session: 1, semester: 1 },
+  { 
+    unique: true,
+    partialFilterExpression: { status: "SUCCESSFUL" }
+  }
+);
+
+// Generate transaction reference
+paymentSchema.statics.generateTransactionRef = function () {
+  const timestamp = Date.now();
+  const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+  return `PAY-${timestamp}-${random}`;
+};
+
+// Check if payment is successful
+paymentSchema.methods.isSuccessful = function () {
+  return this.status === "SUCCESSFUL";
+};
+
+export default mongoose.models.Payment ||
+  mongoose.model("Payment", paymentSchema);
+
+
+// ============================================
+// FILE: domain/payment/paymentSetting.model.js
+// ============================================
+
+// modules/payment/paymentSetting.model.js
+import mongoose from "mongoose";
+
+const paymentSettingSchema = new mongoose.Schema({
+  type: { type: String, enum: ["postjamb"], required: true, unique: true },
+  amount: { type: Number, required: true },
+  updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  updatedAt: { type: Date, default: Date.now },
+});
+
+export const PaymentSetting = mongoose.model("PaymentSetting", paymentSettingSchema);
+
+
+
+// ============================================
+// FILE: domain/permission/permission.model.js
+// ============================================
+
+// permission/models/Permission.js
+import { Schema, model } from 'mongoose';
+
+const PermissionSchema = new Schema({
+  permission_id: { type: String, required: true, unique: true },
+  action: { type: String, required: true },
+  granted_to: {
+    id: { type: String, required: true },
+    role: { type: String, required: true }
+  },
+  granted_by: {
+    id: { type: String, required: true },
+    role: { type: String, required: true }
+  },
+  scope: { type: Schema.Types.Mixed, default: {} },
+  constraints: { type: Schema.Types.Mixed, default: {} },
+  issued_at: { type: Date, default: Date.now },
+  expires_at: { type: Date, required: true },
+  signature: { type: String, required: true }
+});
+
+export default model('Permission', PermissionSchema);
+
+
+
+// ============================================
+// FILE: domain/permission/permission.request.model.js
+// ============================================
+
+// permission.request.model.js
+import mongoose from 'mongoose';
+
+const PermissionRequestSchema = new mongoose.Schema({
+  action: { type: String, required: true },
+  requested_by: { id: String, role: String, required: true },
+  scope: { type: mongoose.Schema.Types.Mixed, default: {} },
+  constraints: { type: mongoose.Schema.Types.Mixed, default: {} },
+  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+  issued_permission_id: { type: String },
+  reviewed_by: { id: String, role: String },
+  reviewed_at: { type: Date },
+  created_at: { type: Date, default: Date.now },
+  updated_at: { type: Date, default: Date.now }
+});
+
+PermissionRequestSchema.pre('save', function(next) {
+  this.updated_at = new Date();
+  next();
+});
+
+export default mongoose.model('PermissionRequest', PermissionRequestSchema);
+
+
+
+// ============================================
+// FILE: domain/programme/programme.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const programmeSchema = new mongoose.Schema({
+  name: { 
+    type: String, 
+    required: [true, 'Programme name is required'], 
+    trim: true,
+    minlength: [3, 'Programme name must be at least 3 characters'],
+    maxlength: [200, 'Programme name cannot exceed 200 characters']
+  },
+  code: {
+    type: String,
+    required: [true, 'Programme code is required'],
+    unique: true,
+    trim: true,
+    uppercase: true,
+    minlength: [3, 'Programme code must be at least 3 characters'],
+    maxlength: [20, 'Programme code cannot exceed 20 characters'],
+    match: [/^[A-Z0-9-]+$/, 'Programme code can only contain uppercase letters, numbers, and hyphens']
+  },
+  department: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "Department", 
+    required: [true, 'Department reference is required'],
+    index: true
+  },
+  faculty: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "Faculty",
+    index: true
+  },
+  duration: {
+    type: Number,
+    required: [true, 'Duration is required'],
+    min: [1, 'Duration must be at least 1 year'],
+    max: [7, 'Duration cannot exceed 7 years'],
+    default: 4
+  },
+  degreeType: {
+    type: String,
+    enum: {
+      values: ['BACHELOR', 'MASTER', 'PHD', 'DIPLOMA', 'CERTIFICATE'],
+      message: '{VALUE} is not a valid degree type'
+    },
+    required: [true, 'Degree type is required'],
+    index: true
+  },
+  programmeType: {
+    type: String,
+    enum: {
+      values: [
+        // Bachelor Degrees
+        'BSC', 'BA', 'BED','BSCED', 'BTECH', 'BENG', 'LLB', 'MBBS', 'BDS',
+        // Master Degrees
+        'MSC', 'MA', 'MBA', 'MPH', 'MPHIL', 'LLM', 'MENG',
+        // Doctorate
+        'PHD', 'DPHIL',
+        // Diplomas
+        'PGD', 'DIP', 'ADV_DIP',
+        // Certificates
+        'CERT', 'PG_CERT'
+      ],
+      message: '{VALUE} is not a valid programme type'
+    },
+    required: [true, 'Programme type is required'],
+    index: true
+  },
+  description: {
+    type: String,
+    trim: true,
+    maxlength: [1000, 'Description cannot exceed 1000 characters']
+  },
+  accreditationStatus: {
+    type: String,
+    enum: ['ACCREDITED', 'PENDING', 'EXPIRED', 'PROVISIONAL'],
+    default: 'PENDING',
+    index: true
+  },
+  accreditationExpiry: {
+    type: Date,
+    validate: {
+      validator: function(value) {
+        return !value || value > new Date();
+      },
+      message: 'Accreditation expiry must be in the future'
+    }
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+    index: true
+  },
+  intakeCapacity: {
+    type: Number,
+    min: [1, 'Intake capacity must be at least 1'],
+    default: 50
+  },
+  createdBy: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "User" 
+  },
+  lastUpdatedBy: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "User" 
+  }
+}, { 
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
+
+// Virtual for full programme name (e.g., "BSc Computer Science")
+programmeSchema.virtual('fullName').get(function() {
+  const typeMap = {
+    'BSC': 'Bachelor of Science in',
+    'BA': 'Bachelor of Arts in',
+    'BED': 'Bachelor of Education in',
+    'BTECH': 'Bachelor of Technology in',
+    'BENG': 'Bachelor of Engineering in',
+    'MSC': 'Master of Science in',
+    'MA': 'Master of Arts in',
+    'MBA': 'Master of Business Administration in',
+    'PHD': 'Doctor of Philosophy in',
+    'PGD': 'Postgraduate Diploma in',
+    'CERT': 'Certificate in'
+  };
+  
+  const prefix = typeMap[this.programmeType] || '';
+  return `${prefix} ${this.name}`.trim();
+});
+
+// Virtual for programme level (simplified from degreeType)
+programmeSchema.virtual('level').get(function() {
+  const levelMap = {
+    'BACHELOR': 'Undergraduate',
+    'MASTER': 'Postgraduate',
+    'PHD': 'Doctoral',
+    'DIPLOMA': 'Diploma',
+    'CERTIFICATE': 'Certificate'
+  };
+  return levelMap[this.degreeType] || this.degreeType;
+});
+
+// Index for efficient queries
+programmeSchema.index({ department: 1, isActive: 1 });
+programmeSchema.index({ code: 1, isActive: 1 });
+programmeSchema.index({ degreeType: 1, programmeType: 1 });
+programmeSchema.index({ name: 'text', code: 'text' });
+
+// Pre-save middleware to set faculty from department
+programmeSchema.pre('save', async function(next) {
+  if (this.isNew && this.department && !this.faculty) {
+    try {
+      const Department = mongoose.model('Department');
+      const department = await Department.findById(this.department).select('faculty');
+      if (department && department.faculty) {
+        this.faculty = department.faculty;
+      }
+    } catch (error) {
+      return next(error);
+    }
+  }
+  next();
+});
+
+// Method to check if programme is accredited
+programmeSchema.methods.isAccredited = function() {
+  if (this.accreditationStatus !== 'ACCREDITED') return false;
+  
+  if (this.accreditationExpiry) {
+    return this.accreditationExpiry > new Date();
+  }
+  
+  return true;
+};
+
+// Static method to get active programmes by department
+programmeSchema.statics.findActiveByDepartment = function(departmentId) {
+  return this.find({ 
+    department: departmentId, 
+    isActive: true 
+  }).sort({ createdAt: -1 });
+};
+
+// Static method to get programmes by degree type
+programmeSchema.statics.findByDegreeType = function(degreeType, options = {}) {
+  const query = { degreeType, isActive: true };
+  if (options.departmentId) {
+    query.department = options.departmentId;
+  }
+  return this.find(query).sort({ name: 1 });
+};
+
+export default mongoose.model("Programme", programmeSchema);
+
+
+// ============================================
+// FILE: domain/ranking/models/RankingScore.model.js
+// ============================================
+
+/**
+ * RANKING SCORE MODEL
+ * Raw scores used for snapshot generation
+ * Can be recalculated if needed
+ */
+
+import mongoose from 'mongoose';
+
+const { Schema } = mongoose;
+
+const rankingScoreSchema = new Schema(
+  {
+    studentId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+      index: true
+    },
+
+    departmentId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Department',
+      required: true,
+      index: true
+    },
+
+    // Time period
+    year: {
+      type: Number,
+      required: true,
+      index: true
+    },
+
+    week: {
+      type: Number,
+      required: true,
+      index: true
+    },
+
+    semester: {
+      type: String,
+      index: true
+    },
+
+    // Scores
+    totalScore: {
+      type: Number,
+      required: true,
+      min: 0,
+      max: 100
+    },
+
+    gpa: {
+      type: Number,
+      min: 0,
+      max: 5.0
+    },
+
+    attendance: {
+      type: Number,
+      min: 0,
+      max: 100
+    },
+
+    // Score breakdown
+    breakdown: {
+      type: Map,
+      of: Number
+    },
+
+    // Ranking positions
+    globalRank: {
+      type: Number,
+      min: 1
+    },
+
+    departmentRank: {
+      type: Number,
+      min: 1
+    },
+
+    // Metadata
+    calculatedAt: {
+      type: Date,
+      default: Date.now,
+      index: true
+    },
+
+    dataSources: {
+      type: [String],
+      default: []
+    },
+
+    version: {
+      type: String,
+      default: '1.0.0'
+    }
+  },
+  {
+    timestamps: true
+  }
+);
+
+// Compound indexes for fast queries
+rankingScoreSchema.index({ year: 1, week: 1, departmentId: 1 });
+rankingScoreSchema.index({ year: 1, week: 1, totalScore: -1 });
+rankingScoreSchema.index({ studentId: 1, year: 1, week: 1 }, { unique: true });
+rankingScoreSchema.index({ departmentId: 1, year: 1, week: 1, totalScore: -1 });
+
+// Virtuals
+rankingScoreSchema.virtual('student', {
+  ref: 'User',
+  localField: 'studentId',
+  foreignField: '_id',
+  justOne: true
+});
+
+rankingScoreSchema.virtual('department', {
+  ref: 'Department',
+  localField: 'departmentId',
+  foreignField: '_id',
+  justOne: true
+});
+
+const RankingScore = mongoose.model('RankingScore', rankingScoreSchema);
+
+export default RankingScore;
+
+
+// ============================================
+// FILE: domain/ranking/models/RankingSnapshot.model.js
+// ============================================
+
+/**
+ * RANKING SNAPSHOT MODEL
+ * Immutable weekly snapshot of rankings
+ * DO NOT modify existing snapshots - create new ones
+ */
+
+import mongoose from 'mongoose';
+import AppError from '#shared/errors/AppError.js';
+import { SYSTEM_USER_ID } from '#config/system.js';
+import { RANKING_CONSTANTS } from '#domain/ranking/ranking.constants.js';
+
+const { Schema } = mongoose;
+
+const rankingSnapshotSchema = new Schema(
+  {
+    // Identification
+    snapshotId: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+      immutable: true
+    },
+
+    // Time period
+    period: {
+      type: String,
+      enum: Object.values(RANKING_CONSTANTS.PERIOD),
+      default: RANKING_CONSTANTS.PERIOD.WEEKLY,
+      required: true,
+      immutable: true
+    },
+
+    year: {
+      type: Number,
+      required: true,
+      immutable: true
+    },
+
+    week: {
+      type: Number, // ISO week number (1-53)
+      required: true,
+      immutable: true
+    },
+
+    semester: {
+      type: String,
+      default: null,
+      immutable: true
+    },
+
+    // Snapshot metadata
+    generatedAt: {
+      type: Date,
+      default: Date.now,
+      immutable: true
+    },
+
+    validFrom: {
+      type: Date,
+      required: true,
+      immutable: true
+    },
+
+    validTo: {
+      type: Date,
+      required: true,
+      immutable: true
+    },
+
+    // Statistics
+    totalStudents: {
+      type: Number,
+      required: true,
+      min: 0,
+      immutable: true
+    },
+
+    totalDepartments: {
+      type: Number,
+      required: true,
+      min: 0,
+      immutable: true
+    },
+
+    averageScore: {
+      type: Number,
+      required: true,
+      min: 0,
+      max: 100,
+      immutable: true
+    },
+
+    // Rankings data (embedded for performance)
+    globalTop: [
+      {
+        rank: {
+          type: Number,
+          required: true,
+          min: 1
+        },
+        studentId: {
+          type: Schema.Types.ObjectId,
+          ref: 'User',
+          required: true
+        },
+        studentName: {
+          type: String,
+          required: true
+        },
+        matricNo: {
+          type: String,
+          required: true
+        },
+        departmentId: {
+          type: Schema.Types.ObjectId,
+          ref: 'Department',
+          required: true
+        },
+        departmentName: {
+          type: String,
+          required: true
+        },
+        totalScore: {
+          type: Number,
+          required: true,
+          min: 0,
+          max: 100
+        },
+        gpa: {
+          type: Number,
+          min: 0,
+          max: 5.0
+        },
+        breakdown: {
+          type: Map,
+          of: Number
+        }
+      }
+    ],
+
+    departmentRankings: [
+      {
+        departmentId: {
+          type: Schema.Types.ObjectId,
+          ref: 'Department',
+          required: true
+        },
+        departmentName: {
+          type: String,
+          required: true
+        },
+        topStudents: [
+          {
+            rank: {
+              type: Number,
+              required: true,
+              min: 1
+            },
+            studentId: {
+              type: Schema.Types.ObjectId,
+              ref: 'User',
+              required: true
+            },
+            studentName: String,
+            matricNo: String,
+            totalScore: {
+              type: Number,
+              required: true,
+              min: 0,
+              max: 100
+            },
+            gpa: Number
+          }
+        ],
+        departmentStats: {
+          averageScore: Number,
+          totalStudents: Number,
+          highestScore: Number,
+          lowestScore: Number
+        }
+      }
+    ],
+
+    // System fields
+    status: {
+      type: String,
+      enum: Object.values(RANKING_CONSTANTS.STATUS),
+      default: RANKING_CONSTANTS.STATUS.ACTIVE,
+      index: true
+    },
+
+    generatedBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      default: () => new mongoose.Types.ObjectId(SYSTEM_USER_ID),
+      immutable: true
+    },
+
+    generationSource: {
+      type: String,
+      enum: ['cron', 'manual', 'migration', 'api', 'initialization'],
+      default: 'cron',
+      immutable: true
+    },
+
+    notes: {
+      type: String,
+      default: null
+    }
+  },
+  {
+    timestamps: true,
+    // Optimize for read performance
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+  }
+);
+
+// Compound indexes for fast queries
+rankingSnapshotSchema.index({ year: 1, week: 1 }, { unique: true });
+rankingSnapshotSchema.index({ status: 1, validTo: -1 });
+rankingSnapshotSchema.index({ 'globalTop.studentId': 1 });
+rankingSnapshotSchema.index({ 'departmentRankings.departmentId': 1 });
+rankingSnapshotSchema.index({ generatedAt: -1 });
+
+// Virtual for easy date range queries
+rankingSnapshotSchema.virtual('isCurrent').get(function() {
+  const now = new Date();
+  return now >= this.validFrom && now <= this.validTo;
+});
+
+// Prevent updates to immutable snapshots
+rankingSnapshotSchema.pre(['updateOne', 'findOneAndUpdate', 'updateMany'], function(next) {
+  const update = this.getUpdate();
+  
+  // Block all updates except status and notes
+  const allowedUpdates = ['status', 'notes', 'updatedAt'];
+  const attemptedUpdates = Object.keys(update);
+  
+  const illegalUpdates = attemptedUpdates.filter(
+    field => !allowedUpdates.includes(field) && !field.startsWith('$')
+  );
+  
+  if (illegalUpdates.length > 0) {
+    return next(new AppError(
+      `Cannot update immutable snapshot fields: ${illegalUpdates.join(', ')}`,
+      400,
+      'SNAPSHOT_IMMUTABLE'
+    ));
+  }
+  
+  next();
+});
+
+// Prevent deletion
+rankingSnapshotSchema.pre('deleteOne', function(next) {
+  const id = this.getQuery()?._id;
+  
+  if (id) {
+    return next(new AppError(
+      'Ranking snapshots cannot be deleted. Use archival instead.',
+      400,
+      'SNAPSHOT_INDELIBLE'
+    ));
+  }
+  
+  next();
+});
+
+// Static method to get current snapshot
+rankingSnapshotSchema.statics.getCurrentSnapshot = function() {
+  const now = new Date();
+  return this.findOne({
+    status: RANKING_CONSTANTS.STATUS.ACTIVE,
+    validFrom: { $lte: now },
+    validTo: { $gte: now }
+  }).sort({ validFrom: -1 });
+};
+
+// Static method to get snapshot by week
+rankingSnapshotSchema.statics.findByWeek = function(year, week) {
+  return this.findOne({
+    year,
+    week,
+    status: RANKING_CONSTANTS.STATUS.ACTIVE
+  });
+};
+
+const RankingSnapshot = mongoose.model('RankingSnapshot', rankingSnapshotSchema);
+
+export default RankingSnapshot;
+
+
+// ============================================
+// FILE: domain/result/carryover.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const carryoverSchema = new mongoose.Schema({
+  student: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "Student",
+    required: true 
+  },
+  course: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "Course", 
+    required: true 
+  },
+  semester: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "Semester", 
+    required: true 
+  },
+  department: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Department"
+  },
+  result: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Result"
+  },
+  grade: {
+    type: String,
+    enum: ["F", "D", "E", null],
+    default: null
+  },
+  score: {
+    type: Number,
+    min: 0,
+    max: 100
+  },
+  reason: { 
+    type: String, 
+    enum: ["Failed", "NotRegistered", "Absent", "Incomplete"], 
+    required: true 
+  },
+  isCoreCourse: {
+    type: Boolean,
+    default: true
+  },
+  cleared: {
+    type: Boolean, 
+    default: false
+  },
+  clearedAt: Date,
+  clearedBy: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "User" 
+  },
+  remark: String,
+  createdBy: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "User" 
+  },
+  computationBatch: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "ComputationSummary"
+  }
+}, { timestamps: true });
+
+carryoverSchema.index({ student: 1, course: 1, semester: 1 }, { unique: true });
+carryoverSchema.index({ student: 1, cleared: 1 });
+carryoverSchema.index({ department: 1, semester: 1 });
+carryoverSchema.index({ computationBatch: 1 });
+
+const CarryoverCourse = mongoose.model("CarryoverCourse", carryoverSchema);
+export default CarryoverCourse;
+
+
+// ============================================
+// FILE: domain/result/computation.model.js
+// ============================================
+
+import mongoose from "mongoose";
+// 🔥 IMPORTANT: Clear cached model to force schema refresh
+delete mongoose.connection.models['ComputationSummary'];
+delete mongoose.models['ComputationSummary'];
+// Define a subdocument schema
+const courseKeySchema = new mongoose.Schema({
+
+  courseId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Course"
+  },
+  courseCode: String,
+  title: String,
+  unit: Number,
+  level: Number,
+  type: String,
+  isCoreCourse: Boolean,
+  isBorrowed: Boolean
+}, { _id: false });  // No _id for subdocuments
+const computationSummarySchema = new mongoose.Schema({
+  department: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Department",
+    required: true
+  },
+
+
+  departmentDetails: {
+    type: mongoose.Schema.Types.Mixed, // Or define a proper schema
+    default: null
+  },
+  // Then use it in your main schema
+  keyToCoursesByLevel: {
+    type: Map,
+    of: [courseKeySchema],  // Use the subdocument schema
+    default: new Map()
+  },
+  semester: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Semester",
+    required: true
+  },
+
+  // Master computation reference
+  masterComputationId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "MasterComputation"
+  },
+
+  // Student performance summaries organized by level
+  studentSummariesByLevel: {
+    type: Map,
+    of: [{
+      studentId: { type: mongoose.Schema.Types.ObjectId, ref: "Student" },
+      matricNumber: String,
+      name: String,
+      level: String,
+
+      // Current semester performance
+      currentSemester: {
+        tcp: { type: Number, default: 0 },
+        tnu: { type: Number, default: 0 },
+        gpa: { type: Number, default: 0 }
+      },
+
+      // Previous performance
+      previousPerformance: {
+        cumulativeTCP: { type: Number, default: 0 },
+        cumulativeTNU: { type: Number, default: 0 },
+        cumulativeGPA: { type: Number, default: 0 },
+        previousSemesterGPA: { type: Number, default: 0 }
+      },
+
+      // Cumulative performance
+      cumulativePerformance: {
+        totalTCP: { type: Number, default: 0 },
+        totalTNU: { type: Number, default: 0 },
+        cgpa: { type: Number, default: 0 }
+      },
+
+      // Course results
+      courseResults: [{
+        courseId: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+        courseCode: String,
+        courseTitle: String,
+        unitLoad: Number,
+        score: Number,
+        grade: String,
+        gradePoint: Number,
+        creditPoint: Number,
+        status: {
+          type: String,
+          enum: ["passed", "failed", "outstanding"],
+          default: "passed"
+        }
+      }],
+
+      // Outstanding courses
+      outstandingCourses: [{
+        courseId: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+        courseCode: String,
+        courseTitle: String,
+        unitLoad: Number,
+        fromSemester: String,
+        attempts: { type: Number, default: 1 }
+      }],
+
+      // Academic status
+      academicStatus: {
+        type: String,
+        enum: ["good", "probation", "withdrawal", "terminated"],
+        default: "good"
+      }
+    }],
+    default: new Map()
+  },
+
+  // Overall department statistics
+  totalStudents: { type: Number, default: 0 },
+  studentsWithResults: { type: Number, default: 0 },
+  studentsProcessed: { type: Number, default: 0 },
+
+  averageGPA: { type: Number, default: 0 },
+  highestGPA: { type: Number, default: 0 },
+  lowestGPA: { type: Number, default: 0 },
+
+  // Overall grade distribution
+  gradeDistribution: {
+    firstClass: { type: Number, default: 0 },
+    secondClassUpper: { type: Number, default: 0 },
+    secondClassLower: { type: Number, default: 0 },
+    thirdClass: { type: Number, default: 0 },
+    fail: { type: Number, default: 0 }
+  },
+
+  // Summary of results by level
+  summaryOfResultsByLevel: {
+    type: Map,
+    of: {
+      totalStudents: { type: Number, default: 0 },
+      studentsWithResults: { type: Number, default: 0 },
+
+      gpaStatistics: {
+        average: { type: Number, default: 0 },
+        highest: { type: Number, default: 0 },
+        lowest: { type: Number, default: 0 }
+      },
+
+      classDistribution: {
+        firstClass: { type: Number, default: 0 },
+        secondClassUpper: { type: Number, default: 0 },
+        secondClassLower: { type: Number, default: 0 },
+        thirdClass: { type: Number, default: 0 },
+        pass: { type: Number, default: 0 },
+        fail: { type: Number, default: 0 }
+      }
+    },
+    default: new Map()
+  },
+
+  // Student lists by level
+  studentListsByLevel: {
+    type: Map,
+    of: {
+      passList: [{
+        studentId: { type: mongoose.Schema.Types.ObjectId, ref: "Student" },
+        matricNumber: String,
+        name: String,
+        gpa: Number
+      }],
+      probationList: [{
+        studentId: { type: mongoose.Schema.Types.ObjectId, ref: "Student" },
+        matricNumber: String,
+        name: String,
+        gpa: Number,
+        remarks: String
+      }],
+      withdrawalList: [{
+        studentId: { type: mongoose.Schema.Types.ObjectId, ref: "Student" },
+        matricNumber: String,
+        name: String,
+        gpa: Number,
+        reason: String,
+        remarks: String
+      }],
+      terminationList: [{
+        studentId: { type: mongoose.Schema.Types.ObjectId, ref: "Student" },
+        matricNumber: String,
+        name: String,
+        gpa: Number,
+        reason: String,
+        remarks: String
+      }]
+    },
+    default: new Map()
+  },
+
+  // Status tracking
+  status: {
+    type: String,
+    enum: [
+      "pending",
+      "processing",
+      "completed",
+      "completed_with_errors",
+      "failed",
+      "cancelled"
+    ],
+    default: "pending"
+  },
+
+  startedAt: { type: Date, default: Date.now },
+  completedAt: { type: Date },
+  duration: { type: Number },
+
+  error: { type: String },
+  retryCount: { type: Number, default: 0 },
+  lastRetryAt: Date,
+
+  computedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  },
+
+  // Preview/final tracking
+  isFinal: {
+    type: Boolean,
+    default: false
+  },
+
+  isPreview: {
+    type: Boolean,
+    default: false
+  },
+
+  purpose: {
+    type: String,
+    enum: ["final", "preview", "simulation"],
+    default: "final"
+  },
+
+  // Master sheet data
+  masterSheetDataByLevel: {
+    type: Map,
+    of: mongoose.Schema.Types.Mixed,
+    default: new Map()
+  },
+
+  masterSheetGenerated: {
+    type: Boolean,
+    default: false
+  },
+
+  masterSheetGeneratedAt: Date
+}, { timestamps: true });
+
+// Indexes for performance
+computationSummarySchema.index({ department: 1, semester: 1 });
+computationSummarySchema.index({ masterComputationId: 1 });
+computationSummarySchema.index({ isPreview: 1, purpose: 1 });
+computationSummarySchema.index({ status: 1 });
+computationSummarySchema.post('save', function (doc) {
+  console.log('💾 Document saved:');
+  console.log('  ID:', doc._id);
+  console.log('  studentListsByLevel type:', typeof doc.studentListsByLevel);
+
+  if (doc.studentListsByLevel instanceof Map) {
+    console.log('  Is Map: YES');
+    for (const [level, lists] of doc.studentListsByLevel.entries()) {
+      console.log(`  Level ${level}:`);
+      console.log(`    Pass list: ${lists?.passList?.length || 0} items`);
+      console.log(`    Termination list: ${lists?.terminationList?.length || 0} items`);
+    }
+  } else {
+    console.log('  Is Map: NO, type:', doc.studentListsByLevel?.constructor?.name);
+    console.log('  Raw value:', JSON.stringify(doc.studentListsByLevel).substring(0, 200));
+  }
+  // console.log(computationSummarySchema)
+  console.log('🔍 [DEBUG] Mongoose Schema Details:');
+  const ComputationSummary = mongoose.model('ComputationSummary');
+  const schemaPath = ComputationSummary.schema.path('keyToCoursesByLevel');
+
+  console.log('Full schema path:', {
+    constructorName: schemaPath.constructor.name,
+    instance: schemaPath.instance,
+    options: {
+      type: schemaPath.options.type,
+      of: schemaPath.options.of,
+      ofType: schemaPath.options.of ? schemaPath.options.of.constructor.name : 'none'
+    },
+    caster: {
+      instance: schemaPath.caster?.instance,
+      constructor: schemaPath.caster?.constructor?.name,
+      caster: schemaPath.caster?.caster?.instance
+    }
+  });
+
+  // // Also check the document's schema
+  // console.log('Document schema:', {
+  //   hasKeyToCourses: computationSummary.schema.paths.hasOwnProperty('keyToCoursesByLevel'),
+  //   pathType: computationSummary.schema.path('keyToCoursesByLevel')?.instance
+  // });
+});
+// Pre-save middleware to initialize Maps
+computationSummarySchema.pre('save', function (next) {
+  if (!this.studentSummariesByLevel) this.studentSummariesByLevel = new Map();
+  if (!this.summaryOfResultsByLevel) this.summaryOfResultsByLevel = new Map();
+  if (!this.studentListsByLevel) this.studentListsByLevel = new Map();
+  if (!this.masterSheetDataByLevel) this.masterSheetDataByLevel = new Map();
+  next();
+});
+
+const ComputationSummary = mongoose.model("ComputationSummary", computationSummarySchema);
+export default ComputationSummary;
+
+
+// ============================================
+// FILE: domain/result/result.model.js
+// ============================================
+
+import mongoose from "mongoose";
+import Student from "#domain/user/student/student.model.js";
+import Course from "#domain/course/course.model.js"; // ensure correct path
+import AppError from "#shared/errors/AppError.js";
+import SemesterService from "#domain/semester/semester.service.js";
+
+/* ------------------------------
+   ResultHistory (unchanged)
+   ------------------------------ */
+const resultHistorySchema = new mongoose.Schema({
+  resultId: { type: mongoose.Schema.Types.ObjectId, ref: "Result", required: true },
+  changedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  when: { type: Date, default: Date.now },
+  op: { type: String, enum: ["create", "update", "delete"], required: true },
+  before: mongoose.Schema.Types.Mixed,
+  after: mongoose.Schema.Types.Mixed,
+  reason: { type: String, default: "" }
+});
+
+const ResultHistory = mongoose.model("ResultHistory", resultHistorySchema);
+
+/* ------------------------------
+   Result (corrected and aligned)
+   ------------------------------ */
+const resultSchema = new mongoose.Schema({
+  studentId: { type: mongoose.Schema.Types.ObjectId, ref: "Student", required: true },
+
+  courseId: { type: mongoose.Schema.Types.ObjectId, ref: "Course", required: true },
+
+  lecturerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false },
+
+  semester: { type: mongoose.Schema.Types.ObjectId, ref: "AcademicSemester", required: false },
+
+  // Marks
+  ca: { type: Number, min: 0, max: 40, default: 0 },
+  exam: { type: Number, min: 0, max: 60, default: 0 },
+  score: { type: Number, min: 0, max: 100, required: true },
+
+  // Grade
+  grade: { type: String, enum: ["A", "B", "C", "D", "E", "F"] },
+  gradePoint: { type: Number, default: 0 },
+  remark: { type: String, default: "" },
+
+  // Approval
+  approved: { type: Boolean, default: false },
+  approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+  locked: { type: Boolean, default: false },
+
+  // Soft delete
+  deletedAt: { type: Date, default: null },
+
+  // Metadata
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+
+  // Optional denormalized course info
+  courseUnit: Number,
+  courseCode: String,
+  courseTitle: String,
+  courseDepartmentId: { type: mongoose.Schema.Types.ObjectId, ref: "Department" }
+}, { timestamps: true });
+
+/* ------------------------------
+   FIXED UNIQUE INDEX
+   (session removed)
+   ------------------------------ */
+resultSchema.index(
+  { studentId: 1, courseId: 1, semester: 1 },
+  { unique: true }
+);
+
+/* ------------------------------
+   Pre-save logic (unchanged except session removed)
+   ------------------------------ */
+resultSchema.pre("save", async function (next) {
+  const totalScore = (this.ca + this.exam) || this.score || 0;
+  this.score = totalScore;
+
+  const { grade, gradePoint } = computeGradeAndPoint(totalScore);
+  this.grade = grade;
+  this.gradePoint = gradePoint;
+
+  // Hydrate course info if missing
+  if ((!this.courseUnit || !this.courseCode || !this.courseTitle) && this.courseId) {
+    try {
+      const course = await Course.findById(this.courseId)
+        .select("unit courseCode title department")
+        .lean();
+
+      if (course) {
+        this.courseUnit = course.unit;
+        this.courseCode = course.courseCode;
+        this.courseTitle = course.title;
+        this.courseDepartmentId = course.department;
+      }
+    } catch (e) {}
+  }
+
+  next();
+});
+
+/* ------------------------------
+   Prevent modification if locked/approved
+   (applies to findOneAndUpdate / updateOne)
+   ------------------------------ */
+async function denyIfLockedOrApproved(query, update) {
+  // fetch current doc
+  const current = await this.model.findOne(this.getQuery()).lean();
+  if (!current) return;
+
+  // if locked/approved, only allow metadata update if caller intentionally bypasses
+  const tryingToChangeScores = ("ca" in update) || ("exam" in update) || ("score" in update) || ("grade" in update) || ("gradePoint" in update);
+  if ((current.locked || current.approved) && tryingToChangeScores) {
+    const err = new AppError("Result is locked or approved and cannot be modified.");
+    err.status = 403;
+    throw err;
+  }
+}
+
+resultSchema.pre("findOneAndUpdate", async function (next) {
+  try {
+    await denyIfLockedOrApproved.call(this);
+    // create history entry capturing before and after (after will be saved in post)
+    const before = await this.model.findOne(this.getQuery()).lean();
+    this.setOptions({ __resultHistoryBefore: before || null });
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+resultSchema.post("findOneAndUpdate", async function (res) {
+  try {
+    const before = this.getOptions?.().__resultHistoryBefore || this.options?.__resultHistoryBefore || null;
+    const after = await this.model.findOne(this.getQuery()).lean();
+    if (before || after) {
+      await ResultHistory.create({
+        resultId: after?._id || before?._id,
+        changedBy: this.getOptions?.().__changedBy || null,
+        op: "update",
+        before,
+        after
+      }).catch(() => {});
+    }
+  } catch (err) {
+    // swallow history errors
+    console.error("Result post-findOneAndUpdate history error:", err.message);
+  }
+});
+
+/* ------------------------------
+   Post-save: write history + recalc GPA
+   ------------------------------ */
+resultSchema.post("save", async function (doc) {
+  try {
+    // create history record (create or update)
+    await ResultHistory.create({
+      resultId: doc._id,
+      changedBy: doc.createdBy || null,
+      op: this.isNew ? "create" : "update",
+      before: null,
+      after: doc.toObject()
+    }).catch(() => {});
+
+    // Recalculate weighted GPA for student using aggregation (efficient)
+    // Weighted GPA = sum(gradePoint * unit) / sum(unit)
+    await this.constructor.recalcGPA(doc.studentId);
+  } catch (err) {
+    console.error("Result post-save error:", err.message);
+  }
+});
+
+/* ------------------------------
+   Soft delete/history integration
+   ------------------------------ */
+resultSchema.methods.softDelete = async function (deletedBy = null, reason = "") {
+  this.deletedAt = new Date();
+  await this.save();
+  await ResultHistory.create({
+    resultId: this._id,
+    changedBy: deletedBy,
+    op: "delete",
+    before: null,
+    after: this.toObject(),
+    reason
+  }).catch(() => {});
+};
+
+/* ------------------------------
+   Static: recalcGPA(studentId)
+   - uses aggregation to compute weighted GPA and updates Student.gpa & Student.cgpa
+   ------------------------------ */
+resultSchema.statics.recalcGPA = async function (studentId) {
+  if (!studentId) return null;
+  try {
+    const Result = this;
+
+    // Filter: non-deleted results for that student
+    const pipeline = [
+      { $match: { studentId: mongoose.Types.ObjectId(String(studentId)), deletedAt: null } },
+      // Only include results that have numeric courseUnit and numeric gradePoint
+      { $project: { courseUnit: { $ifNull: ["$courseUnit", 1] }, gradePoint: 1 } },
+      {
+        $group: {
+          _id: null,
+          totalUnits: { $sum: "$courseUnit" },
+          weightedPoints: { $sum: { $multiply: ["$courseUnit", "$gradePoint"] } }
+        }
+      }
+    ];
+
+    const [agg] = await Result.aggregate(pipeline).allowDiskUse(true);
+    if (!agg || !agg.totalUnits) {
+      // no results
+      await Student.findByIdAndUpdate(studentId, { gpa: null, cgpa: null }, { timestamps: false }).catch(() => {});
+      return null;
+    }
+
+    const gpa = +(agg.weightedPoints / agg.totalUnits).toFixed(2);
+    // For now set gpa and cgpa the same — replace with your school's CGPA logic if different
+    await Student.findByIdAndUpdate(studentId, { gpa, cgpa: gpa }, { timestamps: false }).catch(() => {});
+    return gpa;
+  } catch (err) {
+    console.error("Failed to recalcGPA:", err.message);
+    return null;
+  }
+};
+
+// Add this static method to your existing result.model.js
+resultSchema.statics.recalcGPA = async function (studentId) {
+  if (!studentId) return null;
+  try {
+    const Result = this;
+
+    const pipeline = [
+      { $match: { 
+        studentId: mongoose.Types.ObjectId(String(studentId)), 
+        deletedAt: null,
+        approved: true 
+      }},
+      { $project: { 
+        courseUnit: { $ifNull: ["$courseUnit", 1] }, 
+        gradePoint: 1 
+      }},
+      {
+        $group: {
+          _id: null,
+          totalUnits: { $sum: "$courseUnit" },
+          weightedPoints: { $sum: { $multiply: ["$courseUnit", "$gradePoint"] } }
+        }
+      }
+    ];
+
+    const [agg] = await Result.aggregate(pipeline).allowDiskUse(true);
+    
+    if (!agg || !agg.totalUnits) {
+      await Student.findByIdAndUpdate(studentId, { gpa: null, cgpa: null }, { timestamps: false }).catch(() => {});
+      return null;
+    }
+
+    const cgpa = +(agg.weightedPoints / agg.totalUnits).toFixed(2);
+    
+    // Get current active semester for student
+    const student = await Student.findById(studentId);
+    if (!student) return null;
+    
+    // Find current semester's GPA
+    let currentGPA = null;
+    const currentSemester = await SemesterService.getActiveAcademicSemester();
+    
+    if (currentSemester) {
+      const semesterPipeline = [
+        { $match: { 
+          studentId: mongoose.Types.ObjectId(String(studentId)), 
+          semester: currentSemester._id,
+          deletedAt: null, 
+          approved: true 
+        }},
+        { $project: { 
+          courseUnit: { $ifNull: ["$courseUnit", 1] }, 
+          gradePoint: 1 
+        }},
+        {
+          $group: {
+            _id: null,
+            totalUnits: { $sum: "$courseUnit" },
+            weightedPoints: { $sum: { $multiply: ["$courseUnit", "$gradePoint"] } }
+          }
+        }
+      ];
+      
+      const [semesterAgg] = await Result.aggregate(semesterPipeline);
+      if (semesterAgg && semesterAgg.totalUnits > 0) {
+        currentGPA = +(semesterAgg.weightedPoints / semesterAgg.totalUnits).toFixed(2);
+      }
+    }
+
+    await Student.findByIdAndUpdate(studentId, { 
+      gpa: currentGPA, 
+      cgpa: cgpa,
+      lastGPAUpdate: new Date()
+    }, { timestamps: false }).catch(() => {});
+    
+    return { gpa: currentGPA, cgpa };
+  } catch (err) {
+    console.error("Failed to recalcGPA:", err.message);
+    return null;
+  }
+};
+
+/* ---------- grade helper ---------- */
+function computeGradeAndPoint(score) {
+  if (score >= 70) return { grade: 'A', gradePoint: 5 };
+  if (score >= 60) return { grade: 'B', gradePoint: 4 };
+  if (score >= 50) return { grade: 'C', gradePoint: 3 };
+  if (score >= 45) return { grade: 'D', gradePoint: 2 };
+  if (score >= 40) return { grade: 'E', gradePoint: 1 };
+  return { grade: 'F', gradePoint: 0 };
+}
+/* ---------------------------------- */
+
+/* ------------------------------
+   Export
+   ------------------------------ */
+const Result = mongoose.models.Result || mongoose.model("Result", resultSchema);
+export default Result;
+
+
+
+// ============================================
+// FILE: domain/semester/semester.academicModel.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const academicSemesterSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    enum: ["first", "second", "summer"],
+    required: true,
+  },
+  session: {
+    type: String,
+    required: true,
+    match: /^\d{4}\/\d{4}$/,
+  },
+  order: {
+    type: Number,
+    required: true,
+  },
+  startDate: { 
+    type: Date, 
+    default: Date.now 
+  },
+  endDate: { 
+    type: Date 
+  },
+  isRegistrationOpen: { 
+    type: Boolean, 
+    default: false 
+  },
+  isResultsPublished: { 
+    type: Boolean, 
+    default: false 
+  },
+  isActive: { 
+    type: Boolean, 
+    default: false 
+  },
+}, { 
+  timestamps: true 
+});
+
+
+// ============================================
+// PRE-SAVE: SAFE AUTO ORDERING + IMMUTABILITY
+// ============================================
+
+academicSemesterSchema.pre('save', async function(next) {
+  try {
+    // ✅ Auto-assign order ONLY if not provided
+    if (this.isNew && !this.order) {
+      const lastSemester = await this.constructor
+        .findOne({})
+        .sort({ order: -1 })
+        .select("order");
+
+      this.order = lastSemester ? lastSemester.order + 1 : 1;
+    }
+
+    // ✅ Prevent order modification after creation
+    if (!this.isNew && this.isModified('order')) {
+      return next(new Error('Order cannot be modified after creation'));
+    }
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+// ============================================
+// INDEXES (CRITICAL FOR SAFETY)
+// ============================================
+
+// ✅ Global timeline uniqueness (VERY IMPORTANT)
+academicSemesterSchema.index(
+  { order: 1 },
+  { unique: true }
+);
+
+// ✅ Only one active semester
+academicSemesterSchema.index(
+  { isActive: 1 },
+  { unique: true, partialFilterExpression: { isActive: true } }
+);
+
+// ✅ Fast ordering queries
+academicSemesterSchema.index({ order: 1 });
+
+
+export const AcademicSemester = mongoose.model(
+  "AcademicSemester",
+  academicSemesterSchema
+);
+
+
+// ============================================
+// FILE: domain/semester/semester.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const levelSettingsSchema = new mongoose.Schema({
+  level: { type: Number, required: true }, // 100, 200, 300, 400
+  minUnits: { type: Number, default: 12 },
+  maxUnits: { type: Number, default: 24 },
+  minCourses: { type: Number, default: 4 },
+  maxCourses: { type: Number, default: 6 },
+});
+
+const semesterSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    enum: ["first", "second", "summer"],
+    required: true,
+  },
+  session: {
+    type: String,
+    required: true,
+    match: /^\d{4}\/\d{4}$/,
+  },
+  academicSemester: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "AcademicSemester",
+  required: true,
+},
+  department: { type: mongoose.Schema.Types.ObjectId, ref: "Department", required: true },
+  levelSettings: [levelSettingsSchema], // per level min/max units & courses
+  startDate: { type: Date, default: Date.now },
+  endDate: { type: Date },
+  isActive: { type: Boolean, default: true },
+  isRegistrationOpen: { type: Boolean, default: false },
+  isResultsPublished: { type: Boolean, default: false },
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // usually super admin
+  registrationDeadline: { type: Date},
+  lateRegistrationDate: {type: Date},
+  isLocked: {type: Boolean}
+}, { timestamps: true });
+
+// Only one active semester per department
+semesterSchema.index({ department: 1, isActive: 1 }, { unique: true, partialFilterExpression: { isActive: true } });
+
+const DepartmentSemester = mongoose.model("DepartmentSemester", semesterSchema);
+export default DepartmentSemester;
+
+
+
+// ============================================
+// FILE: domain/semester/semesterCourse.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const semesterCourseSchema = new mongoose.Schema(
+  {
+    courseId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course",
+      required: true,
+    },
+    semesterId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Semester",
+      required: true,
+    },
+    department: {
+      type: String,
+      required: true,
+    },
+    level: {
+      type: Number,
+      required: true,
+    },
+    assignedLecturers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User", // Lecturer accounts
+      },
+    ],
+    status: {
+      type: String,
+      enum: ["active", "closed"],
+      default: "active",
+    },
+  },
+  { timestamps: true }
+);
+
+// Prevent duplicate semester-course entries
+semesterCourseSchema.index(
+  { courseId: 1, semesterId: 1, level: 1 },
+  { unique: true }
+);
+// NOTED: FIND MORE ABOUT WHAT THIS MODEL IS ALL ABOUT
+const SemesterCourse = mongoose.model("SemesterCourse", semesterCourseSchema);
+
+export default SemesterCourse;
+
+
+
+// ============================================
+// FILE: domain/semester/symesterCourse.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const semesterCourseSchema = new mongoose.Schema(
+  {
+    courseId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course",
+      required: true,
+    },
+    semesterId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Semester",
+      required: true,
+    },
+    department: {
+      type: String,
+      required: true,
+    },
+    level: {
+      type: Number,
+      required: true,
+    },
+    assignedLecturers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User", // Lecturer accounts
+      },
+    ],
+    status: {
+      type: String,
+      enum: ["active", "closed"],
+      default: "active",
+    },
+  },
+  { timestamps: true }
+);
+
+// Prevent duplicate semester-course entries
+semesterCourseSchema.index(
+  { courseId: 1, semesterId: 1, level: 1 },
+  { unique: true }
+);
+
+const SemesterCourse = mongoose.model("SemesterCourse", semesterCourseSchema);
+
+export default SemesterCourse;
+
+
+
+// ============================================
+// FILE: domain/support/faq/faq.category.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const faqCategorySchema = new mongoose.Schema({
+    category_id: {
+        type: String,
+        required: true,
+        unique: true,
+        index: true
+    },
+    name: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    description: {
+        type: String,
+        default: ''
+    },
+    slug: {
+        type: String,
+        required: true,
+        unique: true,
+        index: true
+    },
+    icon: {
+        type: String,
+        default: '📚'
+    },
+    order: {
+        type: Number,
+        default: 0,
+        index: true
+    },
+    is_active: {
+        type: Boolean,
+        default: true,
+        index: true
+    },
+    created_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    metadata: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {}
+    }
+}, {
+    timestamps: {
+        createdAt: 'created_at',
+        updatedAt: 'updated_at'
+    }
+});
+
+const FAQCategory = mongoose.model('FAQCategory', faqCategorySchema);
+export default FAQCategory;
+
+
+// ============================================
+// FILE: domain/support/faq/faq.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const faqSchema = new mongoose.Schema({
+
+    category: {
+        type: String,
+        required: true,
+        index: true,
+        // enum: ['academic', 'technical', 'billing', 'registration', 'general'],
+        default: 'general'
+    },
+    question: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    answer: {
+        type: String,
+        required: true
+    },
+    keywords: [{
+        type: String,
+        index: true
+    }],
+    tags: [{
+        type: String,
+        index: true
+    }],
+    is_active: {
+        type: Boolean,
+        default: true,
+        index: true
+    },
+    is_featured: {
+        type: Boolean,
+        default: false,
+        index: true
+    },
+    view_count: {
+        type: Number,
+        default: 0
+    },
+    helpful_count: {
+        type: Number,
+        default: 0
+    },
+    not_helpful_count: {
+        type: Number,
+        default: 0
+    },
+    created_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    last_updated_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    last_updated_at: {
+        type: Date,
+        default: Date.now
+    },
+    metadata: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {}
+    }
+}, {
+    timestamps: {
+        createdAt: 'created_at',
+        updatedAt: 'updated_at'
+    }
+});
+
+// Indexes for better search performance
+faqSchema.index({ question: 'text', answer: 'text', keywords: 'text' });
+faqSchema.index({ category: 1, is_active: 1 });
+faqSchema.index({ is_featured: 1, is_active: 1 });
+faqSchema.index({ view_count: -1 });
+faqSchema.index({ helpful_count: -1 });
+
+const FAQ = mongoose.model('FAQ', faqSchema);
+export default FAQ;
+
+
+// ============================================
+// FILE: domain/system/database/database.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const backupSchema = new mongoose.Schema({
+  database: { type: String, required: true },
+  backupPath: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now },
+  status: { type: String, enum: ["pending", "completed", "failed"], default: "pending" },
+  size: { type: String }, // human-readable, optional
+});
+
+export default mongoose.model("DatabaseBackup", backupSchema);
+
+
+// ============================================
+// FILE: domain/system/errors/error.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const errorLogSchema = new mongoose.Schema({
+  type: { type: String, enum: ["operational", "unexpected"], required: true },
+  statusCode: Number,
+  message: String,
+  stack: String,
+  extra: String,
+  method: String,
+  url: String,
+  timestamp: { type: Date, default: Date.now }
+});
+
+export default mongoose.model("ErrorLog", errorLogSchema);
+
+
+// ============================================
+// FILE: domain/system/settings/settings.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const settingsSchema = new mongoose.Schema(
+  {
+    // 🏛️ GENERAL INFORMATION
+    universityName: {
+      type: String,
+      required: true,
+      default: "Adeyemi Federal University of Education",
+    },
+    motto: { type: String, default: "Learning and Service" },
+    schoolEmail: { type: String, default: "info@adeyemi.edu.ng" },
+    schoolPhone: { type: String, default: "+234-800-000-0000" },
+    address: { type: String, default: "Ondo State, Nigeria" },
+    websiteUrl: { type: String, default: "https://adeyemi.edu.ng" },
+    logoUrl: { type: String },
+    themeColor: { type: String, default: "#006400" }, // deep green vibes 🇳🇬
+
+    // 📘 SESSION CONTROL
+    currentSession: {
+      type: String,
+      required: true,
+      default: "2025/2026",
+    },
+    currentSemester: {
+      type: String,
+      enum: ["First Semester", "Second Semester", "Summer Semester"],
+      required: true,
+      default: "First Semester",
+    },
+    activeSemesterId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "AcademicSemester",
+    },
+    sessionStartDate: Date,
+    sessionEndDate: Date,
+    isSemesterActive: { type: Boolean, default: true },
+
+    // 🎓 COURSE & LECTURER MANAGEMENT
+    courseAssignmentOpen: { type: Boolean, default: false },
+    maxCoursesPerLecturer: { type: Number, default: 4 },
+    allowCrossDepartmentAssignment: { type: Boolean, default: false },
+    requireHodApprovalForAssignment: { type: Boolean, default: true },
+
+    // 🧾 STUDENT REGISTRATION SETTINGS
+    registrationOpen: { type: Boolean, default: false },
+    registrationDeadline: { type: Date },
+    lateRegistrationFee: { type: Number, default: 5000 },
+    autoLockAfterDeadline: { type: Boolean, default: true },
+    maxCreditUnitsPerSemester: { type: Number, default: 24 },
+    requireDepartmentalClearance: { type: Boolean, default: true },
+    requirePaymentBeforeRegistration: { type: Boolean, default: true },
+
+    // 💰 PAYMENT & FINANCE
+    enablePaymentPortal: { type: Boolean, default: true },
+    acceptedPaymentMethods: {
+      type: [String],
+      default: ["Remita", "Paystack", "Flutterwave"],
+    },
+    currency: { type: String, default: "NGN" },
+    autoGenerateInvoice: { type: Boolean, default: true },
+    requireReceiptVerification: { type: Boolean, default: true },
+
+    // 🧮 GRADING SYSTEM
+    gradingSystem: {
+      A: { min: { type: Number, default: 70 }, points: { type: Number, default: 5 } },
+      B: { min: { type: Number, default: 60 }, points: { type: Number, default: 4 } },
+      C: { min: { type: Number, default: 50 }, points: { type: Number, default: 3 } },
+      D: { min: { type: Number, default: 45 }, points: { type: Number, default: 2 } },
+      E: { min: { type: Number, default: 40 }, points: { type: Number, default: 1 } },
+      F: { min: { type: Number, default: 0 }, points: { type: Number, default: 0 } },
+    },
+    cgpaScale: { type: Number, default: 5.0 },
+    allowHodToEditResults: { type: Boolean, default: false },
+    requireExaminerApproval: { type: Boolean, default: true },
+    maxResultCorrectionDays: { type: Number, default: 7 },
+    resultPublicationOpen: { type: Boolean, default: false },
+
+    // 🧑‍💻 ACCESS & SECURITY
+    enable2FAForAdmins: { type: Boolean, default: false },
+    allowHodToCreateCourses: { type: Boolean, default: true },
+    superAdminEmails: { type: [String], default: ["vc@adeyemi.edu.ng"] },
+    autoAssignDefaultRoles: { type: Boolean, default: true },
+
+    // 📚 ACADEMIC OPERATIONS
+    enableElectives: { type: Boolean, default: true },
+    minStudentsForCourseActivation: { type: Number, default: 10 },
+    autoGenerateExamTimetable: { type: Boolean, default: false },
+    attendanceMode: { type: String, enum: ["QR", "Biometric", "Manual"], default: "QR" },
+    examMode: { type: String, enum: ["CBT", "Written"], default: "CBT" },
+    enableProjectSupervisionTracking: { type: Boolean, default: true },
+
+    // 🏠 HOSTEL & FACILITIES
+    hostelAllocationOpen: { type: Boolean, default: false },
+    maxOccupantsPerRoom: { type: Number, default: 4 },
+    maintenanceRequestEnabled: { type: Boolean, default: true },
+    electricityBillPolicy: { type: String, enum: ["included", "separate"], default: "included" },
+
+    // 🕹️ SYSTEM SETTINGS
+    backupFrequency: { type: String, enum: ["daily", "weekly", "manual"], default: "weekly" },
+    autoLogoutTimeout: { type: Number, default: 30 }, // minutes
+    maintenanceMode: { type: Boolean, default: false },
+    auditLogsRetentionDays: { type: Number, default: 180 },
+    sendEmailNotifications: { type: Boolean, default: true },
+    smsGatewayEnabled: { type: Boolean, default: false },
+
+    notificationSettings: {
+      emailEnabled: { type: Boolean, default: true },
+      whatsappEnabled: { type: Boolean, default: false },
+      inAppNotifications: { type: Boolean, default: true },
+      smsEnabled: { type: Boolean, default: false },
+      senderEmail: { type: String, default: "noreply@afue.edu.ng" },
+      senderPhone: { type: String, default: "+2348000000000" },
+    },
+
+    messageTemplates: {
+      registrationOpen: { type: String, default: "Registration is now open for the current semester." },
+      resultPublished: { type: String, default: "Results have been published. Kindly log in to check yours." },
+      feeReminder: { type: String, default: "Please pay your school fees before the deadline to avoid penalties." },
+    },
+    // 🧑‍💼 TRACKING
+    updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  },
+  { timestamps: true }
+);
+
+const Settings = mongoose.model("Settings", settingsSchema);
+export default Settings;
+
+
+
+// ============================================
+// FILE: domain/user/lecturer/lecturer.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const lecturerSchema = new mongoose.Schema(
+  {
+    // Use the same _id as the User document for strict one-to-one mapping
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
+
+    staffId: {
+      type: String,
+      required: true,
+      unique: true
+    },
+
+    departmentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Department",
+      required: true
+    },
+
+    facultyId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Faculty",
+      required: true
+    },
+    rank: {
+      type: String,
+      enum: [
+        "assistant_lecturer",
+        "lecturer_ii",
+        "lecturer_i",
+        "senior_lecturer",
+        "associate_professor",
+        "professor"
+      ],
+      default: "lecturer_ii"
+    },
+
+    isHOD: {
+      type: Boolean,
+      default: false
+    },
+
+    isDean: {
+      type: Boolean,
+      default: false
+    },
+
+    active: {
+      type: Boolean,
+      default: true
+    },
+
+    deletedAt: {
+      type: Date,
+      default: null
+    },
+  },
+  { timestamps: true, _id: false }
+);
+
+// // Automatically populate linked user info when fetching lecturers
+// lecturerSchema.pre(/^find/, function (next) {
+//   this.populate("_id", "name email role"); // get minimal user info
+//   next();
+// });
+
+lecturerSchema.index({ departmentId: 1, staffId: 1, facultyId: 1 })
+// 🧹 Auto-exclude deleted students from default queries
+lecturerSchema.pre(/^find/, function () {
+  const archiveMode = this.getOptions()?.archiveMode;
+
+  if (archiveMode === "only") {
+    this.where({ deletedAt: { $ne: null } });
+    return;
+  }
+
+  if (archiveMode === "all") {
+    // no filter
+    return;
+  }
+
+  // default
+  this.where({ deletedAt: null });
+});
+
+
+export default mongoose.model("Lecturer", lecturerSchema);
+
+
+
+// ============================================
+// FILE: domain/user/staffs/models/staff.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const staffSchema = new mongoose.Schema(
+  {
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      unique: true,
+      index: true
+    },
+
+    staffId: {
+      type: String,
+      unique: true,
+      required: true,
+    },
+
+    employment_type: {
+      type: String,
+      enum: ["full_time", "part_time", "contract", "temporary"],
+      default: "full_time",
+      index: true
+    },
+
+    is_active: {
+      type: Boolean,
+      default: true,
+      index: true
+    }
+  },
+  {
+    timestamps: true
+  }
+);
+
+staffSchema.index({ is_active: 1 });
+
+export const StaffModel = mongoose.model("Staff", staffSchema);
+
+
+// ============================================
+// FILE: domain/user/student/attendance/attendance.model.js
+// ============================================
+
+// attendance.model.js (updated)
+import mongoose from "mongoose";
+
+const attendanceSessionSchema = new mongoose.Schema({
+  assignment: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "courseAssignment",
+    required: true,
+  },
+  course: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "course",
+    required: true,
+  },
+  lecturer: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "lecturer",
+    required: true,
+  },
+  co_lecturers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "lecturer"
+  }],
+  semester: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "semester",
+    required: true,
+  },
+  session_date: { type: Date, required: true },
+  start_time: { type: String, required: true },
+  end_time: { type: String, required: true },
+  topic: { type: String },
+  attendance_method: {
+    type: String,
+    enum: ["manual", "qr_code", "biometric"],
+    default: "manual",
+  },
+  qr_code_token: { type: String },
+  is_active: { type: Boolean, default: true },
+  total_students: { type: Number, default: 0 },
+  present_count: { type: Number, default: 0 },
+  created_by: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  },
+  created_by_role: {
+    type: String,
+    enum: ["lecturer", "course_rep", "admin"]
+  }
+}, { 
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
+
+// Virtual for attendance rate
+attendanceSessionSchema.virtual('attendance_rate').get(function() {
+  return this.total_students > 0 
+    ? (this.present_count / this.total_students) * 100 
+    : 0;
+});
+
+// Virtual for absent count
+attendanceSessionSchema.virtual('absent_count').get(function() {
+  return this.total_students - this.present_count;
+});
+
+export default mongoose.model("attendanceSession", attendanceSessionSchema);
+
+
+// ============================================
+// FILE: domain/user/student/attendance/attendanceRecordModel.js
+// ============================================
+
+// attendanceRecordModel.js (updated)
+import mongoose from "mongoose";
+
+const attendanceRecordSchema = new mongoose.Schema({
+  session: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "attendanceSession",
+    required: true,
+  },
+  student: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "student",
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ["present", "absent", "late"],
+    default: "absent",
+  },
+  check_in_time: { type: Date },
+  check_in_method: {
+    type: String,
+    enum: ["manual", "qr_code", "biometric"],
+  },
+  marked_by: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  },
+  marked_by_role: {
+    type: String,
+    enum: ["lecturer", "course_rep", "admin", "system"]
+  },
+  remarks: { type: String }
+}, { 
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
+
+// Compound index for uniqueness
+attendanceRecordSchema.index({ session: 1, student: 1 }, { unique: true });
+
+// Index for analytics queries
+attendanceRecordSchema.index({ student: 1, status: 1 });
+attendanceRecordSchema.index({ session: 1, status: 1 });
+attendanceRecordSchema.index({ check_in_time: 1 });
+
+export default mongoose.model("attendanceRecord", attendanceRecordSchema);
+
+
+// ============================================
+// FILE: domain/user/student/carryover/carryover.model.js
+// ============================================
+
+'64'
+import mongoose from "mongoose";
+import { SYSTEM_USER_ID } from "#config/system.js";
+const carryoverSchema = new mongoose.Schema({
+  student: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Student",
+    required: true
+  },
+  courses: {
+    type: [
+      {
+        course: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Course",
+          required: true
+        },
+        result: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Result"
+        },
+        grade: {
+          type: String,
+          enum: ["F", "D", "E", null],
+          default: null
+        },
+        score: {
+          type: Number,
+          min: 0,
+          max: 100,
+          default: null
+        },
+        isCoreCourse: {
+          type: Boolean,
+          default: true
+        },
+        attempts: {
+          type: Number,
+          default: 0
+        },
+        reason: {
+          type: String,
+          enum: ["carryover", "cleared", "exempted"],
+          required: true
+        },
+        status: {
+          type: String,
+          enum: ["new", "old"],
+          required: true,
+        },
+        remark: String
+      },
+    ],
+    default: []
+  },
+  semester: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "AcademicSemester",
+    required: true
+  },
+  department: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Department"
+  },
+  reason: {
+    type: String,
+    required: true
+  },
+  cleared: {
+    type: Boolean,
+    default: false
+  },
+  clearedAt: Date,
+  clearedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    default: SYSTEM_USER_ID
+  },
+  computationBatch: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "ComputationSummary",
+    required: true
+  }
+}, { timestamps: true });
+
+// Updated indexes for array structure
+carryoverSchema.index({ student: 1, semester: 1 }, { unique: true }); // One document per student per semester
+carryoverSchema.index({ student: 1, cleared: 1 });
+carryoverSchema.index({ department: 1, semester: 1 });
+carryoverSchema.index({ computationBatch: 1 });
+// Index for searching within courses array
+carryoverSchema.index({ "courses.course": 1 });
+
+const CarryoverCourse = mongoose.model("CarryoverCourse", carryoverSchema);
+export default CarryoverCourse;
+
+
+// ============================================
+// FILE: domain/user/student/student.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const studentSchema = new mongoose.Schema(
+  {
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
+    matricNumber: {
+      type: String,
+      required: true,
+      unique: true,
+      uppercase: true,
+      trim: true,
+    },
+    departmentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Department",
+      required: true,
+    },
+    facultyId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Faculty",
+      required: true,
+    },
+    programmeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Programme",
+      required: true,
+    },
+
+    level: {
+      type: Number,
+      enum: [100, 200, 300, 400, 500, 600],
+      required: true,
+    },
+    session: {
+      type: String,
+      // required: true, // e.g. "2024/2025"
+    },
+    courses: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Course",
+      },
+    ],
+    gpa: {
+      type: Number,
+      default: 0.0,
+    },
+    cgpa: {
+      type: Number,
+      default: 0.0,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
+    totalCarryovers: { type: Number, default: 0 },
+    lastGPAUpdate: { type: Date },
+    probationStatus: {
+      type: String,
+      enum: ["none", "probation", "probation_lifted"],
+      default: "none"
+    },
+    terminationStatus: {
+      type: String,
+      enum: ["none", "withdrawn", "terminated", "expelled"],
+      default: "none"
+    },
+    queryKey: {
+      type: {
+        full_name: String,
+        email: String,
+        phone: String
+      },
+      default: {}
+    },
+    suspension: {
+      type: [
+        {
+          _id: false, //  stop auto _id
+          type: {
+            type: String,
+            enum: ["punishment", "administrative"]
+          },
+          reason: String,
+          start_date: Date,
+          end_date: Date,
+          is_active: Boolean,
+          created_by: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+          }
+        }
+      ],
+      default: [] //  stop null from ever happening again
+
+    },
+
+    // BYPASS : Temporarily here to support query of bypassed students in sutdent.service.js.getstudentIdsForProgramme()
+    payment_completed: {
+      type: Boolean
+    }
+
+  },
+  // { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+  }
+);
+
+studentSchema.index({ matricNumber: 1 }, { unique: true })
+studentSchema.index({ departmentId: 1, facultyId: 1, programmeId: 1 })
+studentSchema.index({ level: 1, session: 1 })
+studentSchema.index({ deletedAt: 1, isActive: 1 })
+studentSchema.index({ probationStatus: 1, terminationStatus: 1 })
+studentSchema.index({ "suspension.is_active": 1 })
+
+// 🧹 Auto-exclude deleted students from default queries
+studentSchema.pre(/^find/, function () {
+  const archiveMode = this.getOptions()?.archiveMode;
+
+  if (archiveMode === "only") {
+    this.where({ deletedAt: { $ne: null } });
+    return;
+  }
+
+  if (archiveMode === "all") {
+    // no filter
+    return;
+  }
+
+  // default
+  this.where({ deletedAt: null });
+});
+
+studentSchema.virtual("user", {
+  ref: "User",          // model to populate
+  localField: "_id",    // Student._id
+  foreignField: "_id",  // User._id
+  justOne: true         // one-to-one
+});
+
+export default mongoose.model("Student", studentSchema);
+
+
+
+// ============================================
+// FILE: domain/user/student/student.semseterResult.model.js
+// ============================================
+
+import mongoose from "mongoose";
+
+const studentSemesterResultSchema = new mongoose.Schema({
+  academicStanding: {
+    type: mongoose.Schema.Types.Mixed,
+    default: null
+  },
+  academicStatus: {
+    type: String,
+    // enum: ["good", "probation", "withdrawal", "terminated", "leave_of_absence", "not_registered"],
+    default: "good"
+  },
+  matricNumber: {type: String, required: true},
+  name: {type: String, required: true},
+  studentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Student",
+    required: true
+  },
+  departmentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Department",
+    required: true
+  },
+  semesterId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "AcademicSemester",
+    required: true
+  },
+
+  // Academic year and level context
+  session: {
+    type: String,
+    required: true
+  },
+  level: {
+    type: String,
+    required: true,
+    enum: ["100", "200", "300", "400", "500", "600", "700"]
+  },
+
+  // Course results
+  courses: [{
+    courseId: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+    courseCode: String,
+    courseTitle: String,
+    courseUnit: Number,
+    score: Number,
+    grade: String,
+    gradePoint: Number,
+    creditPoint: Number,
+    isCoreCourse: { type: Boolean, default: false },
+    isCarryover: { type: Boolean, default: false },
+    status: {
+      type: String,
+      enum: ["passed", "failed", "outstanding"],
+      default: "passed"
+    }
+  }],
+
+  // Semester performance
+  gpa: {
+    type: Number,
+    default: 0
+  },
+  cgpa: {
+    type: Number,
+    default: 0
+  },
+  totalUnits: {
+    type: Number,
+    default: 0
+  },
+  totalPoints: {
+    type: Number,
+    default: 0
+  },
+
+  // Previous semester cumulative data
+  previousCumulativeTCP: { type: Number, default: 0 },
+  previousCumulativeTNU: { type: Number, default: 0 },
+  previousCumulativeGPA: { type: Number, default: 0 , required: true},
+
+  // Current semester data (TCP = Total Credit Points, TNU = Total Number of Units)
+  currentTCP: { type: Number, default: 0 },
+  currentTNU: { type: Number, default: 0 },
+
+  // Cumulative data (including current)
+  cumulativeTCP: { type: Number, default: 0 },
+  cumulativeTNU: { type: Number, default: 0 },
+
+  // Academic standing
+  carryoverCount: {
+    type: Number,
+    default: 0
+  },
+  remark: {
+    type: String,
+    enum: ["excellent", "good", "probation", "withdrawn", "terminated", "NO_REGISTRATION"],
+    default: "good"
+  },
+  status: {
+    type: String,
+    enum: ["draft", "processed", "approved", "published", "archived"],
+    default: "processed"
+  },
+
+  // Audit trail
+  computedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  },
+  computationSummaryId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "ComputationSummary"
+  },
+
+  // For MMS2 tracking
+  academicHistory: [{
+    session: String,
+    semester: String,
+    level: String,
+    tcp: Number,
+    tnu: Number,
+    gpa: Number,
+    cgpa: Number
+  }],
+
+  isPreview: {
+    type: Boolean,
+    default: false
+  },
+
+  // Metadata
+  metadata: {
+    type: mongoose.Schema.Types.Mixed,
+    default: {}
+  }
+}, { timestamps: true });
+
+// Indexes for efficient querying
+studentSemesterResultSchema.index({ studentId: 1, semesterId: 1, level: 1 }, { unique: true });
+studentSemesterResultSchema.index({ departmentId: 1, semesterId: 1 });
+studentSemesterResultSchema.index({ session: 1, level: 1 });
+studentSemesterResultSchema.index({ computationSummaryId: 1 });
+
+const studentSemesterResultModel = mongoose.model("StudentSemesterResult", studentSemesterResultSchema);
+export default studentSemesterResultModel;
+
+
+// ============================================
+// FILE: domain/user/student/studentSuspension/studentSuspension.model.js
+// ============================================
+
+// models/studentSuspension/studentSuspension.model.js
+import mongoose from "mongoose";
+import { SUSPENSION_STATUS, SUSPENSION_TYPES } from "./studentSuspension.constants.js";
+
+const studentSuspensionSchema = new mongoose.Schema({
+    student_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Student',
+        required: true,
+        index: true
+    },
+    type: {
+        type: String,
+        enum: Object.values(SUSPENSION_TYPES),
+        required: true
+    },
+    reason: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    start_date: {
+        type: Date,
+        required: true
+    },
+    end_date: {
+        type: Date,
+        required: true
+    },
+    status: {
+        type: String,
+        enum: Object.values(SUSPENSION_STATUS),
+        default: SUSPENSION_STATUS.ACTIVE
+    },
+    is_active: {
+        type: Boolean,
+        default: true
+    },
+    created_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    lifted_at: {
+        type: Date
+    },
+    lifted_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    metadata: {
+        type: Map,
+        of: mongoose.Schema.Types.Mixed,
+        default: {}
+    }
+}, {
+    timestamps: true
+});
+
+// Compound index for active suspensions
+studentSuspensionSchema.index({ student_id: 1, is_active: 1 });
+
+// Virtual for checking if expired
+studentSuspensionSchema.virtual('is_expired').get(function() {
+    return this.is_active && this.end_date && new Date(this.end_date) < new Date();
+});
+
+// Pre-save middleware to auto-update status
+studentSuspensionSchema.pre('save', function(next) {
+    if (this.is_expired && this.status === SUSPENSION_STATUS.ACTIVE) {
+        this.is_active = false;
+        this.status = SUSPENSION_STATUS.EXPIRED;
+    }
+    next();
+});
+
+const StudentSuspension = mongoose.model('StudentSuspension', studentSuspensionSchema);
+
+export default StudentSuspension;
+
+
+// ============================================
+// FILE: domain/user/user.model.js
+// ============================================
+
+/**
+ * USER MODEL — SYSTEM USER NOTE
+ *
+ * This schema intentionally does NOT include:
+ *  - isSystemUser
+ *  - "system" role enum
+ *
+ * Reason:
+ *  - The system user is identified exclusively by a reserved ObjectId
+ *  - Adding flags or roles could allow impersonation via API calls or developer errors
+ *
+ * How system actions work:
+ *  - Services may assign createdBy = SYSTEM_USER_ID
+ *  - The ID is defined in config/system.ts
+ *
+ * DO NOT:
+ *  - Add system to role enums
+ *  - Add isSystemUser boolean
+ *  - Infer system user from role or permissions
+ */
+
+import mongoose from "mongoose";
+import AppError from "#shared/errors/AppError.js";
+import { SYSTEM_USER_FULL_NAME, SYSTEM_USER_ID } from "#config/system.js";
+import { resolveUserName } from "#utils/resolveUserName.js";
+
+const { Schema } = mongoose;
+
+const userSchema = new Schema(
+  {
+    first_name: {
+      type: String,
+      required: true,
+      trim: true
+    },
+
+    middle_name: {
+      type: String,
+      trim: true
+    },
+
+    last_name: {
+      type: String,
+      required: true,
+      trim: true
+    },
+
+    title: {
+      type: String,
+      enum: ["mr", "mrs", "miss", "ms", "dr", "prof", "engr", 'barr', 'pastor', 'chief', 'alhaji', 'alhaja', 'chief', 'rev', null],
+      default: null
+    },
+    bio: {
+      type: String,
+      default: null
+    },
+    email: {
+      type: String,
+      unique: true,
+      lowercase: true,
+      trim: true
+    },
+
+    phone: {
+      type: String,
+
+    },
+    avatar: {
+      type: String,
+    },
+    // Security section - ALL FIELDS BELOW HAVE select: false BY DEFAULT
+    password: {
+      type: String,
+      required: true,
+      select: false // 🔒 Hidden by default
+    },
+
+    lastPasswordChange: {
+      type: Date,
+      default: Date.now,
+      select: false // 🔒 Hidden by default
+    },
+
+    passwordExpiryDays: {
+      type: Number,
+      default: 90,
+      select: false // 🔒 Hidden by default
+    },
+
+    passwordHistory: [
+      {
+        password: {
+          type: String,
+          select: false // 🔒 Hidden by default
+        },
+        changedAt: {
+          type: Date,
+          default: Date.now,
+          select: false // 🔒 Hidden by default
+        }
+      }
+    ],
+    
+    recentDevices: {
+      type: [
+        {
+          ip: String,
+          deviceType: String,
+          browser: String,
+          os: String,
+          loginTime: Date,
+          sessionToken: String,
+        }
+      ],
+      default: [],
+      select: false // 🔒 Hidden by default
+    },
+
+    role: {
+      type: String,
+      enum: [ "lecturer", "student", "staff"],
+      required: true
+    },
+    extra_roles: [
+      {
+        type: String,
+        enum: ["admin", "dean", "hod", "registrar", "bursar" , "vc", 'dvc', "applicant", "customer_service", "moderator", "support_agent"]
+      }
+    ],
+
+    department: {
+      type: Schema.Types.ObjectId,
+      ref: "Department",
+      default: null
+    },
+
+    staffId: {
+      type: String,
+      unique: true,
+      sparse: true
+    },
+
+    matricNo: {
+      type: String,
+      unique: true,
+      sparse: true
+    },
+
+
+    chat_availability: {
+      type: Boolean,
+      default: false
+    },
+
+    last_seen: {
+      type: Date,
+      default: Date.now
+    },
+    
+    created_by: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      default: () => new mongoose.Types.ObjectId(SYSTEM_USER_ID),
+      immutable: true,
+      select: false // 🔒 Hidden by default (internal tracking)
+    },
+    
+    created_by_source: {
+      type: String,
+      enum: ["user", "system", "cron", "migration", "webhook"],
+      default: "system",
+      select: false // 🔒 Hidden by default (internal tracking)
+    },
+
+    // Track if this is a soft-deleted user
+    is_deleted: {
+      type: Boolean,
+      default: false,
+      select: false // 🔒 Hidden by default
+    },
+
+    deleted_at: {
+      type: Date,
+      select: false // 🔒 Hidden by default
+    },
+
+    deleted_by: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      select: false // 🔒 Hidden by default
+    }
+  },
+
+  { 
+    timestamps: true,
+    toJSON: { 
+      virtuals: true,
+      transform: function(doc, ret) {
+        // Remove any fields that might have been accidentally included
+        delete ret.password;
+        delete ret.passwordHistory;
+        delete ret.recentDevices;
+        delete ret.created_by;
+        delete ret.created_by_source;
+        delete ret.__v;
+        return ret;
+      }
+    },
+    toObject: { 
+      virtuals: true,
+      transform: function(doc, ret) {
+        // Remove any fields that might have been accidentally included
+        delete ret.password;
+        delete ret.passwordHistory;
+        delete ret.recentDevices;
+        delete ret.created_by;
+        delete ret.created_by_source;
+        delete ret.__v;
+        return ret;
+      }
+    }
+  }
+);
+
+userSchema.index({ first_name: 1, last_name: 1, middle_name: 1 })
+
+// Global middleware to exclude sensitive data from ALL queries by default
+userSchema.pre(/^find/, function(next) {
+  // Get the current query
+  const query = this;
+  
+  // Exclude soft-deleted users by default (unless explicitly asked)
+  const shouldIncludeDeleted = query.getOptions().includeDeleted;
+  if (!shouldIncludeDeleted) {
+    query.where({ is_deleted: { $ne: true } });
+  }
+  
+  next();
+});
+
+// Helper method to explicitly include sensitive fields when needed
+userSchema.statics.withSensitive = function() {
+  return this.find().select('+password +passwordHistory +recentDevices +created_by +created_by_source +is_deleted +deleted_at +deleted_by');
+};
+
+// Helper method to find by ID with sensitive fields
+userSchema.statics.findByIdWithSensitive = function(id) {
+  return this.findById(id).select('+password +passwordHistory +recentDevices +created_by +created_by_source +is_deleted +deleted_at +deleted_by');
+};
+
+// Instance method to get user with sensitive data
+userSchema.methods.getWithSensitive = function() {
+  return this.model('User').findById(this._id).select('+password +passwordHistory +recentDevices +created_by +created_by_source +is_deleted +deleted_at +deleted_by');
+};
+
+// Avoid modifications to system user
+userSchema.pre(["updateOne", "findOneAndUpdate"], function (next) {
+  const id = this.getQuery()?._id;
+  if (id && String(id) === SYSTEM_USER_ID) {
+    return next(new AppError("System user cannot be modified", 500));
+  }
+  next();
+});
+
+// Also avoid Impersonation of the system user on creation
+userSchema.pre("save", function (next) {
+  // Block creating a user with system ID
+  if (this.isNew && this._id?.toString() === SYSTEM_USER_ID) {
+    return next(new AppError("Cannot create the system user via this model", 500));
+  }
+
+  // Block creating a user with reserved name
+  if (this.name && this.name.toLowerCase() === SYSTEM_USER_FULL_NAME.toLowerCase()) {
+    return next(new AppError(`Cannot create a user with reserved name "${SYSTEM_USER_FULL_NAME}"`, 500));
+  }
+
+  next();
+});
+
+userSchema.virtual("name")
+  .get(function () {
+    return resolveUserName({first_name: this.first_name, middle_name: this.middle_name, last_name: this.last_name, title: this.title})
+  })
+  .set(function (value) {
+    if (!value) return;
+
+    const parts = value.trim().split(/\s+/);
+
+    this.first_name = parts[0];
+    this.last_name = parts.length > 1 ? parts[parts.length - 1] : "";
+    this.middle_name =
+      parts.length > 2 ? parts.slice(1, -1).join(" ") : undefined;
+  });
+
+userSchema.pre(/^find/, function () {
+  const query = this.getQuery();
+
+  if (query.name) {
+    const parts = query.name.trim().split(/\s+/);
+
+    delete query.name;
+
+    query.first_name = parts[0];
+    if (parts.length > 1) {
+      query.last_name = parts[parts.length - 1];
+    }
+  }
+});
+
+
+// The following virtuals are to introduce just one thing to the user model.
+//  currently the user model has no direct connection to user profiles like the student model, staff model
+// This virtualization now makes sure there is a link directing back to the profile model
+// Before User --> Staff(Wrong) 
+// Before User <-- Staff(Correct) 
+// After User --> Staff(COrrect) 
+// After User <-- Staff(Correct) 
+
+
+userSchema.virtual("staff", {
+  ref: "Staff",
+  localField: "_id",
+  foreignField: "_id",
+  justOne: true
+});
+
+export default mongoose.model("User", userSchema);
+

@@ -2,7 +2,7 @@ import mongoose, { get } from "mongoose";
 import DepartmentSemester from "./semester.model.js";
 import { AcademicSemester } from "./semester.academicModel.js";
 import AuditLogService from "#domain/auditlog/auditlog.service.js";
-import departmentService from "#domain/department/department.service.js";
+import departmentService from "#domain/organization/department/department.service.js";
 import AppError from "#shared/errors/AppError.js";
 import { defaultLevelSettings, lateRegistrationDate, registrationDeadline } from "./semester.constants.js";
 

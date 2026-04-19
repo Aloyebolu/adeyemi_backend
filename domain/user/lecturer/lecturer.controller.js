@@ -1,12 +1,12 @@
 import buildResponse from "#utils/responseBuilder.js";
 import { fetchDataHelper } from "#utils/fetchDataHelper.js";
 import { dataMaps } from "#config/dataMap.js";
-import departmentModel from "#domain/department/department.model.js";
+import departmentModel from "#domain/organization/department/department.model.js";
 import User from "#domain/user/user.model.js";
-import facultyModel from "#domain/faculty/faculty.model.js";
+import facultyModel from "#domain/organization/faculty/faculty.model.js";
 import lecturerModel from "./lecturer.model.js";
 import LecturerService from "./lecturer.service.js";
-import departmentService from "#domain/department/department.service.js";
+import departmentService from "#domain/organization/department/department.service.js";
 import { resolveUserName } from "#utils/resolveUserName.js";
 import AppError from "#shared/errors/AppError.js";
 import { sendNotificationCore } from "#domain/notification/notification.controller.js";

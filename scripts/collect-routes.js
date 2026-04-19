@@ -29,7 +29,7 @@ function collectRoutes(dir, output = []) {
     
     if (stat.isDirectory()) {
       collectRoutes(fullPath, output);
-    } else if (item.endsWith('.routes.js') || item.endsWith('.route.js') || item === 'index.js') {
+    } else if (item.endsWith('model.js') || item.endsWith('Model.js')) {
       output.push({
         file: fullPath,
         content: fs.readFileSync(fullPath, 'utf-8')

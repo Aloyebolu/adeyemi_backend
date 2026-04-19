@@ -1,19 +1,18 @@
 import buildResponse from "#utils/responseBuilder.js";
-import departmentModel from "#domain/department/department.model.js";
 import CarryoverCourse from "#domain/user/student/carryover/carryover.model.js";
 import ComputationSummary from "#domain/computation/models/computation.model.js";
 import studentModel from "#domain/user/student/student.model.js";
 // IMPORTANT: Import Faculty model to register it
-import "#domain/faculty/faculty.model.js";
+import "#domain/organization/faculty/faculty.model.js";
 import mongoose from "mongoose";
 import SemesterService from "#domain/semester/semester.service.js";
 import { resolveUserName } from "#utils/resolveUserName.js";
 import AppError from "#shared/errors/AppError.js";
 import programmeService from "#domain/programme/programme.service.js";
-import facultyModel from "../../faculty/faculty.model.js";
+import facultyModel from "../../organization/faculty/faculty.model.js";
 import lecturerModel from "#domain/user/lecturer/lecturer.model.js";
 import userModel from "#domain/user/user.model.js";
-import departmentService from "#domain/department/department.service.js";
+import departmentService from "#domain/organization/department/department.service.js";
 
 /**
  * Get department leadership details (Dean and HOD)

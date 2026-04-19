@@ -1,7 +1,7 @@
 // computation/services/computation.service.js
 import { countDocuments, find, findById } from '../models/computation.model';
-import { getDepartmentByHod } from '../../department/department.service';
-import { find as _find } from '../../department/department.model';
+import { getDepartmentByHod } from '../../organization/department/department.service';
+import { find as _find } from '../../organization/department/department.model';
 import { find as __find } from '../../semester/semesterCourse.model';
 
 class ComputationService {

@@ -15,9 +15,9 @@ import { fileURLToPath } from "url";
 import StudentResultHtmlRenderer from "./services/StudentResultHtmlRenderer.js";
 import ResultTranscriptHtmlRenderer from "./services/ResultTranscriptHtmlRenderer.js";
 import { getProgrammeById } from "#domain/programme/programme.controller.js";
-import { getDepartmentById } from "#domain/department/department.controller.js";
+import { getDepartmentById } from "#domain/organization/department/department.controller.js";
 import { getDepartmentLeadershipDetails } from "#domain/computation/services/helpers.js";
-import departmentService from "#domain/department/department.service.js";
+import departmentService from "#domain/organization/department/department.service.js";
 import programmeService from "#domain/programme/programme.service.js";
 import { resolveUserName } from "#utils/resolveUserName.js";
 

@@ -3,12 +3,12 @@ import buildResponse from "#utils/responseBuilder.js";
 import { fetchDataHelper } from "#utils/fetchDataHelper.js";
 import { dataMaps } from "#config/dataMap.js";
 import ProgrammeService from "./programme.service.js";
-import DepartmentService from "#domain/department/department.service.js";
-import FacultyService from "#domain/faculty/faculty.service.js";
+import DepartmentService from "#domain/organization/department/department.service.js";
+import FacultyService from "#domain/organization/faculty/faculty.service.js";
 import AppError from "#shared/errors/AppError.js";
 import programmeModel from "./programme.model.js";
-import { getDepartmentById } from "#domain/department/department.controller.js";
-import departmentService from "#domain/department/department.service.js";
+import { getDepartmentById } from "#domain/organization/department/department.controller.js";
+import departmentService from "#domain/organization/department/department.service.js";
 
 // Common configuration for fetchDataHelper
 const PROGRAMME_FETCH_CONFIG = {

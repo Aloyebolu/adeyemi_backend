@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 import Lecturer from "./lecturer.model.js";
 import User from "#domain/user/user.model.js";
-import Department from "#domain/department/department.model.js";
-import departmentService from "#domain/department/department.service.js";
-import facultyService from "#domain/faculty/faculty.service.js";
+import Department from "#domain/organization/department/department.model.js";
+import departmentService from "#domain/organization/department/department.service.js";
+import facultyService from "#domain/organization/faculty/faculty.service.js";
 import { hashData } from "#utils/hashData.js";
 import { deleteUser } from "#domain/user/user.controller.js";
 import AppError from "#shared/errors/AppError.js";
