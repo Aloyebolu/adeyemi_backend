@@ -1,7 +1,6 @@
 import express from "express";
 import {
   createDepartment,
-  getDepartmentsByFaculty,
   getDepartmentById,
   updateDepartment,
   deleteDepartment,

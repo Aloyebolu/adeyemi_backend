@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import Course from "./course.model.js";
 import buildResponse from "#utils/responseBuilder.js";
 import { dataMaps } from "#config/dataMap.js";
-import departmentModel from "#domain/organization/department/department.model.js";
+import organizationUnitsModel from "#domain/organization/models/organizationalUnit.model.js";
 import fetchDataHelper, { applyTransformations } from "#utils/fetchDataHelper.js";
 import CourseService from "./course.service.js";
 import courseRegistrationModel from "./courseRegistration.model.js";
@@ -19,7 +19,7 @@ const COURSE_FETCH_CONFIG = {
   // forceFind: true,
   configMap: dataMaps.Course,
   autoPopulate: true,
-  models: { departmentModel },
+  models: {  organizationUnitsModel },
 };
 
 /**
@@ -825,7 +825,7 @@ export const getRegisterableCourses = async (req, res, next) => {
     const fetchConfig = {
       configMap: dataMaps.Course,
       autoPopulate: true,
-      models: { departmentModel },
+      models: { organizationUnitsModel },
       populate: ["department", "borrowedId"],
       // data: courses,
       // custom_fields: {
@@ -949,7 +949,7 @@ export const getStudentsForCourse = async (req, res, next) => {
       // Admin can see all
       allowedDepartment = null;
     } else if (user.role === "hod") {
-      const dept = await departmentModel.findOne({ hod: user._id }).lean();
+      const dept = await organizationUnitsModel.findOne({ hod: user._id }).lean();
       if (!dept) return res.status(404).json({ message: "HOD department not found" });
       allowedDepartment = dept._id;
     } else {
@@ -1101,7 +1101,7 @@ export const getStudentRegistrations = async (req, res, next) => {
         return buildResponse.error(res, "studentId is required for HOD");
       }
 
-      const hodDept = await departmentModel.findOne({ hod: req.user._id }).lean();
+      const hodDept = await organizationUnitsModel.findOne({ hod: req.user._id }).lean();
       if (!hodDept) return buildResponse.error(res, "HOD department not found");
 
       const targetStudent = await studentModel.findById(studentId).lean();
@@ -1121,7 +1121,7 @@ export const getStudentRegistrations = async (req, res, next) => {
     // 1️⃣ Determine active semester ALWAYS
     const departmentId =
       req.user.role === "hod"
-        ? (await departmentModel.findOne({ hod: req.user._id }).lean())?._id
+        ? (await organizationUnitsModel.findOne({ hod: req.user._id }).lean())?._id
         : student.departmentId;
 
     if (!departmentId) {

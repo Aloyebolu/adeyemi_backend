@@ -1,7 +1,6 @@
 // computation/services/StudentService.js
 import mongoose from "mongoose";
 import Student from "./student.model.js";
-import departmentModel from "#domain/organization/department/department.model.js";
 import AppError from "#shared/errors/AppError.js";
 
 class StudentService {
@@ -191,21 +190,6 @@ class StudentService {
     }
   }
 
-  /**
-   * Get department details
-   * @param {string} departmentId - Department ID
-   * @returns {Promise<Object>} Department information
-   */
-  async getDepartmentDetails(departmentId) {
-    try {
-      return await departmentModel.findById(departmentId)
-        .select('name code hod status')
-        .lean();
-    } catch (error) {
-      console.error(`Error fetching department ${departmentId}:`, error);
-      throw error;
-    }
-  }
 
   /**
    * Get student by Id

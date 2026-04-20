@@ -12,8 +12,8 @@ import semesterRoutes from "#domain/semester/index.js";
 import settingsRoutes from "#domain/system/settings/index.js";
 import courseRoutes from "#domain/course/index.js";
 import programmeRoutes from "#domain/programme/programme.routes.js"
-import departmentRoutes from "#domain/department/index.js";
-import facultyRoutes from "#domain/faculty/faculty.routes.js";
+import departmentRoutes from "#domain/organization/department/index.js";
+import facultyRoutes from "#domain/organization/faculty/faculty.routes.js";
 import studentRoutes from "#domain/user/student/student.routes.js";
 import resultRoutes from "#domain/result/index.js";
 import lecturerRoutes from "#domain/user/lecturer/index.js";
@@ -35,14 +35,13 @@ import { rankingRoutes } from "#domain/ranking/index.js";
 import createScriptsRouter from "#domain/system/scripts/scripts.routes.js";
 import userModel from "#domain/user/user.model.js";
 import { addDepartmentJob } from "../workers/department.queue.js";
-import departmentModel from "#domain/organization/department/department.model.js";
 import feedbackRoutes from "#domain/feedback/feedback.routes.js";
 import databaseRoutes from "#domain/system/database/index.js";
 import studentSuspension from "#domain/user/student/studentSuspension/index.js";
 import ai from "#domain/ai/ai.routes.js";
 import errorLog from "#domain/system/errors/errorLog.routes.js";
 import whatsAppRoutes from "#domain/notification/routes/whatsapp.routes.js"
-import adminUnitRoutes from "#domain/admin/adminUnits/routes/adminUnit.routes.js";
+// import adminUnitRoutes from "#domain/admin/adminUnits/routes/adminUnit.routes.js";
 // import chatRoutes from "#domain/chat/chat.routes.js";
 // app.js or server.js
 
@@ -98,7 +97,7 @@ router.use("/database", databaseRoutes)
 router.use("/ai", ai)
 router.use("/errors", errorLog)
 router.use("/whatsapp", whatsAppRoutes)
-router.use("/admin-units", adminUnitRoutes)
+// router.use("/admin-units", adminUnitRoutes)
 
 // Models collection
 const models = {

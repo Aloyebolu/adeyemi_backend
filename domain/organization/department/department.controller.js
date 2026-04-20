@@ -413,46 +413,6 @@ export const createDepartment = async (req, res, next) => {
   }
 };
 
-/* ===== Get Departments by Faculty ===== */
-export const getDepartmentsByFaculty = async (req, res, next) => {
-  try {
-    const { facultyId } = req.params;
-    const { page = 1, limit = 50 } = req.query;
-    const skip = (Number(page) - 1) * Number(limit);
-
-    // Dean authorization
-    const isAuthorized = await handleDeanAuthorization(req, null, facultyId);
-    if (!isAuthorized) {
-      return buildResponse(res, 403, "Not authorized to access this faculty");
-    }
-
-    const [departments, totalCount] = await Promise.all([
-      departmentModel.find({ faculty: facultyId })
-        .populate("hod", "staffId userId isHOD")
-        .skip(skip)
-        .limit(Number(limit)),
-      departmentModel.countDocuments({ faculty: facultyId })
-    ]);
-
-    if (!departments || departments.length === 0) {
-      return buildResponse(res, 404, "No departments found for this faculty");
-    }
-
-    const totalPages = Math.ceil(totalCount / Number(limit));
-
-    return buildResponse(res, 200, "Departments fetched successfully", {
-      pagination: {
-        current_page: Number(page),
-        limit: Number(limit),
-        total_pages: totalPages,
-        total_items: totalCount,
-      },
-      data: departments,
-    });
-  } catch (error) {
-    next(error)
-  }
-};
 
 /* ===== Get Department by ID ===== */
 export const getDepartmentById = async (req, res, next) => {

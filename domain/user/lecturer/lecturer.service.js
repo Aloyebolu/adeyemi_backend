@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import Lecturer from "./lecturer.model.js";
 import User from "#domain/user/user.model.js";
-import Department from "#domain/organization/department/department.model.js";
 import departmentService from "#domain/organization/department/department.service.js";
 import facultyService from "#domain/organization/faculty/faculty.service.js";
 import { hashData } from "#utils/hashData.js";
@@ -192,41 +191,6 @@ class LecturerService {
     throw new AppError("Lecturer deletion is currently disabled. Please contact support.", 403);
   }
 
-  /**
-   * Assign or remove HOD status
-   */
-  async updateHODStatus(departmentId, lecturerId, assign = true) {
-    const [lecturer, department] = await Promise.all([
-      Lecturer.findById(lecturerId),
-      Department.findById(departmentId),
-    ]);
-
-    if (!lecturer) throw new AppError("Lecturer not found", 404);
-    if (!department) throw new AppError("Department not found", 404);
-
-    if (assign) {
-      if (lecturer.departmentId.toString() !== departmentId) {
-        throw new AppError("Lecturer must belong to this department before being assigned as HOD");
-      }
-
-      // Remove previous HOD if exists
-      if (department.hod && department.hod.toString() !== lecturerId) {
-        await Lecturer.findByIdAndUpdate(department.hod, { isHOD: false });
-      }
-
-      department.hod = lecturer._id;
-      lecturer.isHOD = true;
-    } else {
-      if (department.hod?.toString() !== lecturerId) {
-        throw new AppError("This lecturer is not the HOD of this department");
-      }
-      department.hod = null;
-      lecturer.isHOD = false;
-    }
-
-    await Promise.all([department.save(), lecturer.save()]);
-    return lecturer;
-  }
 
   /**
    * Get all lecturers with filters for user role

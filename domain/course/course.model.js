@@ -1,3 +1,4 @@
+import { DB } from "#config/db-contract.js";
 import mongoose from "mongoose";
 
 const courseSchema = new mongoose.Schema({
@@ -73,12 +74,12 @@ const courseSchema = new mongoose.Schema({
 
     allowed_departments: [{
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Department"
+      ref: DB.OrganizationalUnit.MODEL
     }],
 
     excluded_departments: [{
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Department"
+      ref: DB.OrganizationalUnit.MODEL
     }]
   },
 
@@ -87,7 +88,7 @@ const courseSchema = new mongoose.Schema({
   // ROOT-LEVEL SCOPES
   // ---------------------
   faculty: { type: mongoose.Schema.Types.ObjectId, ref: "Faculty", default: null },
-  department: { type: mongoose.Schema.Types.ObjectId, ref: "Department", required: true },
+  department: { type: mongoose.Schema.Types.ObjectId, ref: DB.OrganizationalUnit.MODEL, required: true },
   programme: { type: mongoose.Schema.Types.ObjectId, ref: "Programme", default: null },
 
   scope: {

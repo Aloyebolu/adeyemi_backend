@@ -1,8 +1,7 @@
 import Programme from './programme.model.js';
-import Department from '#domain/organization/department/department.model.js';
 import { logger } from '#utils/logger.js';
 import AppError from '#shared/errors/AppError.js';
-import mongoose from 'mongoose';
+import { DepartmentService } from '#domain/organization/department/department.service.js';
 
 class ProgrammeService {
     /**
@@ -170,7 +169,7 @@ class ProgrammeService {
             await this.checkDuplicateProgramme(programmeData.name, programmeData.code);
 
             // Validate department exists
-            const department = await Department.findById(programmeData.department);
+            const department = await DepartmentService.getDepartmentById(programmeData.department);
             if (!department) {
                 throw new AppError("Department not found");
             }
@@ -218,7 +217,7 @@ class ProgrammeService {
 
             // Handle department change
             if (department) {
-                const newDepartment = await Department.findById(department);
+                const newDepartment = await DepartmentService.getDepartmentById(department);
                 if (!newDepartment) {
                     throw new AppError("New department not found");
                 }

@@ -1,4 +1,5 @@
 // domain/organization/organizationalUnit.model.js
+import { DB } from "#config/db-contract.js";
 import mongoose from "mongoose";
 
 /**
@@ -43,7 +44,7 @@ const organizationalUnitSchema = new mongoose.Schema(
     // ==================== HIERARCHY ====================
     parent_unit: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "OrganizationalUnit",
+      ref: DB.OrganizationalUnit.MODEL,
       default: null,
       index: true
     },
@@ -166,7 +167,7 @@ organizationalUnitSchema.virtual("effective_head_title").get(function() {
 organizationalUnitSchema.virtual("category").get(function() { return this.derived_category; });
 organizationalUnitSchema.virtual("head_title").get(function() { return this.effective_head_title; });
 
-const OrganizationalUnit = mongoose.model("OrganizationalUnit", organizationalUnitSchema);
+const OrganizationalUnit = mongoose.model(DB.OrganizationalUnit.MODEL, organizationalUnitSchema);
 
 // 🔥 PREVENT DIRECT MODEL USAGE IN CONTROLLERS
 // Export a proxy that warns on direct write attempts

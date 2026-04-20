@@ -156,21 +156,6 @@ class StudentService {
     }
   }
 
-  /**
-   * Get department details
-   * @param {string} departmentId - Department ID
-   * @returns {Promise<Object>} Department information
-   */
-  async getDepartmentDetails(departmentId) {
-    try {
-      return await departmentService.getDepartmentById(departmentId)
-        .select('name code hod status')
-        .lean();
-    } catch (error) {
-      console.error(`Error fetching department ${departmentId}:`, error);
-      throw error;
-    }
-  }
 }
 
 export default new StudentService();

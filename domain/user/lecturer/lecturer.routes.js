@@ -5,8 +5,6 @@ import {
   getLecturerById,
   updateLecturer,
   deleteLecturer,
-  assignHOD,
-  removeHOD,
   getAllDeans,
   getAllHODs,
   updateLecturerRank,

@@ -1,4 +1,4 @@
-import { AdminUnit } from "../models/adminUnit.model.js";
+// import { AdminUnit } from "../models/adminUnit.model.js";
 import { AdminUnitMember } from "../models/adminUnitMember.model.js";
 import buildResponse from "#utils/responseBuilder.js";
 import { fetchDataHelper } from "#utils/fetchDataHelper.js";
@@ -7,6 +7,7 @@ import { dataMaps } from "#config/dataMap.js";
 import AdminUnitService from "../services/adminUnit.service.js";
 import { resolveUserName } from "#utils/resolveUserName.js";
 import AppError from "#shared/errors/AppError.js";
+import AdminUnit from "#domain/organization/models/organizationalUnit.model.js";
 
 // Common configuration for fetchDataHelper
 const ADMIN_UNIT_FETCH_CONFIG = {

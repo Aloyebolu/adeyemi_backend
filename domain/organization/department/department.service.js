@@ -8,6 +8,7 @@ import studentModel from "#domain/user/student/student.model.js";
 import { logger } from "#utils/logger.js";
 import AppError from "#shared/errors/AppError.js";
 import OrganizationalUnit from "#domain/organization/models/organizationalUnit.model.js";
+import { DB } from "#config/db-contract.js";
 
 /**
  * 🏛️ ORGANIZATIONAL UNIT SERVICE (EXTENDED)
@@ -758,7 +759,7 @@ class OrganizationalUnitService {
 
     return {
       action,
-      resource: "OrganizationalUnit",
+      resource: DB.OrganizationalUnit.MODEL,
       severity,
       entityId: metadata.unitId || metadata.departmentId || null,
       status,

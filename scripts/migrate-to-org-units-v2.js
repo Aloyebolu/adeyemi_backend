@@ -1,11 +1,14 @@
 // scripts/migrate-to-org-units-v2.js
-import OrganizationalUnit from "#domain/organization/organizationalUnit.model.js";
-import OrganizationalUnitService from "#domain/organization/organizationalUnit.service.js";
+import OrganizationalUnit from "#domain/organization/models/organizationalUnit.model.js";
+// import OrganizationalUnitService from "#domain/organization/organizationalUnit.service.js";
 import Faculty from "#domain/organization/faculty/faculty.model.js";
 import Department from "#domain/organization/department/department.model.js";
-import { AdminUnit } from "#domain/admin/adminUnits/models/adminUnit.model.js";
 import { SYSTEM_USER_ID } from "#config/system.js";
-
+import OrganizationalUnitService from "#domain/organization/services/OrganizationalUnitService.js";
+import courseModel from "#domain/course/course.model.js";
+import connectToDB from "#config/db.js";
+import organizationalUnitModel from "#domain/organization/models/organizationalUnit.model.js";
+await connectToDB()
 async function migrateToOrgUnitsV2() {
   console.log("🚀 Starting migration to OrganizationalUnit v2...\n");
   
@@ -40,6 +43,7 @@ async function migrateToOrgUnitsV2() {
       }
       
       const unit = await OrganizationalUnitService.createUnit({
+        _id: faculty._id,
         name: faculty.name,
         code: faculty.code,
         type: "faculty",
@@ -90,6 +94,7 @@ async function migrateToOrgUnitsV2() {
       }
       
       const unit = await unitService.createUnit({
+        _id: dept._id,
         name: dept.name,
         code: dept.code,
         type: "department",
@@ -175,4 +180,17 @@ async function migrateToOrgUnitsV2() {
   return stats;
 }
 
+// migrateToOrgUnitsV2()
+const tree = await OrganizationalUnitService.getFullTree()
+console.log(JSON.stringify(tree))
+// const courses = await courseModel.find({}).limit(3).populate('department') Doesnt work
+const courses = await courseModel.find({}).limit(3)
+//   courses.map(async(v)=>{
+//   const department = await OrganizationalUnitService.getUnitById(v.department)
+//   console.log(department)
+// })
+const org = await organizationalUnitModel.find({})
+console.log(org)
+
+// console.log(courses)
 export default migrateToOrgUnitsV2;

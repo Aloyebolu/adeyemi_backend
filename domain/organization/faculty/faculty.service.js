@@ -3,7 +3,7 @@
 // MERGE THIS with the existing OrganizationalUnitService
 
 import mongoose from "mongoose";
-import OrganizationalUnit from "./organizationalUnit.model.js";
+import OrganizationalUnit from "../models/organizationalUnit.model.js";
 import User from "#domain/user/user.model.js";
 import { logger } from "#utils/logger.js";
 import AppError from "#shared/errors/AppError.js";
