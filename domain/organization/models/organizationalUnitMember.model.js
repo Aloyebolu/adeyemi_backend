@@ -1,10 +1,11 @@
+import { DB } from "#config/db-contract.js";
 import mongoose from "mongoose";
 
-const adminUnitMemberSchema = new mongoose.Schema(
+const OrganizationalUnitMemberSchema = new mongoose.Schema(
   {
     unit: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "AdminUnit",
+      ref: DB.OrganizationalUnit.MODEL,
       required: true,
       index: true
     },
@@ -55,23 +56,23 @@ const adminUnitMemberSchema = new mongoose.Schema(
 );
 
 // A user can only be an active member of a specific unit ONCE
-adminUnitMemberSchema.index(
+OrganizationalUnitMemberSchema.index(
   { unit: 1, user: 1 }, 
   { unique: true, partialFilterExpression: { is_active: true } }
 );
 
 // Compound indexes
-adminUnitMemberSchema.index({ unit: 1, role: 1 });
-adminUnitMemberSchema.index({ unit: 1, is_active: 1 });
-adminUnitMemberSchema.index({ user: 1, is_active: 1 });
+OrganizationalUnitMemberSchema.index({ unit: 1, role: 1 });
+OrganizationalUnitMemberSchema.index({ unit: 1, is_active: 1 });
+OrganizationalUnitMemberSchema.index({ user: 1, is_active: 1 });
 
 // Virtual: Check if membership is current
-adminUnitMemberSchema.virtual("is_current").get(function() {
+OrganizationalUnitMemberSchema.virtual("is_current").get(function() {
   return this.is_active && (!this.end_date || this.end_date > new Date());
 });
 
 // Pre-save hook: Ensure only ONE active HEAD per unit
-adminUnitMemberSchema.pre("save", async function(next) {
+OrganizationalUnitMemberSchema.pre("save", async function(next) {
   if (this.role === "HEAD" && this.is_active) {
     const existingHead = await this.constructor.findOne({
       unit: this.unit,
@@ -88,25 +89,25 @@ adminUnitMemberSchema.pre("save", async function(next) {
 });
 
 // Pre-save hook: Sync unit.head reference when HEAD is added/removed
-adminUnitMemberSchema.post("save", async function(doc) {
-  const AdminUnit = mongoose.model("AdminUnit");
+OrganizationalUnitMemberSchema.post("save", async function(doc) {
+  const OrganizationalUnit = mongoose.model(DB.OrganizationalUnit.MODEL);
   
   if (doc.role === "HEAD" && doc.is_active) {
     // Set this user as the unit's head
-    await AdminUnit.findByIdAndUpdate(doc.unit, { head: doc.user });
+    await OrganizationalUnit.findByIdAndUpdate(doc.unit, { head: doc.user });
   }
 });
 
-adminUnitMemberSchema.post("findOneAndUpdate", async function(doc) {
+OrganizationalUnitMemberSchema.post("findOneAndUpdate", async function(doc) {
   if (!doc) return;
   
-  const AdminUnit = mongoose.model("AdminUnit");
+  const OrganizationalUnit = mongoose.model(DB.OrganizationalUnit.MODEL);
   
   if (doc.role === "HEAD" && doc.is_active) {
-    await AdminUnit.findByIdAndUpdate(doc.unit, { head: doc.user });
+    await OrganizationalUnit.findByIdAndUpdate(doc.unit, { head: doc.user });
   } else if (doc.role !== "HEAD" || !doc.is_active) {
     // If this member is no longer HEAD, check if unit.head still points to them
-    const unit = await AdminUnit.findById(doc.unit);
+    const unit = await OrganizationalUnit.findById(doc.unit);
     if (unit && unit.head.toString() === doc.user.toString()) {
       // Find another HEAD or set to null
       const otherHead = await this.constructor.findOne({
@@ -116,11 +117,11 @@ adminUnitMemberSchema.post("findOneAndUpdate", async function(doc) {
         _id: { $ne: doc._id }
       });
       
-      await AdminUnit.findByIdAndUpdate(doc.unit, { 
+      await OrganizationalUnit.findByIdAndUpdate(doc.unit, { 
         head: otherHead ? otherHead.user : null 
       });
     }
   }
 });
-
-export const AdminUnitMember = mongoose.model("AdminUnitMember", adminUnitMemberSchema);
+ const OrganizationalUnitMember = mongoose.model(DB.OrganizationalUnitMember.MODEL, OrganizationalUnitMemberSchema);
+ export default OrganizationalUnitMember

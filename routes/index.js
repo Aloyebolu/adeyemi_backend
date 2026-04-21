@@ -41,7 +41,7 @@ import studentSuspension from "#domain/user/student/studentSuspension/index.js";
 import ai from "#domain/ai/ai.routes.js";
 import errorLog from "#domain/system/errors/errorLog.routes.js";
 import whatsAppRoutes from "#domain/notification/routes/whatsapp.routes.js"
-// import adminUnitRoutes from "#domain/admin/adminUnits/routes/adminUnit.routes.js";
+import OrganizationalUnitRoutes from "#domain/organization/routes/organization.routes.js";
 // import chatRoutes from "#domain/chat/chat.routes.js";
 // app.js or server.js
 
@@ -97,7 +97,8 @@ router.use("/database", databaseRoutes)
 router.use("/ai", ai)
 router.use("/errors", errorLog)
 router.use("/whatsapp", whatsAppRoutes)
-// router.use("/admin-units", adminUnitRoutes)
+router.use("/admin-units", OrganizationalUnitRoutes)
+router.use("/organization", OrganizationalUnitRoutes)
 
 // Models collection
 const models = {

@@ -1,5 +1,5 @@
 import { AdminUnit } from "../models/adminUnit.model.js";
-import { AdminUnitMember } from "../models/adminUnitMember.model.js";
+import { AdminUnitMember } from "../../../organization/models/organizationalUnitMember.model.js";
 import mongoose from "mongoose";
 
 class AdminUnitService {

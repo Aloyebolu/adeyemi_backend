@@ -4,19 +4,30 @@ import readline from "readline";
 import Result from "#domain/result/result.model.js";
 import Student from "#domain/user/student/student.model.js";
 import Course from "#domain/course/course.model.js";
+import CourseRegistration from "#domain/course/courseRegistration.model.js";
 import SemesterService from "#domain/semester/semester.service.js";
 import mongoose from "mongoose";
-import { TEST_DB } from "#config/db.js";
+import connectToDB, { TEST_DB } from "#config/db.js";
+import { SYSTEM_USER_ID } from "#config/system.js";
+import AppError from "#shared/errors/AppError.js";
+import departmentModel from "#domain/organization/department/department.model.js";
 
+connectToDB()
 
-// Create readline interface for user interaction
+// Set this to true for automated mode (no questions asked)
+const autoMode = true;
+
+// Create readline interface for user interaction (only used when autoMode is false)
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
 
-// Promise-based question function
+// Promise-based question function - maintained as is
 function question(query) {
+    if (autoMode) {
+        return ''; // Return empty string in auto mode
+    }
     return new Promise((resolve) => {
         rl.question(query, resolve);
     });
@@ -26,7 +37,7 @@ function question(query) {
 async function getCourseByDepartmentAndCode(departmentId, courseCode) {
     // Step 1: Look for the course without including the departmentId
     const baseCourse = await Course.findOne({
-        courseCode: courseCode.toUpperCase(),
+        courseCode: courseCode?.toUpperCase(),
     }).populate('borrowedId');
 
     if (baseCourse) {
@@ -39,7 +50,7 @@ async function getCourseByDepartmentAndCode(departmentId, courseCode) {
     }
 
     // Step 2: Check if the base course belongs to the requested department
-    if (baseCourse.department.toString() === departmentId.toString()) {
+    if (baseCourse.department?.toString() === departmentId?.toString()) {
         // If it's a borrowed course, return the borrowed course content
         if (baseCourse.borrowedId) {
             return baseCourse.borrowedId;
@@ -143,29 +154,101 @@ async function validateCourses(departmentId, courseCodes) {
             console.log(`  - Column ${c.column}: ${c.code}`);
         });
 
-        const answer = await question("\nDo you want to continue without these courses? (yes/no): ");
-        if (answer.toLowerCase() !== 'yes') {
-            throw new Error("Import cancelled by user due to invalid courses");
+        if (!autoMode) {
+            const answer = await question("\nDo you want to continue without these courses? (yes/no): ");
+            if (answer?.toLowerCase() !== 'yes') {
+                throw new Error("Import cancelled by user due to invalid courses");
+            }
+        } else {
+            console.log("⚠️ Auto mode: Continuing despite invalid courses");
         }
     }
 
     return courseMap;
 }
 
-export async function importResultsFromExcel(filePath, semesterId = null, departmentId = null) {
-    // Connect to MongoDB
-    const MONGO_URI = TEST_DB;
+// Function to automatically register students for courses
+async function autoRegisterStudentForCourses(studentId, departmentId, semesterId, session, level, courseIds) {
+    try {
+        // Check if registration already exists
+        const existingRegistration = await CourseRegistration.findOne({
+            student: studentId,
+            semester: semesterId,
+            session: session
+        });
 
-    await mongoose.connect(MONGO_URI);
-    console.log("✓ Connected to MongoDB");
+        if (existingRegistration) {
+            console.log(`  ℹ️ Student already registered for this semester/session`);
+            return existingRegistration;
+        }
+
+        // Calculate total units
+        const courses = await Course.find({ _id: { $in: courseIds } });
+        const totalUnits = courses.reduce((sum, course) => sum + (course.units || 0), 0);
+
+        // Create new registration
+        const registration = new CourseRegistration({
+            student: studentId,
+            courses: courseIds,
+            semester: semesterId,
+            session: session,
+            level: level,
+            totalUnits: totalUnits,
+            status: 'Approved',
+            department: departmentId,
+            registeredBy: SYSTEM_USER_ID,
+            notes: 'Auto-registered during result import'
+        });
+
+        await registration.save();
+        console.log(`  ✓ Auto-registered student for ${courseIds.length} courses`);
+        return registration;
+    } catch (error) {
+        console.log(`  ✗ Failed to auto-register student: ${error.message}`);
+        throw error;
+    }
+}
+
+// Main import function with bulk operations
+export async function importResultsFromExcel(filePath, semesterId = null, departmentId = null, session = null) {
+    // Connect to MongoDB
+    semesterId = (await SemesterService.getAcademicSemesterById(semesterId))._id
+    
     if (!fs.existsSync(filePath)) {
         throw new Error(`File not found: ${filePath}`);
     }
 
     if (!departmentId) {
-        departmentId = await question("Please enter the Department ID: ");
+        if (!autoMode) {
+            departmentId = await question("Please enter the Department ID: ");
+        } else {
+            throw new Error("Department ID is required in auto mode");
+        }
         if (!departmentId) {
             throw new Error("Department ID is required");
+        }
+    }
+
+    // Get semester and session info if not provided
+    let semesterInfo = null;
+    if (semesterId) {
+        semesterInfo = await SemesterService.getAcademicSemesterById(semesterId);
+    } else {
+        throw new AppError("Unable to resolve semester")
+    }
+
+    if (!session && semesterInfo) {
+        session = semesterInfo.session;
+    }
+
+    if (!session) {
+        if (!autoMode) {
+            session = await question("Please enter the academic session (e.g., 2023/2024): ");
+        } else {
+            throw new Error("Academic session is required in auto mode");
+        }
+        if (!session) {
+            throw new Error("Academic session is required");
         }
     }
 
@@ -194,30 +277,52 @@ export async function importResultsFromExcel(filePath, semesterId = null, depart
     });
     console.log(buf);
 
-    // Interactive column selection
-    console.log("\n" + "=".repeat(50));
-    console.log("🔧 COLUMN MAPPING SETUP");
-    console.log("=".repeat(50));
+    // Interactive or automatic column selection
+    let matricCol, nameCol, courseCols;
+    
+    if (autoMode) {
+        // Auto mode: Matric from first column, Name from second column, all others as courses
+        console.log("\n🤖 Auto mode enabled - automatically detecting columns...");
+        matricCol = 0; // First column for matric number
+        nameCol = 1;   // Second column for student name
+        
+        courseCols = {};
+        // All subsequent columns (from index 2 onwards) are treated as courses
+        for (let i = 2; i < headerRow.length; i++) {
+            const courseCode = headerRow[i] ? String(headerRow[i]).trim().toUpperCase() : `COURSE_${i}`;
+            if (courseCode && courseCode !== "UNDEFINED" && courseCode !== "") {
+                courseCols[i] = courseCode;
+                console.log(`  📚 Auto-mapped Column ${i}: ${courseCode} (as course)`);
+            } else if (courseCode === "UNDEFINED" || courseCode === "") {
+                console.log(`  ⚠️ Skipping Column ${i}: No valid course code found`);
+            }
+        }
+        
+        console.log(`\n✅ Auto-mapping complete: Matric(Col ${matricCol}), Name(Col ${nameCol}), ${Object.keys(courseCols).length} courses detected`);
+    } else {
+        console.log("\n" + "=".repeat(50));
+        console.log("🔧 COLUMN MAPPING SETUP");
+        console.log("=".repeat(50));
 
-    const matricCol = parseInt(await question("\nEnter the column number for Matric Number: ")) || 0;
-    const nameCol = parseInt(await question("Enter the column number for Student Name: ")) || 1;
+        matricCol = parseInt(await question("\nEnter the column number for Matric Number: ")) || 0;
+        nameCol = parseInt(await question("Enter the column number for Student Name: ")) || 1;
 
-    console.log("\n📚 Now identify course columns (format: columnNumber:CourseCode)");
-    console.log("Example: 2:CSC101, 3:MTH102, 4:PHY103");
-    console.log("Press Enter if no more courses to add");
+        console.log("\n📚 Now identify course columns (format: columnNumber:CourseCode)");
+        console.log("Example: 2:CSC101, 3:MTH102, 4:PHY103");
+        console.log("Press Enter if no more courses to add");
 
-    const courseInput = await question("\nEnter course columns (comma-separated): ") || '2,3,4,5,6,7,8,9,10,11';
+        const courseInput = await question("\nEnter course columns (comma-separated): ") || '';
 
-    const courseCols = {};
-    console.log("HeaderRow", headerRow)
-    if (courseInput) {
-        const entries = courseInput.split(",");
-        for (const entry of entries) {
-            const [col, code] = entry.trim().split(":");
-            if (col && code) {
-                courseCols[parseInt(col)] = code.trim().toUpperCase();
-            } else {
-                courseCols[parseInt(entry)] = headerRow[parseInt(entry)]; //Leave empty so that it defaults to the header name of that column 
+        courseCols = {};
+        if (courseInput) {
+            const entries = courseInput.split(",");
+            for (const entry of entries) {
+                const [col, code] = entry.trim().split(":");
+                if (col && code) {
+                    courseCols[parseInt(col)] = code?.trim().toUpperCase();
+                } else {
+                    courseCols[parseInt(entry)] = headerRow[parseInt(entry)];
+                }
             }
         }
     }
@@ -242,108 +347,160 @@ export async function importResultsFromExcel(filePath, semesterId = null, depart
     // Display preview and get confirmation
     await displayExcelPreview(rows, headerRow, selectedColumns);
 
-    const confirm = await question("\n✅ Does this look correct? (yes/no): ");
-    if (confirm.toLowerCase() !== 'yes') {
-        console.log("❌ Import cancelled by user");
-        rl.close();
-        return;
+    if (!autoMode) {
+        const confirm = await question("\n✅ Does this look correct? (yes/no): ");
+        if (confirm?.toLowerCase() !== 'yes') {
+            console.log("❌ Import cancelled by user");
+            rl.close();
+            return;
+        }
+    } else {
+        console.log("\n🤖 Auto mode: Proceeding with import automatically...");
     }
 
     // Validate all courses against the department
     const courseMap = await validateCourses(departmentId, courseCols);
 
     console.log("\n📊 Starting import process...");
+    console.log("🔧 Preparing bulk operations...");
 
-    let successCount = 0;
-    let errorCount = 0;
-    let skippedCount = 0;
+    // Prepare bulk operations array
+    const bulkOps = [];
+    const registrationsToCreate = new Map(); // Map to track unique student registrations
+    const studentMatricMap = new Map();
     const errors = [];
+    let processedCount = 0;
+    let skippedCount = 0;
 
-    // Process each student row
+    // First pass: collect all student data and prepare operations
     for (let r = 2; r < rows.length; r++) {
         const row = rows[r];
         if (!row || !row[matricCol]) continue;
 
         const matricNumber = String(row[matricCol]).trim();
+        studentMatricMap.set(matricNumber, { row, index: r });
+    }
+
+    // Get all students in bulk
+    const matricNumbers = Array.from(studentMatricMap.keys());
+    const students = await Student.find({ 
+        matricNumber: { $in: matricNumbers },
+        departmentId: departmentId
+    }).lean();
+
+    const studentMap = new Map(students.map(s => [s.matricNumber, s]));
+
+    console.log(`\n📝 Found ${students.length} students out of ${matricNumbers.length} in Excel`);
+
+    // Process each student
+    for (const [matricNumber, student] of studentMap) {
+        const { row } = studentMatricMap.get(matricNumber);
         const studentName = row[nameCol] || "N/A";
 
         console.log(`\n📝 Processing student: ${matricNumber} (${studentName})`);
 
-        // Find student
-        const student = await Student.findOne({ matricNumber }).lean();
-        if (!student) {
-            console.log(`  ⚠️ Student not found: ${matricNumber}`);
-            skippedCount++;
-            errors.push(`Student not found: ${matricNumber}`);
-            continue;
-        }
-
-        console.log(`  ✓ Student found: ${student.firstName} ${student.lastName}`);
-
+        // Prepare course registration if needed
+        const courseIdsForStudent = [];
+        
         // Process each course for this student
         for (const [col, courseInfo] of Object.entries(courseMap)) {
             const score = row[parseInt(col)];
 
             if (score === undefined || score === null || score === "") {
-                console.log(`  ⚠️ No score for ${courseInfo.courseCode}, skipping`);
                 continue;
             }
 
             // Validate score is a number
             const numericScore = parseFloat(score);
-            if (isNaN(numericScore)) {
-                console.log(`  ✗ Invalid score for ${courseInfo.courseCode}: ${score}`);
-                errorCount++;
+            if (isNaN(numericScore) || numericScore < 0 || numericScore > 100) {
                 errors.push(`Invalid score for ${matricNumber}, ${courseInfo.courseCode}: ${score}`);
                 continue;
             }
 
-            if (numericScore < 0 || numericScore > 100) {
-                console.log(`  ✗ Score out of range for ${courseInfo.courseCode}: ${numericScore}`);
-                errorCount++;
-                errors.push(`Score out of range for ${matricNumber}, ${courseInfo.courseCode}: ${numericScore}`);
-                continue;
+            // Add course to student's registration list
+            courseIdsForStudent.push(courseInfo.courseId);
+
+            // Prepare result bulk operation
+            const query = {
+                studentId: student._id,
+                courseId: courseInfo.courseId,
+            };
+
+            if (semesterId) {
+                query.semester = semesterId;
             }
 
-            try {
-                const query = {
-                    studentId: student._id,
-                    courseId: courseInfo.courseId,
-                };
-
-                if (semesterId) {
-                    query.semester = semesterId;
-                } else {
-                    // Try to get current semester if not provided
-                    const currentSemester = await SemesterService.getCurrentSemester();
-                    if (currentSemester) {
-                        query.semester = currentSemester._id;
-                    }
-                }
-
-                const result = await Result.updateOne(
-                    query,
-                    {
+            bulkOps.push({
+                updateOne: {
+                    filter: query,
+                    update: {
                         $set: {
                             score: numericScore,
-                            ...(query.semester ? {} : { semester: null })
+                            ...(semesterId ? { semester: semesterId } : {})
                         }
                     },
-                    { upsert: true }
-                );
-
-                if (result.upsertedCount > 0) {
-                    console.log(`  ✓ Created result for ${courseInfo.courseCode}: ${numericScore}`);
-                } else if (result.modifiedCount > 0) {
-                    console.log(`  ✓ Updated result for ${courseInfo.courseCode}: ${numericScore}`);
+                    upsert: true
                 }
+            });
 
-                successCount++;
-            } catch (error) {
-                console.log(`  ✗ Failed to save result for ${courseInfo.courseCode}: ${error.message}`);
-                errorCount++;
-                errors.push(`Database error for ${matricNumber}, ${courseInfo.courseCode}: ${error.message}`);
+            processedCount++;
+        }
+
+        // Queue registration for this student if they have courses to register
+        if (courseIdsForStudent.length > 0) {
+            const key = `${student._id}_${semesterId}_${session}`;
+            if (!registrationsToCreate.has(key)) {
+                registrationsToCreate.set(key, {
+                    studentId: student._id,
+                    courseIds: courseIdsForStudent,
+                    level: student.level
+                });
             }
+        }
+    }
+
+    // Check for students not found
+    for (const matricNumber of matricNumbers) {
+        if (!studentMap.has(matricNumber)) {
+            console.log(`  ⚠️ Student not found: ${matricNumber}`);
+            skippedCount++;
+            errors.push(`Student not found: ${matricNumber}`);
+        }
+    }
+
+    // Execute bulk result operations
+    if (bulkOps.length > 0) {
+        console.log(`\n💾 Saving ${bulkOps.length} results in bulk...`);
+        try {
+            const result = await Result.bulkWrite(bulkOps, { ordered: false });
+            console.log(`  ✓ Bulk write completed: ${result.upsertedCount + result.modifiedCount} results saved`);
+        } catch (error) {
+            console.log(`  ✗ Bulk write error: ${error.message}`);
+            errors.push(`Bulk write error: ${error.message}`);
+        }
+    }
+
+    // Process auto-registrations
+    console.log(`\n📋 Processing ${registrationsToCreate.size} course registrations...`);
+    let registrationSuccessCount = 0;
+    let registrationErrorCount = 0;
+
+    for (const [key, regInfo] of registrationsToCreate) {
+        try {
+            await autoRegisterStudentForCourses(
+                regInfo.studentId,
+                departmentId,
+                semesterId,
+                session,
+                regInfo.level,
+                regInfo.courseIds
+            );
+            registrationSuccessCount++;
+        } catch (error) {
+            console.log(`  ✗ Registration failed: ${error.message}`);
+            registrationErrorCount++;
+            errors.push(`Registration failed for student ${regInfo.studentId}: ${error.message}`);
+            throw error
         }
     }
 
@@ -351,14 +508,15 @@ export async function importResultsFromExcel(filePath, semesterId = null, depart
     console.log("\n" + "=".repeat(80));
     console.log("📊 IMPORT SUMMARY");
     console.log("=".repeat(80));
-    console.log(`✅ Successful imports: ${successCount}`);
-    console.log(`❌ Errors: ${errorCount}`);
+    console.log(`✅ Results processed: ${processedCount}`);
+    console.log(`✅ Auto-registrations created: ${registrationSuccessCount}`);
+    console.log(`❌ Registration errors: ${registrationErrorCount}`);
+    console.log(`❌ Result errors: ${errors.length - registrationErrorCount}`);
     console.log(`⚠️ Skipped (student not found): ${skippedCount}`);
     console.log(`📁 File: ${filePath}`);
     console.log(`🏢 Department ID: ${departmentId}`);
-    if (semesterId) {
-        console.log(`📅 Semester ID: ${semesterId}`);
-    }
+    console.log(`📅 Semester ID: ${semesterId || 'Not specified'}`);
+    console.log(`📚 Session: ${session}`);
 
     if (errors.length > 0 && errors.length <= 10) {
         console.log("\n📝 Error Details:");
@@ -371,8 +529,47 @@ export async function importResultsFromExcel(filePath, semesterId = null, depart
     console.log("\n" + "=".repeat(80));
     console.log(`✨ Import completed successfully!`);
 
-    rl.close();
-    return { successCount, errorCount, skippedCount, errors };
+    if (!autoMode) {
+        rl.close();
+    }
+    
+    return { 
+        successCount: processedCount, 
+        registrationCount: registrationSuccessCount,
+        errorCount: errors.length, 
+        skippedCount, 
+        errors 
+    };
 }
 
-await importResultsFromExcel('/home/breakthrough/Downloads/BscEd 100l first semester result1.xlsx', '699c3c2dc937438f1fa12782', '692857cfc3c2904e51b75554');
+// Execute the import
+await importResultsFromExcel(
+    '/home/breakthrough/Documents/afued/documents/Podcasts/Bsc 100l first semester result.xlsx', 
+    '2024/2025-first', 
+    '692857cfc3c2904e51b75554',
+);
+await importResultsFromExcel(
+    '/home/breakthrough/Documents/afued/documents/Podcasts/Bsc 100l second semester result.xlsx', 
+    '2024/2025-second', 
+    '692857cfc3c2904e51b75554',
+);
+await importResultsFromExcel(
+    '/home/breakthrough/Documents/afued/documents/Podcasts/BscEd 100l first semester result1.xlsx', 
+    '2024/2025-first', 
+    '692857cfc3c2904e51b75554',
+);
+await importResultsFromExcel(
+    '/home/breakthrough/Documents/afued/documents/Podcasts/BscEd 100l second semester result1.xlsx', 
+    '2024/2025-second', 
+    '692857cfc3c2904e51b75554',
+);
+await importResultsFromExcel(
+    '/home/breakthrough/Documents/afued/documents/Podcasts/BscEd 200l first semester result.xlsx', 
+    '2024/2025-first', 
+    '692857cfc3c2904e51b75554',
+);
+await importResultsFromExcel(
+    '/home/breakthrough/Documents/afued/documents/Podcasts/BscEd 200l second semester result-1.xlsx', 
+    '2024/2025-second', 
+    '692857cfc3c2904e51b75554',
+);

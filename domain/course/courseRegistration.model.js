@@ -78,7 +78,7 @@ courseRegistrationSchema.pre('validate', async function (next) {
     const courses = await courseModel.find({
       _id: { $in: this.courses }
     }).populate('department');
-
+// console.log(courses[])
     const invalidCourses = courses.filter(
       course => course.department._id.toString() !== studentDepartmentId
     );

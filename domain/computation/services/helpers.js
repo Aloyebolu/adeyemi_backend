@@ -9,10 +9,10 @@ import SemesterService from "#domain/semester/semester.service.js";
 import { resolveUserName } from "#utils/resolveUserName.js";
 import AppError from "#shared/errors/AppError.js";
 import programmeService from "#domain/programme/programme.service.js";
-import facultyModel from "../../organization/faculty/faculty.model.js";
 import lecturerModel from "#domain/user/lecturer/lecturer.model.js";
 import userModel from "#domain/user/user.model.js";
 import departmentService from "#domain/organization/department/department.service.js";
+import facultyService from "#domain/organization/faculty/faculty.service.js";
 
 /**
  * Get department leadership details (Dean and HOD)
@@ -39,10 +39,7 @@ export async function getDepartmentLeadershipDetails(department, activeSemester,
     // 3. Get faculty using raw query
     let faculty = null;
     if (department.faculty) {
-      faculty = await facultyModel.findOne({
-        _id: new mongoose.Types.ObjectId(department.faculty)
-      });
-
+      faculty = await facultyService.getFacultyById(new mongoose.Types.ObjectId(department.faculty))
     }
 
     // 4. Get HOD details using raw queries

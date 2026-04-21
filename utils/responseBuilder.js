@@ -4,13 +4,15 @@ function buildResponse(
   message = "",
   data = null,
   isError = false,
-  error = null
+  error = null,
+  others
 ) {
   const response = {
     status: isError ? "error" : "success",
     message,
     data,
     timestamp: new Date().toISOString(),
+    ...others
   };
 
   if (isError && error) {
@@ -21,8 +23,8 @@ function buildResponse(
 }
 
 // ✅ Fixed helper shortcuts
-buildResponse.success = (res, message, data = {}, code = 200) =>
-  buildResponse(res, code, message, data, false);
+buildResponse.success = (res, message, data = {}, code = 200, others) =>
+  buildResponse(res, code, message, data, false, null, others );
 
 buildResponse.error = (res, message, code = 400, error = null) =>
   buildResponse(res, code, message, null, true, error);

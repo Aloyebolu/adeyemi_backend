@@ -5,6 +5,8 @@
  * Clean separation between database model and API contracts
  */
 
+import { resolveUserName } from "#utils/resolveUserName.js";
+
 // ==================== REQUEST DTOs (Incoming Data) ====================
 
 export class CreateUnitDto {
@@ -16,33 +18,38 @@ export class CreateUnitDto {
     this.description = data.description?.trim() || null;
     this.head_user_id = data.head_user_id || null;
     this.head_title_override = data.head_title_override?.trim() || null;
+    this._id = data._id
   }
 
   validate() {
     const errors = [];
-    
+
+    if(!this.parent_unit && this.type !== 'university'){
+      errors.push("Must belong to a parent unit")
+    }
+
     if (!this.name || this.name.length < 2) {
       errors.push('Unit name is required (minimum 2 characters)');
     }
-    
-    if (!this.code || !/^[A-Z0-9]{2,10}$/.test(this.code)) {
-      errors.push('Unit code must be 2-10 uppercase letters/numbers');
+
+    if (!this.code || !/^[A-Z0-9-]{2,10}$/.test(this.code)) {
+      errors.push('Unit code must be 2-10 characters (uppercase letters, numbers, or hyphens)');
     }
-    
+
     const validTypes = [
       "university", "faculty", "department",
       "registry", "bursary", "ict", "admissions", "student_affairs",
       "library", "hostel", "security", "transport", "health", "other"
     ];
-    
+
     if (!this.type || !validTypes.includes(this.type)) {
       errors.push(`Invalid unit type. Must be one of: ${validTypes.join(', ')}`);
     }
-    
+
     if (this.description && this.description.length > 500) {
       errors.push('Description cannot exceed 500 characters');
     }
-    
+
     return errors;
   }
 
@@ -56,7 +63,8 @@ export class CreateUnitDto {
       head_user_id: this.head_user_id,
       head_title_override: this.head_title_override,
       created_by: createdBy,
-      is_active: true
+      is_active: true,
+      _id: this._id
     };
   }
 }
@@ -71,30 +79,31 @@ export class UpdateUnitDto {
     this.head_user_id = data.head_user_id;
     this.head_title_override = data.head_title_override?.trim();
     this.is_active = data.is_active;
+    this._id = data._id
   }
 
   validate(existingUnit = null) {
     const errors = [];
-    
+
     if (this.name !== undefined && this.name.length < 2) {
       errors.push('Unit name must be at least 2 characters');
     }
-    
-    if (this.code !== undefined && !/^[A-Z0-9]{2,10}$/.test(this.code)) {
-      errors.push('Unit code must be 2-10 uppercase letters/numbers');
+
+    if (!this.code || !/^[A-Z0-9-]{2,10}$/.test(this.code)) {
+      errors.push('Unit code must be 2-10 characters (uppercase letters, numbers, or hyphens)');
     }
-    
+
     if (this.type !== undefined) {
       const validTypes = [
         "university", "faculty", "department",
         "registry", "bursary", "ict", "admissions", "student_affairs",
         "library", "hostel", "security", "transport", "health", "other"
       ];
-      
+
       if (!validTypes.includes(this.type)) {
         errors.push(`Invalid unit type. Must be one of: ${validTypes.join(', ')}`);
       }
-      
+
       // Prevent type changes for core academic units
       if (existingUnit) {
         const immutableTypes = ["university", "faculty", "department"];
@@ -103,17 +112,18 @@ export class UpdateUnitDto {
         }
       }
     }
-    
+
     if (this.description !== undefined && this.description.length > 500) {
       errors.push('Description cannot exceed 500 characters');
     }
-    
+
     return errors;
   }
 
   toModelUpdates() {
     const updates = {};
-    
+
+    if (this._id !== undefined) updates._id = this._id;
     if (this.name !== undefined) updates.name = this.name;
     if (this.code !== undefined) updates.code = this.code;
     if (this.type !== undefined) updates.type = this.type;
@@ -122,7 +132,7 @@ export class UpdateUnitDto {
     if (this.head_user_id !== undefined) updates.head_user_id = this.head_user_id;
     if (this.head_title_override !== undefined) updates.head_title_override = this.head_title_override;
     if (this.is_active !== undefined) updates.is_active = this.is_active;
-    
+
     return updates;
   }
 }
@@ -131,7 +141,8 @@ export class UpdateUnitDto {
 
 export class UnitResponseDto {
   constructor(unit) {
-    this.id = unit._id?.toString() || unit.id;
+    this.id = unit?._id?.toString() || unit.id;
+    this._id = unit._id?.toString() || unit.id;
     this.name = unit.name;
     this.code = unit.code;
     this.type = unit.type;
@@ -158,7 +169,7 @@ export class UnitResponseDto {
     this.active_member_count = unit.active_member_count || 0;
     this.created_at = unit.createdAt;
     this.updated_at = unit.updatedAt;
-    
+
     // Migration info (only included if present)
     if (unit._migrated_from?.source_model) {
       this._migrated_from = {
@@ -195,15 +206,18 @@ export class UnitResponseDto {
 export class UnitListResponseDto {
   constructor(unit) {
     this.id = unit._id?.toString() || unit.id;
+    this._id = unit._id?.toString() || unit.id;
     this.name = unit.name;
     this.code = unit.code;
     this.type = unit.type;
     this.category = this.#deriveCategory(unit.type);
-    this.head_name = unit.head_user_id ? 
-      `${unit.head_user_id.first_name || ''} ${unit.head_user_id.last_name || ''}`.trim() : 
-      null;
+    this.head = unit.head_user_id&&{
+      name :  resolveUserName(unit.head_user_id),
+      email: unit?.head_user_id?.email
+    }
     this.is_active = unit.is_active;
     this.active_member_count = unit.active_member_count || 0;
+    this.parent_unit = unit.parent_unit? new UnitResponseDto(unit.parent_unit) : null;
   }
 
   #deriveCategory(type) {
@@ -266,8 +280,8 @@ export class FacultyResponseDto extends UnitResponseDto {
       id: dept._id?.toString() || dept.id,
       name: dept.name,
       code: dept.code,
-      hod_name: dept.head_user_id ? 
-        `${dept.head_user_id.first_name || ''} ${dept.head_user_id.last_name || ''}`.trim() : 
+      hod_name: dept.head_user_id ?
+        `${dept.head_user_id.first_name || ''} ${dept.head_user_id.last_name || ''}`.trim() :
         null
     }));
   }
@@ -290,11 +304,11 @@ export class UnitQueryDto {
 
   toMongoQuery() {
     const query = {};
-    
+
     if (this.type) {
       query.type = this.type;
     }
-    
+
     if (this.category) {
       const typeMap = {
         academic: ["university", "faculty", "department"],
@@ -303,19 +317,19 @@ export class UnitQueryDto {
       };
       query.type = { $in: typeMap[this.category] || [] };
     }
-    
+
     if (this.parent_unit) {
       query.parent_unit = this.parent_unit;
     }
-    
+
     if (this.is_active !== null) {
       query.is_active = this.is_active;
     }
-    
+
     if (this.search) {
       query.$text = { $search: this.search };
     }
-    
+
     return query;
   }
 
@@ -343,15 +357,15 @@ export class AssignHeadDto {
 
   validate() {
     const errors = [];
-    
+
     if (!this.user_id) {
       errors.push('User ID is required');
     }
-    
+
     if (this.title_override && this.title_override.length > 50) {
       errors.push('Title override cannot exceed 50 characters');
     }
-    
+
     return errors;
   }
 }

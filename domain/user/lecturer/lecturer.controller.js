@@ -3,7 +3,6 @@ import { fetchDataHelper } from "#utils/fetchDataHelper.js";
 import { dataMaps } from "#config/dataMap.js";
 import departmentModel from "#domain/organization/department/department.model.js";
 import User from "#domain/user/user.model.js";
-import facultyModel from "#domain/organization/faculty/faculty.model.js";
 import lecturerModel from "./lecturer.model.js";
 import LecturerService from "./lecturer.service.js";
 import departmentService from "#domain/organization/department/department.service.js";
@@ -18,7 +17,7 @@ export const LECTURER_FETCH_CONFIG = {
   configMap: dataMaps.Lecturer,
   autoPopulate: true,
   forceFind: true,
-  models: { departmentModel, User, facultyModel },
+  models: { departmentModel, User },
 };
 
 export const LECTURER_POPULATE_CONFIG = [

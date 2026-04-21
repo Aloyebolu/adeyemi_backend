@@ -764,7 +764,14 @@ const getCachedCount = async (Model, query, ttl) => {
 };
 
 // ==================== MAIN HELPER ====================
-
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} Model 
+ * @param {{returnType:'response'|'object', singleResponse: Boolean}} options 
+ * @returns {Promise<{data:Object;pagination:Object}>}
+ */
 export const fetchDataHelper = async (req, res, Model, options = {}) => {
   try {
     const schoolId = req?.school?._id;

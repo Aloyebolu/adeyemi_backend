@@ -132,18 +132,7 @@ app.use(attachRequestIntent)//attaches req._intent
 app.use(enforceRequestIntent) 
 app.use(blockWritesForReadOnly);
 app.use(resolveArchiveMode); // to handle archive mode if needed
-// ============================================
-// 5. AUTHENTICATION AUDIT MIDDLEWARE
-// (For tracking login/logout attempts)
-// ============================================
-// app.use(authAuditMiddleware);
 
-// ============================================
-// 6. YOUR EXISTING AUTHENTICATION MIDDLEWARE
-// (Add this after authAuditMiddleware)
-// ============================================
-// Note: You'll need to import and use your authenticate middleware here
-// Example: app.use(yourAuthenticateMiddleware);
 
 // ============================================
 // 7. GENERAL AUDIT MIDDLEWARE
@@ -178,7 +167,7 @@ app.use(auditMiddleware({
 
 
 // ============================================
-// 8. YOUR MAIN ROUTES
+// 8. MAIN ROUTES
 // ============================================
 app.use("/afued/result/portal", routes);
 
@@ -220,7 +209,7 @@ app.use((error, req, res, next) => {
 
 // ============================================
 // 10. 404 HANDLER (with audit logging)
-// ============================================
+// ============================================Endpoint not found
 app.use((req, res) => {
   // This will be captured by the audit middleware (404 status code)
   res.status(404).json({

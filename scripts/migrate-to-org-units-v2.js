@@ -41,7 +41,7 @@ async function migrateToOrgUnitsV2() {
         stats.faculties++;
         continue;
       }
-      
+      console.log(faculty)
       const unit = await OrganizationalUnitService.createUnit({
         _id: faculty._id,
         name: faculty.name,
@@ -85,8 +85,8 @@ async function migrateToOrgUnitsV2() {
       
       // Find migrated parent faculty
       const parentFaculty = await OrganizationalUnit.findOne({
-        "_migrated_from.source_model": "Faculty",
-        "_migrated_from.source_id": dept.faculty
+        // "_migrated_from.source_model": "Faculty",
+        _id: dept.faculty
       });
       
       if (!parentFaculty) {
@@ -180,7 +180,7 @@ async function migrateToOrgUnitsV2() {
   return stats;
 }
 
-// migrateToOrgUnitsV2()
+await migrateToOrgUnitsV2()
 const tree = await OrganizationalUnitService.getFullTree()
 console.log(JSON.stringify(tree))
 // const courses = await courseModel.find({}).limit(3).populate('department') Doesnt work

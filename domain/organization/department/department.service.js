@@ -9,6 +9,7 @@ import { logger } from "#utils/logger.js";
 import AppError from "#shared/errors/AppError.js";
 import OrganizationalUnit from "#domain/organization/models/organizationalUnit.model.js";
 import { DB } from "#config/db-contract.js";
+import OrganizationalUnitService from "../services/OrganizationalUnitService.js";
 
 /**
  * 🏛️ ORGANIZATIONAL UNIT SERVICE (EXTENDED)
@@ -16,7 +17,7 @@ import { DB } from "#config/db-contract.js";
  * Now includes all department-specific functionality
  * Works with unified OrganizationalUnit model
  */
-class OrganizationalUnitService {
+class DepartmentServicTemp {
   
   // ==================== EXISTING METHODS (from previous implementation) ====================
   // ... (keep all the existing methods: createUnit, updateUnit, deactivateUnit, etc.)
@@ -458,7 +459,7 @@ class OrganizationalUnitService {
       }
     }
 
-    return await this.createUnit({
+    return await OrganizationalUnitService.createUnit({
       name,
       code: code.toUpperCase(),
       type: "department",
@@ -517,7 +518,7 @@ class OrganizationalUnitService {
         updates.parent_unit = faculty;
       }
 
-      return await this.updateUnit(departmentId, updates, null);
+      return await OrganizationalUnitService.updateUnit(departmentId, updates, null);
     } catch (error) {
       logger.error(`updateDepartment failed: ${error.message}`, {
         departmentId,
@@ -571,7 +572,7 @@ class OrganizationalUnitService {
       }
 
       // Soft delete (deactivate)
-      await this.deactivateUnit(departmentId);
+      // await OrganizationalUnitService.(departmentId);
     } catch (error) {
       logger.error(`deleteDepartment failed: ${error.message}`, {
         departmentId,
@@ -841,6 +842,6 @@ class DepartmentServiceCompatibilityWrapper {
 }
 
 // Export singleton instance
-const unitService = new OrganizationalUnitService();
+const unitService = new DepartmentServicTemp();
 export const DepartmentService = new DepartmentServiceCompatibilityWrapper(unitService);
 export default unitService;

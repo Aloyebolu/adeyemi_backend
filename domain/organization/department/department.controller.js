@@ -2,18 +2,17 @@ import mongoose from "mongoose";
 import buildResponse from "#utils/responseBuilder.js";
 import { fetchDataHelper } from "#utils/fetchDataHelper.js";
 import { dataMaps } from "#config/dataMap.js";
-import facultyModel from "#domain/organization/faculty/faculty.model.js";
 import departmentModel from "./department.model.js";
 import DepartmentService from "./department.service.js";
 import { getDepartmentById as getDepartmentByIdHandler } from "./department.controller.js";
 import AppError from "#shared/errors/AppError.js";
 import FacultyService from "#domain/organization/faculty/faculty.service.js";
+import { getAdminUnitById, getAllAdminUnits } from "../controllers/organization.controller.js";
 
 // Common configuration for fetchDataHelper
 const DEPARTMENT_FETCH_CONFIG = {
   configMap: dataMaps.Department,
   autoPopulate: true,
-  models: { facultyModel },
 };
 
 /**
@@ -72,27 +71,8 @@ const validateObjectId = (id, entityName) => {
 
 /* ===== Get All Departments ===== */
 export const getAllDepartment = async (req, res, next) => {
-  try {
-
-
-    let additionalFilters = {};
-    // For deans: only show departments in their faculty
-    if (req.user.role === 'dean') {
-      const faculty = await FacultyService.getDeanFaculty(req.user._id);
-      if (!faculty) {
-        return buildResponse(res, 403, "No faculty assigned to dean");
-      }
-      additionalFilters.faculty = faculty._id;
-    }
-
-    return await fetchDataHelper(req, res, departmentModel, {
-      ...DEPARTMENT_FETCH_CONFIG,
-      populate: ["faculty", "hod"],
-      additionalFilters
-    });
-  } catch (error) {
-    throw error
-  }
+  // Redirect to organization controller, untill full migration
+  await getAllAdminUnits({...req, params: {type : 'department'}}, res, next)
 };
 
 /* ===== Get Department Stats ===== */
@@ -332,11 +312,7 @@ export const createDepartment = async (req, res, next) => {
 
     // Handle GET-like operations (filtering)
     if (fields || search_term || filters || page) {
-      const result = await fetchDataHelper(req, res, departmentModel, {
-        ...DEPARTMENT_FETCH_CONFIG,
-        populate: ["faculty"]
-      });
-      return;
+      await getAllDepartment(req, res, next)
       // return buildResponse(res, 200, "Filtered departments fetched", result);
     }
 
@@ -416,32 +392,7 @@ export const createDepartment = async (req, res, next) => {
 
 /* ===== Get Department by ID ===== */
 export const getDepartmentById = async (req, res, next) => {
-  try {
-    const { departmentId } = req.params;
-      validateObjectId(departmentId, "department");
-
-    // For deans: only allow access to departments in their faculty
-    let additionalFilters = {};
-    if (req?.user?.role === 'dean') {
-      const faculty = await FacultyService.getDeanFaculty(req.user._id);
-      if (!faculty) {
-        return buildResponse(res, 403, "No faculty assigned to dean");
-      }
-      additionalFilters.faculty = faculty._id;
-    }
-
-    const result = await fetchDataHelper(req, res, departmentModel, {
-      configMap: dataMaps.DepartmentById,
-      autoPopulate: false,
-      models: { facultyModel },
-      populate: ["faculty", "hod"],
-      additionalFilters: { ...additionalFilters, _id: mongoose.Types.ObjectId(departmentId) }
-    });
-
-    return;
-  } catch (error) {
-    next(error)
-  }
+  await getAdminUnitById(req, res, next)
 };
 
 /* ===== Update Department ===== */
@@ -450,46 +401,6 @@ export const updateDepartment = async (req, res, next) => {
     const { departmentId } = req.params;
     const userFromMiddleware = req.user;
 
-    // Authorization check
-    const isAuthorized = await handleDeanAuthorization(req, departmentId);
-    if (!isAuthorized) {
-      return buildResponse(res, 403, "Not authorized to update this department");
-    }
-
-    try {
-      validateObjectId(departmentId, "department");
-    } catch (error) {
-      req.auditContext = DepartmentService.createAuditContext(
-        "UPDATE_DEPARTMENT",
-        "FAILURE",
-        error.message,
-        {
-          departmentId,
-          attemptedBy: userFromMiddleware.role,
-          attemptedByUserId: userFromMiddleware._id
-        }
-      );
-      next(error)
-    }
-
-    // Get department before update
-    const departmentBefore = await DepartmentService.getDepartmentById(departmentId)
-      .catch(() => null);
-
-    if (!departmentBefore) {
-      req.auditContext = DepartmentService.createAuditContext(
-        "UPDATE_DEPARTMENT",
-        "FAILURE",
-        "Department not found",
-        {
-          departmentId,
-          attemptedBy: userFromMiddleware.role,
-          attemptedByUserId: userFromMiddleware._id
-        }
-      );
-      return buildResponse(res, 404, "Department not found");
-    }
-
     // Update department
     const updatedDepartment = await DepartmentService.updateDepartment(
       departmentId,
@@ -497,34 +408,6 @@ export const updateDepartment = async (req, res, next) => {
       userFromMiddleware.role
     );
 
-    // Set audit context for success
-    req.auditContext = DepartmentService.createAuditContext(
-      "UPDATE_DEPARTMENT",
-      "SUCCESS",
-      `Department ${updatedDepartment.name} updated successfully`,
-      {
-        departmentId,
-        departmentName: updatedDepartment.name,
-        performedBy: userFromMiddleware.role,
-        performedByUserId: userFromMiddleware._id,
-
-      }, {
-      before: {
-        name: departmentBefore.name,
-        code: departmentBefore.code,
-        faculty: departmentBefore.faculty
-      },
-      after: {
-        name: updatedDepartment.name,
-        code: updatedDepartment.code,
-        faculty: updatedDepartment.faculty
-      },
-      changedFields: Object.keys(req.body).filter(key =>
-        req.body[key] !== undefined &&
-        ['name', 'code', 'faculty'].includes(key)
-      )
-    }
-    );
 
     return buildResponse(res, 200, "Department updated successfully", updatedDepartment);
   } catch (error) {
