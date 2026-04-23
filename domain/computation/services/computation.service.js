@@ -21,7 +21,8 @@ class ComputationService {
     sortBy,
     sortOrder,
     userId,
-    userRole
+    userRole,
+      masterId
   }) {
     // Build query
     const query = this.buildComputationQuery({
@@ -31,7 +32,8 @@ class ComputationService {
       departmentId,
       search,
       userId,
-      userRole
+      userRole,
+      masterId
     });
 
     // Get computations with pagination
@@ -68,7 +70,8 @@ class ComputationService {
     departmentId,
     search,
     userId,
-    userRole
+    userRole,
+      masterId
   }) {
     const query = {};
 
@@ -76,6 +79,7 @@ class ComputationService {
     if (status) query.status = status;
     if (purpose) query.purpose = purpose;
     if (semesterId) query.semester = semesterId;
+    if (masterId) query.masterComputationId = masterId;
     
     // Department filtering based on role
     if (departmentId) {

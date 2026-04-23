@@ -60,8 +60,8 @@ export const authorize = (requirement = []) => {
   let requirements = Array.isArray(requirement) ? requirement : [requirement];
 
   // Check if we're dealing with permissions or roles
-  const isPermissionBased = requirements.length > 0 && requirements[0]?.allowedRoles;
-
+  const isPermissionBased =  requirements[0]?.allowedRoles;
+console.log("Authorization requirements:", requirements, "Permission-based:", isPermissionBased);
   return (req, res, next) => {
     const userRole = req.user?.role;
     const userExtraRoles = req.user?.extra_roles || [];

@@ -21,12 +21,16 @@ export function defineDepartmentJob(agenda) {
       console.log(`[Department Job] Processing: ${job.attrs._id} for department ${departmentId}`);
 
       try {
-        // Process the computation
+        // 1. Run computation
         const result = await processDepartmentJob(job.attrs);
-        
-        // Update the mastercomputation with the result of this department
-        await MasterComputation.findByIdAndUpdate(
-          masterComputationId,
+
+        // 2. Atomically update master computation
+        const update = await MasterComputation.findOneAndUpdate(
+          {
+            _id: masterComputationId,
+            // optional guard to avoid double-processing same job
+            "metadata.completedDepartments.jobId": { $ne: jobId }
+          },
           {
             $push: {
               "metadata.completedDepartments": {
@@ -35,12 +39,58 @@ export function defineDepartmentJob(agenda) {
                 completedAt: new Date(),
                 resultSummary: result.summary || {}
               }
+            },
+            $inc: {
+              jobsProcessed: 1
             }
-          }
+          },
+          { new: true }
         );
-        console.log(`[Department Job] Completed: ${job.attrs._id}`);
 
-        // Send success notification
+        // If update didn't happen, job was probably already processed (idempotency guard)
+        if (!update) {
+          console.warn(`[Department Job] Skipped duplicate completion: ${jobId}`);
+          return result;
+        }
+
+        // 3. Compute progress safely (derived, not stored)
+        const total = update.totalJobs || 1;
+        const processed = update.jobsProcessed || 0;
+        const failed = update.jobsFailed || 0;
+
+        const progress = Math.round(((processed + failed) / total) * 100);
+
+        // 4. Check for completion (only once)
+        if (
+          processed + failed >= total &&
+          !update.completionFinalized
+        ) {
+          const finalStatus =
+            failed > 0 ? "completed_with_errors" : "completed";
+
+          await MasterComputation.updateOne(
+            {
+              _id: masterComputationId,
+              completionFinalized: false
+            },
+            {
+              $set: {
+                status: finalStatus,
+                completedAt: new Date(),
+                duration: Date.now() - new Date(update.startedAt).getTime(),
+                completionFinalized: true
+              }
+            }
+          );
+
+          console.log(`[Master Computation] Finalized: ${masterComputationId}`);
+        }
+
+        console.log(
+          `[Department Job] Completed: ${job.attrs._id} (${processed + failed}/${total})`
+        );
+
+        // 5. Send notification
         await queueNotification({
           target: "specific",
           recipientId: computedBy,
@@ -60,11 +110,13 @@ export function defineDepartmentJob(agenda) {
       } catch (error) {
         console.error(`[Department Job] Failed: ${job.attrs._id}`, error);
 
-        // Update master computation status
-        await MasterComputation.findByIdAndUpdate(
-          masterComputationId,
+        // 6. Atomic failure update
+        await MasterComputation.findOneAndUpdate(
           {
-            $set: { status: "completed_with_errors" },
+            _id: masterComputationId,
+            "metadata.failedDepartments.jobId": { $ne: jobId }
+          },
+          {
             $push: {
               "metadata.failedDepartments": {
                 department: departmentId,
@@ -72,36 +124,31 @@ export function defineDepartmentJob(agenda) {
                 error: error.message,
                 failedAt: new Date()
               }
+            },
+            $inc: {
+              jobsFailed: 1
             }
           }
         );
 
-        // Get department name for notification
-        let departmentName = departmentId;
-        try {
-          const department = await DepartmentService.getDepartmentById(departmentId);
-          if (department?.name) departmentName = department.name;
-        } catch (err) {
-          console.warn(`[Department Job] Could not fetch department name: ${err.message}`);
-        }
+        // Optional: same completion check logic can be repeated here if needed
 
-        // Send failure notification
+        // 7. Notify failure
         await queueNotification({
           target: "specific",
           recipientId: computedBy,
           templateId: "department-computation-failed",
-          message: `Computation failed for ${departmentName}: ${error.message}`,
+          message: `Computation failed`,
           metadata: {
             jobId,
             departmentId,
-            departmentName,
             masterComputationId,
             status: "failed",
             error: error.message
           }
         });
 
-        throw error; // Let Agenda handle retry logic
+        throw error;
       }
     }
   );

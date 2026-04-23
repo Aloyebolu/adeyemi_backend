@@ -15,6 +15,7 @@ import authenticate from "#middlewares/authenticate.js";
 import validationService from "../services/validation.service.js";
 import buildResponse from "#utils/responseBuilder.js";
 import validationRoutes from "./validation.route.js"
+import { PERMISSIONS } from "#config/permissions.js";
 
 const router = express.Router();
 
@@ -22,7 +23,7 @@ const router = express.Router();
 router.use('/validate', authenticate('admin'), validationRoutes)
 
 // Computation management endpoints
-router.post("/compute-all", authenticate("admin"), computeAllResults);
+router.post("/compute-all", authenticate(PERMISSIONS.COMPUTE_ALL_RESULTS), computeAllResults);
 router.get("/status/:masterComputationId", getComputationStatus);
 router.post("/cancel/:masterComputationId", cancelComputation);
 router.post("/retry/:masterComputationId", retryFailedDepartments);
@@ -79,7 +80,7 @@ router.delete(
 
 // GET all computations with filtering and pagination
 // GET all computations with filtering and pagination
-router.get(
+router.post(
   '/',
   authenticate(["hod", "admin"]),
   getAllComputations

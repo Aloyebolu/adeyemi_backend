@@ -5,59 +5,37 @@ const masterComputationSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "AcademicSemester"
   },
-  totalDepartments: {
+
+  // 🔥 Programme-level tracking
+  totalJobs: {
     type: Number,
     default: 0
   },
-  departmentsProcessed: {
+  jobsProcessed: {
     type: Number,
     default: 0
   },
-  totalStudents: {
+  jobsFailed: {
     type: Number,
     default: 0
   },
-  overallAverageGPA: {
-    type: Number,
-    default: 0
-  },
-  totalCarryovers: {
-    type: Number,
-    default: 0
-  },
-  totalFailedStudents: {
-    type: Number,
-    default: 0
-  },
-  departmentsLocked: {
-    type: Number,
-    default: 0
-  },
-  departmentSummaries: {
-    type: Map,
-    of: new mongoose.Schema({
-      studentsProcessed: Number,
-      passListCount: Number,
-      probationListCount: Number,
-      withdrawalListCount: Number,
-      terminationListCount: Number,
-      // FEB18
-      notRegisteredListCount: Number,
-      leaveOfAbsenceListCount: Number,
-      carryoverCount: Number,
-      averageGPA: Number,
-      failedStudentsCount: Number,
-      status: String,
-      processed: { type: Boolean, default: false },
-      isPreview: { type: Boolean, default: false },
-      updatedAt: { type: Date, default: Date.now }
-    }, { _id: false })
-  },
+
+  // 🧠 Lifecycle state
   status: {
     type: String,
-    enum: ["pending", "processing", "completed", "completed_with_errors", "failed", "cancelled", "locked"],
+    enum: [
+      "pending",
+      "processing",
+      "completed",
+      "completed_with_errors",
+      "failed",
+      "cancelled",
+      "locked"
+    ],
     default: "pending"
   },
+
+  // ⏱ Timing
   startedAt: {
     type: Date,
     default: Date.now
@@ -68,11 +46,15 @@ const masterComputationSchema = new mongoose.Schema({
   duration: {
     type: Number
   },
+
+  // 👤 Actor
   computedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true
   },
+
+  // 🔒 Locking
   semesterLocked: {
     type: Boolean,
     default: false
@@ -80,26 +62,43 @@ const masterComputationSchema = new mongoose.Schema({
   semesterLockedAt: {
     type: Date
   },
+
+  // 📦 Extra flexible metadata
   metadata: {
     type: mongoose.Schema.Types.Mixed,
     default: {}
   },
+
+  // 🎯 Context
   purpose: {
     type: String,
-    enum: ['preview', 'final'],
-    default: 'preview'
+    enum: ["preview", "final"],
+    default: "preview"
   },
+
   academicBoardDate: {
     type: Date,
     required: true
+  },
+
+  // 🧨 Safety guard (VERY IMPORTANT for distributed jobs)
+  completionFinalized: {
+    type: Boolean,
+    default: false
   }
-  
+
 }, { timestamps: true });
 
-// Add index for better query performance
+/**
+ * Indexes
+ */
 masterComputationSchema.index({ semester: 1, status: 1 });
 masterComputationSchema.index({ computedBy: 1 });
-masterComputationSchema.index({ isPreview: 1, purpose: 1 });
+masterComputationSchema.index({ purpose: 1, status: 1 });
 
-const MasterComputation = mongoose.model("MasterComputation", masterComputationSchema);
+const MasterComputation = mongoose.model(
+  "MasterComputation",
+  masterComputationSchema
+);
+
 export default MasterComputation;

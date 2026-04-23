@@ -141,6 +141,8 @@ export const computeAllResults = async (req, res, next) => {
         semester: activeSemester._id,
         purpose,
         totalJobs: programmeJobs.length,
+        jobsProcessed: 0,
+        jobsFailed: 0,
         status: "processing",
         computedBy,
         academicBoardDate,
@@ -680,8 +682,9 @@ export const getAllComputations = async (req, res, next) => {
       departmentId,
       search,
       sortBy = 'createdAt',
-      sortOrder = 'desc'
-    } = req.query;
+      sortOrder = 'desc',
+      masterId
+    } = req.body;
 
     // Get HOD's department if user is HOD
     const hodDepartment = req.user.role === 'hod'
@@ -699,7 +702,8 @@ export const getAllComputations = async (req, res, next) => {
       sortBy,
       sortOrder,
       userId: req.user._id,
-      userRole: req.user.role
+      userRole: req.user.role,
+      masterId
     });
 
     res.json({
