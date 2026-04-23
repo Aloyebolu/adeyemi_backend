@@ -12,10 +12,14 @@ import {
   getAllComputations
 } from "#domain/computation/controllers/computation.controller.js";
 import authenticate from "#middlewares/authenticate.js";
-
+import validationService from "../services/validation.service.js";
+import buildResponse from "#utils/responseBuilder.js";
+import validationRoutes from "./validation.route.js"
 
 const router = express.Router();
 
+// Validation routes(Admin only)
+router.use('/validate', authenticate('admin'), validationRoutes)
 
 // Computation management endpoints
 router.post("/compute-all", authenticate("admin"), computeAllResults);
@@ -24,6 +28,12 @@ router.post("/cancel/:masterComputationId", cancelComputation);
 router.post("/retry/:masterComputationId", retryFailedDepartments);
 router.get("/history", getComputationHistory);
 
+router.get("/validate/:programmeId", async(req, res)=>{
+
+  const resp = await validationService.validateAllProgrammes()
+  console.log(resp.length)
+  buildResponse.success(res, 'SUccess', resp)
+});
 // GPA / CGPA endpoints
 router.get(
   "/gpa/student/:studentId/semester/:semesterId",

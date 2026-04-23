@@ -9,12 +9,14 @@ import MasterSheetHtmlRenderer from "./MasterSheetHtmlRenderer.js";
 import FileService from "#domain/files/files.service.js";
 import CarryoverCourse from "#domain/user/student/carryover/carryover.model.js";
 import studentSemesterResultModel from "#domain/user/student/student.semseterResult.model.js";
+import SemesterService from "#domain/semester/semester.service.js";
+import { normalizeCourses } from "#domain/course/course.normallizer.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 class ComputationReportService {
-  
+
   constructor() {
     this.browser = null; // Reusable browser instance
   }
@@ -54,7 +56,7 @@ class ComputationReportService {
    */
   normalizeCourse(courses = []) {
     if (!courses || !Array.isArray(courses)) return [];
-    
+
     return courses.map(course => ({
       courseCode: course.courseCode || course.code,
       courseTitle: course.courseTitle || course.title,
@@ -77,6 +79,20 @@ class ComputationReportService {
       senate,
     } = queryParams;
 
+    // Fetch summary
+    const summary = await ComputationSummary
+      .findById(summaryId)
+      .populate("department", "name")
+      .populate("semester", "name")
+      .lean();
+
+    if (!summary) {
+      throw new AppError("Master sheet data not found", 404);
+    }
+
+    const previousSemesters = [summary.semester._id, ...(await SemesterService.getPreviousAcademicSemesters(summary.semester._id))]
+
+
     // Get semester results with proper population
     let results = await studentSemesterResultModel
       .find({ computationSummaryId: summaryId })
@@ -85,7 +101,6 @@ class ComputationReportService {
         model: "Course",
         populate: {
           path: "borrowedId",
-          model: "Course"
         }
       })
       .lean();
@@ -103,40 +118,36 @@ class ComputationReportService {
     }));
 
     // Fetch carryover courses
+    console.log({ previousSemesters })
     let carryovers = await CarryoverCourse
-      .find({ computationBatch: summaryId })
+      .find({ semester: { $in: previousSemesters } })
       .populate({
         path: "courses.course",
         model: "Course",
         populate: {
           path: "borrowedId",
-          model: "Course"
         }
       })
       .lean();
+
 
     // Flatten carryover courses
     carryovers = carryovers.map(carryover => ({
       ...carryover,
       courses: carryover.courses.map(courseItem => {
         const { course, ...carryoverCourseFields } = courseItem;
+        const isNew =
+          courseItem.fromSemester?.toString() === summary.semester._id?.toString();
         return {
           ...course,
           ...carryoverCourseFields,
+          status: isNew ? 'new' : 'old'
+
         };
       })
     }));
 
-    // Fetch summary
-    const summary = await ComputationSummary
-      .findById(summaryId)
-      .populate("department", "name")
-      .populate("semester", "name")
-      .lean();
 
-    if (!summary) {
-      throw new AppError("Master sheet data not found", 404);
-    }
 
     // Fetch computation
     const computation = await MasterComputation
@@ -149,7 +160,7 @@ class ComputationReportService {
 
     // Set purpose
     summary.purpose = "final";
-    
+
     // Initialize approval_dates
     summary.approval_dates = summary.approval_dates || {};
 
@@ -175,10 +186,10 @@ class ComputationReportService {
     summary.approval_dates.departmental_board =
       summary.approval_dates.departmental_board ||
       computation.academicBoardDate ||
-      new Date("2026-03-05");
+      new Date("2026-04-11");
     summary.approval_dates.faculty_board =
       summary.approval_dates.faculty_board ||
-      new Date("2026-03-05");
+      new Date("2026-04-11");
 
     // Compute current approval stage
     const getCurrentApprovalStage = () => {
@@ -203,9 +214,12 @@ class ComputationReportService {
 
     for (const result of results) {
       const resultLevel = parseInt(result.level);
-      const outstandingCourses = carryovers.find(
-        (i) => String(i.student) == String(result.studentId)
+      const studentCarryovers = carryovers.filter(
+        (i) => String(i.student) === String(result.studentId)
       );
+      const allOutstandingCourses = studentCarryovers
+        .flatMap(c => c.courses || []);
+      const outstandingCourses = normalizeCourses(allOutstandingCourses);
 
       if (!studentSummariesByLevel.has(resultLevel)) {
         studentSummariesByLevel.set(resultLevel, []);
@@ -213,6 +227,7 @@ class ComputationReportService {
 
       studentSummariesByLevel.get(resultLevel).push({
         studentId: result.studentId,
+        _id: result.studentId,
         matricNumber: result.matricNumber,
         name: result.name,
         currentSemester: {
@@ -230,8 +245,8 @@ class ComputationReportService {
           totalTNU: result.cumulativeTNU,
           cgpa: result.cgpa
         },
-        outstandingCourses: this.normalizeCourse(outstandingCourses?.courses),
-        courseResults: this.normalizeCourse(result.courses),
+        outstandingCourses,
+        courseResults: normalizeCourses(result.courses),
         academicStanding: result.academicStanding,
         academicStatus: result.remark,
         remark: result.remark
@@ -259,9 +274,9 @@ class ComputationReportService {
       });
 
       // Set content and wait for all resources
-      await page.setContent(html, { 
+      await page.setContent(html, {
         waitUntil: ["networkidle0", "load", "domcontentloaded"],
-        timeout: 30000 
+        timeout: 30000
       });
 
       // Wait for any images/fonts to load
@@ -301,7 +316,7 @@ class ComputationReportService {
         type: "pdf",
         ...queryParams
       });
-      
+
       // Check cache using FileService
       if (!queryParams.forceRefresh) {
         const cached = await FileService.getCachedFile(cacheKey);
@@ -316,10 +331,10 @@ class ComputationReportService {
       }
 
       console.log(`🔄 Generating new PDF for: ${cacheKey}`);
-      
+
       // Prepare data
       const { summary } = await this.prepareMasterSheetData(summaryId, level, queryParams);
-      
+
       // Generate HTML
       const html = MasterSheetHtmlRenderer.render({
         summary,
@@ -329,7 +344,7 @@ class ComputationReportService {
 
       // Generate PDF buffer
       const pdfBuffer = await this.generatePDF(html);
-      
+
       // Save to cache using FileService
       await FileService.saveToCache(cacheKey, pdfBuffer);
 
@@ -367,7 +382,7 @@ class ComputationReportService {
       }
 
       const { summary } = await this.prepareMasterSheetData(summaryId, level, queryParams);
-      
+
       const wordHtml = MasterSheetWordSimpleRenderer.render({
         summary,
         level,
@@ -415,7 +430,7 @@ class ComputationReportService {
    */
   async generateMasterSheetHTML(summaryId, level, queryParams = {}) {
     const { summary } = await this.prepareMasterSheetData(summaryId, level, queryParams);
-    
+
     return MasterSheetHtmlRenderer.render({
       summary,
       level,
@@ -428,7 +443,7 @@ class ComputationReportService {
    */
   async generateMasterSheetJSON(summaryId, level, queryParams = {}) {
     const { summary } = await this.prepareMasterSheetData(summaryId, level, queryParams);
-    
+
     return {
       summary,
       levelData: summary.masterSheetDataByLevel?.[level],

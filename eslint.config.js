@@ -31,7 +31,8 @@ export default [
           ['#config', './config'],
           ['#workers', './workers'],
           ['#shared', './shared'],
-          ['#queues', './queues']
+          ['#queues', './queues'],
+          ['#jobs', './jobs'],
         ],
         extensions: ['.js', '.ts']
       }

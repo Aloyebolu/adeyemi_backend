@@ -1,6 +1,6 @@
 '64'
-import mongoose from "mongoose";
 import { SYSTEM_USER_ID } from "#config/system.js";
+import mongoose from "mongoose";
 const carryoverSchema = new mongoose.Schema({
   student: {
     type: mongoose.Schema.Types.ObjectId,
@@ -43,10 +43,10 @@ const carryoverSchema = new mongoose.Schema({
           enum: ["carryover", "cleared", "exempted"],
           required: true
         },
-        status: {
-          type: String,
-          enum: ["new", "old"],
-          required: true,
+        fromSemester: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "AcademicSemester",
+          required: true
         },
         remark: String
       },

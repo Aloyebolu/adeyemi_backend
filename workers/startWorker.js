@@ -1,5 +1,0 @@
-import "./department.worker.js";
-import "./notification.worker.js";
-
-console.log("All workers started successfully");
-console.log(">>> Department worker FILE executed", new Date().toISOString());

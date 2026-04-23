@@ -55,8 +55,7 @@ const resultSchema = new mongoose.Schema({
   // Optional denormalized course info
   courseUnit: Number,
   courseCode: String,
-  courseTitle: String,
-  courseDepartmentId: { type: mongoose.Schema.Types.ObjectId, ref: "Department" }
+  courseTitle: String
 }, { timestamps: true });
 
 /* ------------------------------
@@ -90,7 +89,6 @@ resultSchema.pre("save", async function (next) {
         this.courseUnit = course.unit;
         this.courseCode = course.courseCode;
         this.courseTitle = course.title;
-        this.courseDepartmentId = course.department;
       }
     } catch (e) {}
   }

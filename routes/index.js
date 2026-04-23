@@ -34,7 +34,7 @@ import attendanceRoutes from "#domain/user/student/attendance/attendance.route.j
 import { rankingRoutes } from "#domain/ranking/index.js";
 import createScriptsRouter from "#domain/system/scripts/scripts.routes.js";
 import userModel from "#domain/user/user.model.js";
-import { addDepartmentJob } from "../workers/department.queue.js";
+import { queueDepartmentJob } from "#jobs/worker.js";
 import feedbackRoutes from "#domain/feedback/feedback.routes.js";
 import databaseRoutes from "#domain/system/database/index.js";
 import studentSuspension from "#domain/user/student/studentSuspension/index.js";
@@ -109,7 +109,7 @@ const models = {
   // Add other models as needed
 };
 const services = {
-  addDepartmentJob: () => addDepartmentJob
+  addDepartmentJob: () => queueDepartmentJob
 }
 
 

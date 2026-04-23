@@ -1,8 +1,9 @@
 // computation/services/computation.service.js
-import { countDocuments, find, findById } from '../models/computation.model';
-import { getDepartmentByHod } from '../../organization/department/department.service';
-import { find as _find } from '../../organization/department/department.model';
-import { find as __find } from '../../semester/semesterCourse.model';
+// import { countDocuments, find, findById } from '../models/computation.model.js';
+// import { getDepartmentByHod } from '../../organization/department/department.service.js';
+// import { find as _find } from '../../organization/department/department.model.js';
+// import { find as __find } from '../../semester/semesterCourse.model.js';
+import ComputationSummary from '../models/computation.model.js';
 
 class ComputationService {
   async getHodDepartment(userId) {
@@ -43,7 +44,7 @@ class ComputationService {
     });
 
     // Get total count
-    const total = await countDocuments(query);
+    const total = await ComputationSummary.countDocuments(query);
 
     // Get filter options (for UI)
     const filters = await this.getAvailableFilters();
@@ -96,7 +97,7 @@ class ComputationService {
   }
 
   async fetchComputations(query, { skip, limit, sortBy, sortOrder }) {
-    return await find(query)
+    return await ComputationSummary.find(query)
       .select("department semester computedBy programme status purpose totalStudents studentsProcessed createdAt completedAt")
       .populate('department', 'name code')
       .populate('programme', 'name programmeType')
@@ -110,8 +111,8 @@ class ComputationService {
 
   async getAvailableFilters() {
     const [departments, semesters] = await Promise.all([
-      _find().select('name code').sort('name').lean(),
-      __find()
+      ComputationSummary.find().select('name code').sort('name').lean(),
+      ComputationSummary.find()
         .select('name academicYear')
         .sort('-academicYear name')
         .lean()
@@ -126,7 +127,7 @@ class ComputationService {
   }
 
   async getComputationById(id) {
-    const computation = await findById(id)
+    const computation = await ComputationSummary.findById(id)
       .populate('department', 'name code')
       .populate('programme', 'name programmeType')
       .populate('semester', 'name session')

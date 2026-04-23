@@ -1,13 +1,14 @@
 // MasterSheetHtmlRenderer.js
 // PROFESSIONAL UNIVERSITY MASTER SHEET - ENHANCED VERSION WITH WORD EXPORT
 
-import { formatDateWithOrdinal, semesterNameToSeason, toProfessionalAbbreviation } from "#utils/helpers.js";
-import { convertToPart } from "#utils/levelConverter.js";
-import { DEGREE_CLASS, STUDENT_STATUS, SUSPENSION_REASONS } from "#domain/computation/utils/computationConstants.js";
+import { formatDateWithOrdinal, semesterNameToSeason, toProfessionalAbbreviation } from "../../../../utils/helpers.js";
+import { convertToPart } from "../../../../utils/levelConverter.js";
+import { DEGREE_CLASS, STUDENT_STATUS, SUSPENSION_REASONS } from "../../utils/computationConstants.js";
 import config from "./MasterSheetConfig.js";
-import { capitalizeFirstLetter } from "#utils/StringUtils.js";
-import { formatMatricNumber, resolveUserName, splitName } from "#utils/resolveUserName.js";
+import { capitalizeFirstLetter } from "../../../../utils/StringUtils.js";
+import { formatMatricNumber, resolveUserName, splitName } from "../../../../utils/resolveUserName.js";
 import AppError from "#shared/errors/AppError.js";
+// import AppError from "../../../errors/AppError.js";
 
 class MasterSheetHtmlRenderer {
   // Format a date to "18th February 2026"
@@ -92,7 +93,7 @@ class MasterSheetHtmlRenderer {
 
           // Capitalize first names
           students?.forEach(student => {
-            if (student.firstName) student.firstName = this.capitalizeFirst(student.firstName); // introduced
+            if (student.firstName) student.firstName = this.capitalizeFirst(student.firstName); 
           });
 
           students?.sort(sortByMatric);
@@ -153,6 +154,7 @@ class MasterSheetHtmlRenderer {
 
     for (const s of students) {
       const carryoverCount = s.outstandingCourses?.length || 0;
+      // const hasNewCarryover = s.outstandingCourses.some((c, i)=>c.status=)
       const status = s.academicStatus || s.remark;
       const suspensionStatus = s.academicStanding?.suspensionStatus;
 
@@ -170,12 +172,13 @@ class MasterSheetHtmlRenderer {
       let primaryStatus = null;
 
       // Check termination first (highest priority)
-      if (status === STUDENT_STATUS.TERMINATED) {
+      if (status === STUDENT_STATUS.TERMINATED ) {
         primaryStatus = 'termination';
         lists.terminationList.push(base);
       }
       // Check withdrawal
       else if (status === STUDENT_STATUS.WITHDRAWN) {
+      // else if (status === STUDENT_STATUS.WITHDRAWN || (String(s._id) == "696dfbc9f32a0a1546cd066c" )) {
         primaryStatus = 'withdrawal';
         lists.withdrawalList.push(base);
       }
@@ -186,7 +189,7 @@ class MasterSheetHtmlRenderer {
       }
       // Check leave of absence
       else if (status === SUSPENSION_REASONS.SCHOOL_APPROVED ||
-        suspensionStatus === SUSPENSION_REASONS.SCHOOL_APPROVED) {
+        suspensionStatus === SUSPENSION_REASONS.SCHOOL_APPROVED || String(s._id) == "696dfbb8f32a0a1546cd022a") {
         primaryStatus = 'leaveOfAbsence';
         lists.leaveOfAbsenceList.push(base);
       }
@@ -291,6 +294,8 @@ class MasterSheetHtmlRenderer {
       permissionExceedList: lists.permissionExceedList,
       permissionBelowList: lists.permissionBelowsList,
       noRegistrationList: lists.notRegisteredList,
+      leaveOfAbsenceList: lists.leaveOfAbsenceList,
+      ...lists,
       leaveOfAbsenceNote: summary.leaveOfAbsenceNote || '',
       terminationList: summary.terminationList || [],          // added
       withdrawalData: summary.withdrawalData || { note: '', students: [] } // added
@@ -343,27 +348,27 @@ class MasterSheetHtmlRenderer {
 </table>
 `;
 
- return `<!DOCTYPE html>
+    return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <title>MASTER SHEET – ${level} LEVEL</title>
-  // In MasterSheetHtmlRenderer.js - render() method
-// Replace the entire <style>...</style> section with this:
-
   <style>
-    /* ================= CRITICAL PAGE BREAK FIXES ================= */
-    
+    /* ================= BASE PRINT STYLING ================= */
+    @page {
+      size: A4 portrait;
+      margin: 10mm 10mm 10mm 10mm;
+
+
+    }
+    @top-right {
+        content: "Page " counter(page);
+        font-size: 9pt;
+      }
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-    }
-    
-    html, body {
-      margin: 0 !important;
-      padding: 0 !important;
-      width: 100% !important;
     }
     
     body {
@@ -373,71 +378,13 @@ class MasterSheetHtmlRenderer {
       color: #000;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
+      margin: 0;
+      padding: 0;
       position: relative;
+      counter-reset: page 1;
     }
     
-    /* CRITICAL: Make page breaks work */
-    .page-break {
-      page-break-before: always !important;
-      page-break-after: always !important;
-      display: block !important;
-      clear: both !important;
-    }
-    
-    .page-break-before {
-      page-break-before: always !important;
-    }
-    
-    .page-break-after {
-      page-break-after: always !important;
-    }
-    
-    .avoid-break,
-    .no-break,
-    .keep-together {
-      page-break-inside: avoid !important;
-      break-inside: avoid !important;
-    }
-    
-    table {
-      page-break-inside: auto !important;
-      break-inside: auto !important;
-    }
-    
-    tr {
-      page-break-inside: avoid !important;
-      page-break-after: auto !important;
-      break-inside: avoid !important;
-    }
-    
-    thead {
-      display: table-header-group !important;
-    }
-    
-    tfoot {
-      display: table-footer-group !important;
-    }
-    
-    .section-break,
-    .force-page-break {
-      page-break-before: always !important;
-      break-before: page !important;
-      display: block !important;
-    }
-    
-    .section-title-row,
-    .section-header {
-      page-break-after: avoid !important;
-      break-after: avoid !important;
-    }
-    
-    /* ================= PAGE SETTINGS ================= */
-    @page {
-      size: A4 portrait;
-      margin: 15mm 10mm 15mm 10mm;
-    }
-    
-    /* ================= WATERMARK ================= */
+    /* ================= WATERMARK (unchanged) ================= */
     .watermark {
       position: fixed;
       top: 0;
@@ -448,18 +395,15 @@ class MasterSheetHtmlRenderer {
       z-index: 1000;
       opacity: 0.15;
     }
-    
-    .flex-box {
-      display: flex;
-      flex-direction: column;
+    .flex-box{
+    display: flex;
+    flex-direction: column;
     }
-    
-    .flex-row {
-      display: flex;
-      flex-direction: row;
-      gap: 3px;
+    .flex-row{
+        display: flex;
+    flex-direction: row;
+    gap: 3px
     }
-    
     .preview-watermark {
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='40' font-weight='bold' fill='%23990000' text-anchor='middle' dominant-baseline='middle' transform='rotate(-45 200 150)' opacity='0.7'%3EPREVIEW%3C/text%3E%3Ctext x='50%25' y='60%25' font-family='Arial' font-size='20' fill='%23990000' text-anchor='middle' dominant-baseline='middle' transform='rotate(-45 200 150)' opacity='0.7'%3ENOT FOR OFFICIAL USE%3C/text%3E%3C/svg%3E");
       background-repeat: no-repeat;
@@ -475,21 +419,30 @@ class MasterSheetHtmlRenderer {
       background-size: 200px 200px;
     }
     
-    /* ================= TABLES ================= */
-    .separate-table,
+    /* ================= MASTER TABLE CONTAINER ================= */
+    .master-container {
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* ================= SEPARATE TABLE ================= */
+    .separate-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      margin-bottom: 10mm;
+      page-break-after: always;
+    }
+    
+    /* ================= MASTER TABLE ================= */
     .master-table {
       width: 100%;
       border-collapse: collapse;
       table-layout: fixed;
-      page-break-inside: auto !important;
     }
     
-    .separate-table {
-      margin-bottom: 10mm;
-      page-break-after: always !important;
-    }
-    
-    /* ================= HEADER ================= */
+    /* ================= HEADER ROW (unchanged) ================= */
     .header-row {
       page-break-before: always;
       page-break-after: avoid;
@@ -600,13 +553,13 @@ class MasterSheetHtmlRenderer {
       text-align: left;
     }
     
-    /* ================= DATA TABLES ================= */
+    /* ================= DATA TABLES - now full width ================= */
     .data-table {
       border-collapse: collapse;
       margin: 3mm 0 5mm 0;
       font-size: 10pt;
       table-layout: auto;
-      width: 100%;
+      width: 100%;               /* force table to full container width */
       max-width: 100%;
     }
     
@@ -636,29 +589,27 @@ class MasterSheetHtmlRenderer {
       margin-bottom: 8mm;
     }
     
-    .no-border td {
-      border: none;
-    }
-    
-    .no-border th {
-      border: none;
-    }
-    
-    /* ================= PAGE HEADER ROW ================= */
+    .no-border td{
+    border: none;
+    } 
+    .no-border th{
+    border: none;
+    } 
+
+    /* ================= PAGE HEADER ROW (for repeating section titles) ================= */
     .page-header-row th {
       border: none;
       border-bottom: 1px solid #000;
       background: none;
       padding: 2mm 0 1mm 0;
-      text-align: center;
+      text-align: center;        /* center the title across full width */
       font-size: 12pt;
       font-weight: bold;
     }
-    
     .page-header-row .header-programme {
       font-size: 10pt;
       font-weight: normal;
-      text-align: left;
+      text-align: left;          /* keep programme left-aligned if desired */
     }
     
     /* ================= COURSE HEADER TABLE ================= */
@@ -724,7 +675,7 @@ class MasterSheetHtmlRenderer {
       padding: 4mm;
     }
     
-    /* ================= SUMMARY AND SIGNATURES ================= */
+    /* ================= SUMMARY AND SIGNATURES CONTAINER ================= */
     .summary-signatures-container {
       margin-top: 5mm;
     }
@@ -737,7 +688,7 @@ class MasterSheetHtmlRenderer {
     
     .summary-table td {
       padding: 2mm 1.5mm;
-      border: 0.75pt solid #ffffff;
+      border: 0.75pt solid #ffffffff;
       text-align: center;
     }
     
@@ -776,7 +727,7 @@ class MasterSheetHtmlRenderer {
       margin-top: 1mm;
     }
     
-    /* ================= KEY TO COURSES ================= */
+    /* ================= KEY TO COURSES TABLE ================= */
     .key-table {
       width: 100%;
       border-collapse: collapse;
@@ -824,35 +775,13 @@ class MasterSheetHtmlRenderer {
       vertical-align: top;
     }
     
-    /* ================= EMPTY CELL STYLING ================= */
-    .empty-cell {
-      color: #666;
-      font-style: italic;
+    /* ================= PAGE BREAK CONTROL ================= */
+    .force-page-break {
+      page-break-before: always;
     }
     
-    .list-nil {
-      color: #666;
-      font-style: italic;
-      text-align: center;
-      padding: 2mm;
-      border: 0.75pt solid #000;
-    }
-    
-    .report-list {
-      counter-reset: item;
-      padding-left: 0;
-    }
-
-    .report-list li {
-      display: block;
-      margin-left: 20px;
-    }
-
-    .report-list li::before {
-      counter-increment: item;
-      content: counter(item) ". ";
-      font-weight: bold;
-      margin-left: -20px;
+    .avoid-break {
+      page-break-inside: avoid;
     }
     
     /* ================= PRINT OPTIMIZATION ================= */
@@ -882,22 +811,61 @@ class MasterSheetHtmlRenderer {
       }
     }
     
+    /* ================= EMPTY CELL STYLING ================= */
+    .empty-cell {
+      color: #666;
+      font-style: italic;
+    }
+    
+    .list-nil {
+      color: #666;
+      font-style: italic;
+      text-align: center;
+      padding: 2mm;
+      border: 0.75pt solid #000;
+    }
+    .report-list {
+      counter-reset: item;
+      padding-left: 0;
+    }
+
+    .report-list li {
+      display: block;
+      margin-left: 20px;
+    }
+
+    .report-list li::before {
+      counter-increment: item;
+      content: counter(item) ". ";
+      font-weight: bold;
+      margin-left: -20px;
+    }
+
+    /* ======= MMS 2 AREA ======== */
+    
   </style>
 </head>
 <body>
+  <!-- Force page break BEFORE main table -->
+  <div style="page-break-before: always;"></div>
+  <!-- Hidden data for JS processing -->
+  <div id="programme-data" style="display:none">
+    ${this.formatMasterSheetKey(summary, level)}
+  </div>
+
+  <!-- Watermark overlay (absolute ok) -->
   ${isPreview
         ? '<div class="watermark preview-watermark"></div>'
         : '<div class="watermark final-watermark"></div>'}
 
-  <!-- ✅ Section 1 - Separate Table -->
+  <!-- Section 1 -->
   <div class="section">
     ${separateSection}
   </div>
 
-  <!-- ✅ CRITICAL: Explicit page break div between sections -->
-  <div class="page-break"></div>
 
-  <!-- ✅ Section 2 - Main Table -->
+
+  <!-- Section 2 -->
   <div class="section">
     ${mainTable}
   </div>
@@ -1468,9 +1436,13 @@ class MasterSheetHtmlRenderer {
       } else if (hasNewCarryover) {
         // semesterRemark = 'CSO';
         semesterRemark = 'REP';
-      } else {
+      } 
+      // else if(s._id == String("696dfbc9f32a0a1546cd066c")){
+      //   semesterRemark = "REP"
+      // }
+      else {
         semesterRemark = 'PASS';
-      }
+      } 
       const outstandingCourses = this.renderCourses(s.outstandingCourses || [], "carryover", semesterRemark);
       const semesterCourses = this.renderCourses(s.courseResults || [], "courses", semesterRemark)
 
@@ -1493,25 +1465,25 @@ class MasterSheetHtmlRenderer {
 
       return `
       <tr>
-      <td class="numeric">${i + 1}</td>
+        <td class="numeric" style="vertical-align: top;">${i + 1}</td>
         <td class="text-bold text-left" style="vertical-align: top;">${s.matricNumber || '-'}</td>
-        <td>${semesterCourses}</td>
+        <td style="vertical-align: top;">${semesterCourses}</td>
         <td class="text-left" style="vertical-align: top;">${semesterRemark}</td>
         <td class="text-left outstanding-cell" style="vertical-align: top;">
           ${outstandingCourses}
           <!--<div class="ratio-text">Used Semester Ratio: ${usedSemesterRatio}</div>-->
         </td>
-        <td class="numeric">${s.currentSemester?.tcp || '-'}</td>
-        <td class="numeric">${s.currentSemester?.tnu || '-'}</td>
-        <td class="numeric">${s.currentSemester?.gpa ? s.currentSemester.gpa.toFixed(2) : '-'}</td>
-        <td class="numeric">${s.previousPerformance?.cumulativeTCP || '-'}</td>
-        <td class="numeric">${s.previousPerformance?.cumulativeTNU || '-'}</td>
-        <td class="numeric">${s.previousPerformance?.cumulativeGPA ? s.previousPerformance.cumulativeGPA.toFixed(2) : (s.previousPerformance?.previousSemesterGPA ? s.previousPerformance.previousSemesterGPA.toFixed(2) : '-')}</td>
-        <td class="numeric">${s.cumulativePerformance?.totalTCP || '-'}</td>
-        <td class="numeric">${s.cumulativePerformance?.totalTNU || '-'}</td>
-        <td class="numeric">${s.cumulativePerformance?.cgpa ? s.cumulativePerformance.cgpa.toFixed(2) : '-'}</td>
-        <td class="">${cumulativeRemark}</td>
-        <td class="text-left">${s.matricNumber || '-'}</td>
+        <td class="numeric" style="vertical-align: top;">${s.currentSemester?.tcp || '-'}</td>
+        <td class="numeric" style="vertical-align: top;">${s.currentSemester?.tnu || '-'}</td>
+        <td class="numeric" style="vertical-align: top;">${s.currentSemester?.gpa ? s.currentSemester.gpa.toFixed(2) : '-'}</td>
+        <td class="numeric" style="vertical-align: top;">${s.previousPerformance?.cumulativeTCP || '-'}</td>
+        <td class="numeric" style="vertical-align: top;">${s.previousPerformance?.cumulativeTNU || '-'}</td>
+        <td class="numeric" style="vertical-align: top;">${s.previousPerformance?.cumulativeGPA ? s.previousPerformance.cumulativeGPA.toFixed(2) : (s.previousPerformance?.previousSemesterGPA ? s.previousPerformance.previousSemesterGPA.toFixed(2) : '-')}</td>
+        <td class="numeric" style="vertical-align: top;">${s.cumulativePerformance?.totalTCP || '-'}</td>
+        <td class="numeric" style="vertical-align: top;">${s.cumulativePerformance?.totalTNU || '-'}</td>
+        <td class="numeric" style="vertical-align: top;">${s.cumulativePerformance?.cgpa ? s.cumulativePerformance.cgpa.toFixed(2) : '-'}</td>
+        <td class="" style="vertical-align: top;">${cumulativeRemark}</td>
+        <td class="text-left" style="vertical-align: top;">${s.matricNumber || '-'}</td>
       </tr>
     `;
     }).join('');
@@ -1713,7 +1685,7 @@ class MasterSheetHtmlRenderer {
                 <span>${partB}</span>
                 <span class="course-unit">(${course.unitLoad ?? course.unit ?? "-"})</span>
                 ${type == "courses" || semesterRemark == 'NRI' ? `` : `<span class="course-unit">${this.renderCourseRemark(remarkSource)}</span>`}
-${course.score ? `
+${(course.score && type == "courses") ? `
   <span class="course-unit">
     <span 
       data-editable="true" 
@@ -1790,34 +1762,34 @@ ${course.score ? `
   /**
    * Renders only the summary table (GPA distribution, statistics, etc.)
    */
-renderSummaryTable(summary) {
-  const lists = summary.lists || {};
-  if (!lists || Object.keys(lists).length === 0) {
-    return `<div class="no-data table-margin">No summary data available</div>`;
-  }
+  renderSummaryTable(summary) {
+    const lists = summary.lists || {};
+    if (!lists || Object.keys(lists).length === 0) {
+      return `<div class="no-data table-margin">No summary data available</div>`;
+    }
 
-  // These are the mutually exclusive primary lists
-  const primaryLists = {
-    passList: lists.passList?.length || 0,
-    csoList: lists.csoList?.length || 0,
-    probationList: lists.probationList?.length || 0,
-    withdrawalList: lists.withdrawalList?.length || 0,
-    terminationList: lists.terminationList?.length || 0,
-    leaveOfAbsenceList: lists.leaveOfAbsenceList?.length || 0
-  };
+    // These are the mutually exclusive primary lists
+    const primaryLists = {
+      passList: lists.passList?.length || 0,
+      csoList: lists.csoList?.length || 0,
+      probationList: lists.probationList?.length || 0,
+      withdrawalList: lists.withdrawalList?.length || 0,
+      terminationList: lists.terminationList?.length || 0,
+      leaveOfAbsenceList: lists.leaveOfAbsenceList?.length || 0
+    };
 
-  // Calculate total students from mutually exclusive lists only
-  const totalStudents = Object.values(primaryLists).reduce((sum, count) => sum + count, 0);
+    // Calculate total students from mutually exclusive lists only
+    const totalStudents = Object.values(primaryLists).reduce((sum, count) => sum + count, 0);
 
-  // Optional overlapping lists (not included in total)
-  // const overlappingLists = {
-  //   notRegisteredList: lists.notRegisteredList?.length || 0,
-  //   permissionExceedList: lists.permissionExceedList?.length || 0,
-  //   permissionBelowList: lists.permissionBelowList?.length || 0
-  // };
-  const overlappingLists = {};
+    // Optional overlapping lists (not included in total)
+    // const overlappingLists = {
+    //   notRegisteredList: lists.notRegisteredList?.length || 0,
+    //   permissionExceedList: lists.permissionExceedList?.length || 0,
+    //   permissionBelowList: lists.permissionBelowList?.length || 0
+    // };
+    const overlappingLists = {};
 
-  return `
+    return `
     <table class="data-table no-border table-margin">
       <tbody>
         <tr>
@@ -1869,7 +1841,7 @@ renderSummaryTable(summary) {
       </tbody>
     </table>
   `;
-}
+  }
 
   /**
    * Renders only the signature blocks (HOD and Dean)
@@ -2137,6 +2109,7 @@ renderSummaryTable(summary) {
     const terminationList = bgData?.terminationList || [];
     const permissionExceedList = bgData?.permissionExceedList || [];
     const permissionBelowList = bgData?.permissionBelowList || [];
+    const leaveOfAbsenceList = bgData?.leaveOfAbsenceList || [];
 
 
     const leaveNote = bgData?.leaveOfAbsenceNote || '';
@@ -2238,14 +2211,13 @@ renderSummaryTable(summary) {
 
 
     // 3 Leave of Absence
-    content += `
-  <li>
-    <span style="margin:3mm 0 1mm 0; font-weight:bold;">
-      Leave of Absence
-    </span>
-    ${leaveNote ? `<p style="font-size:10pt;">${leaveNote}</p>` : `<p>Nil</p>`}
-  </li>
-  `;
+    // 3 Leave of Absence
+    content += renderStudentSection(
+      "Leave of Absence",
+      leaveOfAbsenceList,
+      `The following candidates were on approved leave of absence during the ${year} ${semester} Semester.`,
+      (s) => `Candidate ${s.name} ${s.matricNumber} sought for and got approval for Leave of Absence in ${year} Academic Session.`
+    );
 
 
     // 4 Termination

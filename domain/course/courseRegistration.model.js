@@ -3,6 +3,8 @@ import { SYSTEM_USER_ID } from "#config/system.js";
 import AppError from "#shared/errors/AppError.js";
 import studentModel from "#domain/user/student/student.model.js";
 import courseModel from "./course.model.js";
+import { normalizeCourse } from "./course.normallizer.js";
+import SemesterService from "#domain/semester/semester.service.js";
 
 const courseRegistrationSchema = new mongoose.Schema(
   {
@@ -19,16 +21,10 @@ const courseRegistrationSchema = new mongoose.Schema(
     },
     attamptNumber: { type: Number, default: 1 },
     approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
-    carryOverId: { type: mongoose.Schema.Types.ObjectId, ref: "CarryoverCourse", default: null },  // This would be linked to a carryover document in case they are carrying the coursse over
 
     // Details in case it was registered or re-registerd by an hod
     notes: { type: String, default: null },
     registeredBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: SYSTEM_USER_ID },
-    department: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Department",
-      required: true,
-    },
     exceededMaxUnits: {
       type: Boolean,
       default: false
@@ -75,10 +71,16 @@ courseRegistrationSchema.pre('validate', async function (next) {
     const studentDepartmentId = student.departmentId._id.toString();
 
     // Check each course belongs to student's department
-    const courses = await courseModel.find({
+    let courses = await courseModel.find({
       _id: { $in: this.courses }
-    }).populate('department');
-// console.log(courses[])
+    })
+      .populate('department')
+      .populate('borrowedId')
+      .populate('semester');
+    courses.map((v, i) => {
+      courses[i] = normalizeCourse(v)
+    })
+
     const invalidCourses = courses.filter(
       course => course.department._id.toString() !== studentDepartmentId
     );
@@ -88,6 +90,22 @@ courseRegistrationSchema.pre('validate', async function (next) {
       return next(new Error(
         `Cannot register for courses from other departments: ${invalidCodes}`
       ));
+    }
+
+    // Check each course's semester matches registration semester
+    const semesterName = (await SemesterService.getAcademicSemesterById(this.semester)).name;
+    const wrongSemesterCourses = courses.filter(
+      course => course.semester !== semesterName
+    );
+
+    if (wrongSemesterCourses.length > 0) {
+      const mismatchDetails = wrongSemesterCourses.map(c =>
+        `${c.courseCode} (course semester: ${c.semester || 'not set'})`
+      ).join(', ');
+      console.log(`❌ Semester mismatch for registration ${this._id}:`);
+      console.log(`   Registration semester: ${semesterName}`);
+      console.log(`   Mismatched courses: ${mismatchDetails}`);
+      return next(new Error(`Courses not offered in ${semesterName} semester: ${wrongSemesterCourses.map(c => c.courseCode).join(', ')}`));
     }
 
     next();

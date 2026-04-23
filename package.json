@@ -8,8 +8,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon --env-file=.env index.js --ignore auth_info_baileys --ignore logs --ignore backups",
-    "worker": "node workers/run.department.worker.js",
-    "dev:worker": "nodemon workers/run.department.worker.js",
+    "worker": "node startWorker.js",
+    "dev:worker": "nodemon startWorker.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "test:payment": "NODE_OPTIONS=--experimental-vm-modules jest test/domain/payment/",
     "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest test/domain/",
@@ -29,7 +29,8 @@
     "#utils/*": "./utils/*",
     "#config/*": "./config/*",
     "#workers/*": "./workers/*",
-    "#middlewares/*": "./middlewares/*"
+    "#middlewares/*": "./middlewares/*",
+    "#jobs/*": "./jobs/*"
   },
   "dependencies": {
     "@bull-board/express": "^6.15.0",

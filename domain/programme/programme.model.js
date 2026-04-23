@@ -1,3 +1,4 @@
+import { DB } from "#config/db-contract.js";
 import mongoose from "mongoose";
 
 const programmeSchema = new mongoose.Schema({
@@ -20,13 +21,13 @@ const programmeSchema = new mongoose.Schema({
   },
   department: { 
     type: mongoose.Schema.Types.ObjectId, 
-    ref: "Department", 
+    ref: DB.OrganizationalUnit.MODEL, 
     required: [true, 'Department reference is required'],
     index: true
   },
   faculty: { 
     type: mongoose.Schema.Types.ObjectId, 
-    ref: "Faculty",
+    ref: DB.OrganizationalUnit.MODEL,
     index: true
   },
   duration: {
@@ -151,7 +152,7 @@ programmeSchema.index({ name: 'text', code: 'text' });
 programmeSchema.pre('save', async function(next) {
   if (this.isNew && this.department && !this.faculty) {
     try {
-      const Department = mongoose.model('Department');
+      const Department = mongoose.model(DB.OrganizationalUnit.MODEL);
       const department = await Department.findById(this.department).select('faculty');
       if (department && department.faculty) {
         this.faculty = department.faculty;

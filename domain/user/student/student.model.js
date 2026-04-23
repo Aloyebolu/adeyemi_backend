@@ -1,3 +1,4 @@
+import { DB } from "#config/db-contract.js";
 import mongoose from "mongoose";
 
 const studentSchema = new mongoose.Schema(
@@ -16,12 +17,12 @@ const studentSchema = new mongoose.Schema(
     },
     departmentId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Department",
+      ref: DB.OrganizationalUnit.MODEL,
       required: true,
     },
     facultyId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Faculty",
+      ref: DB.OrganizationalUnit.MODEL,
       required: true,
     },
     programmeId: {

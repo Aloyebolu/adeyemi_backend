@@ -2,7 +2,6 @@
 import { ComputationCore } from "./computation.core.js";
 import ComputationSummary from "#domain/computation/models/computation.model.js";
 import SemesterService from "#domain/semester/semester.service.js";
-import { addDepartmentJob, queueNotification } from "#workers/department.queue.js";
 import BulkWriter from "#domain/computation/services/BulkWriter.js";
 import ReportService from "#domain/computation/services/ReportService.js";
 import StudentService from "#domain/user/student/student.service.js";
@@ -568,4 +567,5 @@ import mongoose from "mongoose";
 import { SYSTEM_USER_ID } from "#config/system.js";
 import { resolveUserName } from "#utils/resolveUserName.js";
 import CarryoverService from "#domain/computation/services/CarryoverService.js";
+import { queueNotification } from "#jobs/worker.js";
 

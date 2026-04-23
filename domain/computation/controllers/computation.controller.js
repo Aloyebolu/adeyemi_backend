@@ -8,7 +8,6 @@ import {
   updateMasterComputationStats
 } from "#domain/computation/utils/computation.utils.js";
 import MasterComputation from "#domain/computation/models/masterComputation.model.js";
-import { addDepartmentJob, queueNotification } from "#workers/department.queue.js";
 import { randomUUID } from "crypto";
 import SemesterService from "#domain/semester/semester.service.js";
 import GPACalculator from "#domain/computation/services/GPACalculator.js";
@@ -25,6 +24,8 @@ import ComputationReportService from "#domain/computation/services/master-sheet/
 import catchAsync from "#utils/catchAsync.js";
 import { createReadStream } from "fs";
 import ComputationSummary from "#domain/computation/models/computation.model.js";
+import computationService from "../services/computation.service.js";
+import { cancelDepartmentJob, jobMonitor, queueDepartmentJob, queueNotification } from "#jobs/worker.js";
 
 /**
  * Unified department job processor - routes to appropriate handler
@@ -120,7 +121,8 @@ export const computeAllResults = async (req, res, next) => {
       purpose
     }).session(session);
 
-    if (masterComputation) {
+    // if (masterComputation) {
+    if (false) {
       // Reuse existing master computation
       masterComputation.status = "processing";
       masterComputation.startedAt = new Date();
@@ -161,7 +163,7 @@ export const computeAllResults = async (req, res, next) => {
     for (const job of programmeJobs) {
       const uniqueJobId = `prog-${job.programmeId}-${masterComputation._id}-${Date.now()}-${randomUUID()}`;
 
-      await addDepartmentJob({
+      await queueDepartmentJob({
         scope: "programme",
         departmentId: job.departmentId,
         programmeId: job.programmeId,
@@ -340,75 +342,209 @@ export const calculateSemesterGPA = async (req, res) => {
       ...gpaData
     });
   } catch (error) {
-    return buildResponse(res, 500, "Failed to calculate GPA", null, true, error);
+    throw error
   }
 
 };
+
 export const cancelComputation = async (req, res) => {
   const session = await mongoose.startSession();
+  const startTime = Date.now();
 
   try {
     await session.startTransaction();
+
     const { masterComputationId } = req.params;
     const computedBy = req.user._id;
+    const { reason } = req.body; // Optional cancellation reason
 
-    // Check if queue is available
-    if (!departmentQueue) {
-      await session.abortTransaction();
-      return buildResponse(res, 500, "Job queue not available");
-    }
-
-    // Remove queued jobs (if queue methods exist)
-    try {
-      const waitingJobs = await departmentQueue.getWaiting();
-      const activeJobs = await departmentQueue.getActive();
-
-      const jobsToRemove = [...waitingJobs, ...activeJobs].filter(job =>
-        job.data.masterComputationId === masterComputationId
-      );
-
-      for (const job of jobsToRemove) {
-        await job.remove();
-      }
-    } catch (queueError) {
-      console.warn("Could not remove jobs from queue:", queueError);
-    }
-
-    // Update master computation
+    // Step 1: Find master computation first to verify it exists
     const masterComputation = await MasterComputation.findById(masterComputationId).session(session);
     if (!masterComputation) {
       await session.abortTransaction();
       return buildResponse(res, 404, "Master computation not found");
     }
 
+    // Step 2: Check if cancellation is allowed
+    const allowedStatuses = ["pending", "processing", "queued"];
+    if (!allowedStatuses.includes(masterComputation.status)) {
+      await session.abortTransaction();
+      return buildResponse(res, 400, `Cannot cancel computation with status: ${masterComputation.status}`);
+    }
+
+    // Step 3: Cancel all related jobs
+    const cancellationResult = await cancelRelatedJobs(masterComputationId);
+
+    // Step 4: Update master computation
     masterComputation.status = "cancelled";
     masterComputation.completedAt = new Date();
-    masterComputation.duration = Date.now() - masterComputation.startedAt.getTime();
+
+    if (masterComputation.startedAt) {
+      masterComputation.duration = Date.now() - masterComputation.startedAt.getTime();
+    }
+
+    // Track cancellation details
+    masterComputation.cancellationDetails = {
+      cancelledBy: computedBy,
+      cancelledAt: new Date(),
+      reason: reason || "User requested cancellation",
+      processingTime: Date.now() - startTime,
+      jobsCancelled: cancellationResult.cancelled,
+      jobsNotFound: cancellationResult.notFound
+    };
 
     await masterComputation.save({ session });
     await session.commitTransaction();
 
-    await queueNotification(
-      "admin",
-      computedBy,
-      "computation_cancelled",
-      `Results computation cancelled. ID: ${masterComputationId}`,
-      { masterComputationId }
-    );
+    // Step 5: Send notifications (fire and forget)
+    sendCancellationNotifications(masterComputationId, computedBy, cancellationResult, reason);
 
+    // Step 6: Return success response
     return buildResponse(res, 200, "Computation cancelled successfully", {
-      masterComputationId
+      masterComputationId,
+      status: "cancelled",
+      cancelledAt: masterComputation.completedAt,
+      jobsCancelled: cancellationResult.cancelled,
+      jobsAlreadyCompleted: cancellationResult.alreadyCompleted
     });
 
   } catch (error) {
     if (session.inTransaction()) {
       await session.abortTransaction();
     }
-    return buildResponse(res, 500, "Failed to cancel computation", null, true, error);
+
+    console.error("[Cancel] Transaction failed:", error);
+
+    return buildResponse(res, 500, "Failed to cancel computation", {
+      error: error.message,
+      masterComputationId: req.params.masterComputationId
+    });
   } finally {
     session.endSession();
   }
 };
+
+
+/**
+ * Helper: Cancel all jobs related to a master computation
+ */
+async function cancelRelatedJobs(masterComputationId) {
+  const result = {
+    cancelled: 0,
+    notFound: 0,
+    alreadyCompleted: 0,
+    failed: 0,
+    jobIds: []
+  };
+
+  try {
+    // Get all jobs from queue
+    const [waitingJobs, activeJobs, completedJobs, failedJobs] = await Promise.all([
+      jobMonitor.getWaitingJobs(),
+      jobMonitor.getActiveJobs(),
+      jobMonitor.getCompletedJobs?.(100) || [],
+      jobMonitor.getFailedJobs()
+    ]);
+
+    const allJobs = [...waitingJobs, ...activeJobs, ...completedJobs, ...failedJobs];
+
+    // Filter jobs for this master computation
+    const relatedJobs = allJobs.filter(job => {
+      const jobData = job.attrs.data;
+      return jobData?.masterComputationId === masterComputationId ||
+        jobData?.masterComputationId?.toString() === masterComputationId;
+    });
+
+    console.log(`[Cancel] Found ${relatedJobs.length} related jobs for master computation ${masterComputationId}`);
+
+    // Process each job
+    for (const job of relatedJobs) {
+      const jobId = job.attrs._id.toString();
+      const jobStatus = getJobStatus(job);
+
+      try {
+        // Only cancel jobs that are still pending or active
+        if (jobStatus === "waiting" || jobStatus === "active") {
+          const cancelled = await cancelDepartmentJob(jobId);
+
+          if (cancelled) {
+            result.cancelled++;
+            result.jobIds.push(jobId);
+            console.log(`[Cancel] ✓ Cancelled job: ${jobId}`);
+          } else {
+            result.failed++;
+            console.warn(`[Cancel] ✗ Failed to cancel job: ${jobId}`);
+          }
+        } else {
+          result.alreadyCompleted++;
+          console.log(`[Cancel] Skipped ${jobStatus} job: ${jobId}`);
+        }
+      } catch (error) {
+        result.failed++;
+        console.error(`[Cancel] Error cancelling job ${jobId}:`, error.message);
+      }
+    }
+
+  } catch (error) {
+    console.error("[Cancel] Error accessing job queue:", error);
+    // Don't throw - we still want to update the database
+  }
+
+  return result;
+}
+
+/**
+ * Helper: Get job status
+ */
+function getJobStatus(job) {
+  if (job.attrs.lastFinishedAt) return "completed";
+  if (job.attrs.failedAt) return "failed";
+  if (job.attrs.lockedAt) return "active";
+  return "waiting";
+}
+
+/**
+ * Helper: Send cancellation notifications
+ */
+async function sendCancellationNotifications(masterComputationId, userId, result, reason) {
+  const notifications = [
+    // Notify the user who cancelled
+    queueNotification({
+      target: "specific",
+      recipientId: userId,
+      templateId: "computation_cancelled",
+      message: `Computation ${masterComputationId} has been cancelled`,
+      metadata: {
+        masterComputationId,
+        cancelledBy: userId,
+        jobsCancelled: result.cancelled,
+        reason: reason || "User requested",
+        timestamp: new Date()
+      }
+    }),
+
+    // Notify admins if many jobs were cancelled
+    result.cancelled > 5 ? queueNotification({
+      target: "admin",
+      recipientId: "admin",
+      templateId: "bulk_jobs_cancelled",
+      message: `${result.cancelled} jobs cancelled for computation ${masterComputationId}`,
+      metadata: {
+        masterComputationId,
+        cancelledBy: userId,
+        jobsCancelled: result.cancelled
+      }
+    }) : Promise.resolve()
+  ];
+
+  // Fire and forget - don't wait for notifications
+  Promise.allSettled(notifications).then(results => {
+    const succeeded = results.filter(r => r.status === "fulfilled").length;
+    const failed = results.filter(r => r.status === "rejected").length;
+    console.log(`[Cancel] Notifications sent: ${succeeded} succeeded, ${failed} failed`);
+  });
+}
+
 export const getComputationHistory = async (req, res) => {
   try {
     const { page = 1, limit = 20, status, startDate, endDate } = req.query;
@@ -519,7 +655,7 @@ export const retryFailedDepartments = async (req, res) => {
         isRetry: true
       };
 
-      await addDepartmentJob(jobData);
+      await queueDepartmentJob(jobData);
       retryJobs.push(uniqueJobId);
     }
 
@@ -575,7 +711,7 @@ export const getAllComputations = async (req, res, next) => {
   }
 }
 
-  export const getComputationFilters = async (req, res, next)=> {
+export const getComputationFilters = async (req, res, next) => {
   try {
     const filters = await computationService.getAvailableFilters();
     res.json({

@@ -29,7 +29,7 @@ export function normalizeCourse(course) {
 }
 
 export function normalizeCourses(courses) {
-    return courses.map(normalizeCourse);
+    return courses?.map(normalizeCourse);
 }
 
 export const isBorrowedDoc = (course) => {

@@ -190,10 +190,14 @@ export class WhatsAppWorkerService {
         await this.initializeSession('default');
     }
 
+
     startHeartbeat() {
         this.heartbeatInterval = setInterval(async () => {
             try {
                 const sessionStatus = await SessionStatus.findOne({ sessionId: 'default' });
+
+                // Get detailed status for heartbeat metadata
+                const detailedStatus = await this.getStatus();
 
                 await WorkerHeartbeat.findOneAndUpdate(
                     { workerId: this.workerId },
@@ -204,7 +208,11 @@ export class WhatsAppWorkerService {
                             metadata: {
                                 isPaused: this.isPaused,
                                 connectionStatus: sessionStatus?.connectionStatus,
-                                phoneNumber: sessionStatus?.phoneNumber
+                                phoneNumber: sessionStatus?.phoneNumber,
+                                totalSessions: detailedStatus.totalSessions,
+                                connectedSessions: detailedStatus.connectedSessions,
+                                memory: detailedStatus.memory,
+                                uptime: detailedStatus.uptime
                             }
                         }
                     },
@@ -388,12 +396,6 @@ export class WhatsAppWorkerService {
 
                 console.log(`[WhatsApp Worker] Session ${sessionId} connected!`);
 
-                notifier.notify({
-                    title: 'WhatsApp',
-                    message: 'Connected to WhatsApp successfully!',
-                    timeout: 3
-                });
-
                 sendNotificationCore({
                     target: 'admin',
                     userIds: mongoose.Types.ObjectId('690c70aa423136f152398166'),
@@ -406,7 +408,7 @@ export class WhatsAppWorkerService {
                 const statusCode = lastDisconnect?.error?.output?.statusCode;
 
                 await sessionManager.updateConnectionStatus('disconnected');
-                console.log(`[WhatsApp Worker] Session ${sessionId} disconnected`);
+                console.log(`[WhatsApp Worker] Session ${sessionId} disconnected`, lastDisconnect?.error || '');
 
                 notifier.notify({
                     title: 'WhatsApp',
@@ -470,12 +472,16 @@ export class WhatsAppWorkerService {
     }
 
     async sendMessage(to, message) {
+        if(!to || !message) {
+            throw new AppError('Recipient and message are required', 400);
+        }
+        
         const socket = this.sockets.get('default');
         if (!socket || !socket.user) {
             throw new AppError('WhatsApp not connected');
         }
 
-        if (!to.includes('@')) {
+        if (!to?.includes('@')) {
             to = to.replace(/\D/g, '');
             if (to.startsWith('0')) to = DEFAULT_COUNTRY_CODE + to.slice(1);
             to += '@s.whatsapp.net';
@@ -525,6 +531,73 @@ export class WhatsAppWorkerService {
 
         this.sockets.clear();
         this.sessionManagers.clear();
+    }
+    // Inside the WhatsAppWorkerService class, add this method:
+
+    /**
+     * Get detailed status of the worker and all sessions
+     * @returns {Object} Worker status information
+     */
+    async getStatus() {
+        const sessions = [];
+
+        for (const [sessionId, socket] of this.sockets) {
+            const sessionManager = this.sessionManagers.get(sessionId);
+            const sessionStatus = await SessionStatus.findOne({ sessionId });
+
+            let connectionStatus = 'unknown';
+            let isConnected = false;
+            let user = null;
+
+            if (socket) {
+                isConnected = !!socket.user;
+                user = socket.user;
+
+                // Determine connection state
+                if (socket.user) {
+                    connectionStatus = 'connected';
+                } else if (socket.authState?.creds?.registered) {
+                    connectionStatus = 'registered';
+                } else {
+                    connectionStatus = 'connecting';
+                }
+            }
+
+            // Check if QR is available
+            const qrDoc = await WaAuth.findOne({ _id: `qr:${sessionId}` });
+            const hasQR = !!qrDoc;
+            const qrExpiry = qrDoc?.updatedAt || qrDoc?.createdAt;
+
+            sessions.push({
+                sessionId,
+                connectionStatus,
+                isConnected,
+                isPaused: this.isPaused,
+                phoneNumber: user?.id?.split(':')[0] || sessionStatus?.phoneNumber || null,
+                deviceInfo: user ? {
+                    platform: user?.platform,
+                    device: user?.device,
+                    browser: user?.browser
+                } : null,
+                hasQR,
+                qrExpiry: qrExpiry ? new Date(qrExpiry).toISOString() : null,
+                qrValid: qrExpiry ? (Date.now() - new Date(qrExpiry).getTime()) < 60000 : false,
+                lastActive: sessionStatus?.lastActive || null,
+                uptime: sessionStatus?.connectedAt ?
+                    Math.floor((Date.now() - new Date(sessionStatus.connectedAt).getTime()) / 1000) : 0
+            });
+        }
+
+        return {
+            workerId: this.workerId,
+            isPaused: this.isPaused,
+            totalSessions: this.sockets.size,
+            connectedSessions: Array.from(this.sockets.values()).filter(s => !!s.user).length,
+            sessions,
+            memory: process.memoryUsage(),
+            uptime: process.uptime(),
+            timestamp: new Date().toISOString()
+        };
     }
 }
 
@@ -713,7 +786,8 @@ class WhatsAppService {
     }
 
     async sendMessage(to, message, sessionId = 'default') {
-        if (this.isWorker) {
+        // if (this.isWorker) {
+        if (true) {
             return await this.workerService.sendMessage(to, message);
         } else {
             // In server mode, message sending is disabled
@@ -725,6 +799,74 @@ class WhatsAppService {
         if (this.isWorker && this.workerService) {
             await WorkerHeartbeat.deleteOne({ workerId: this.workerService.workerId });
             await this.workerService.cleanup();
+        }
+    }
+    // Inside the WhatsAppService class, update the getWorkerStatus method:
+
+    async getWorkerStatus() {
+        const heartbeats = await WorkerHeartbeat.find().sort({ lastHeartbeat: -1 });
+
+        const workers = heartbeats.map(hb => {
+            const isOnline = (Date.now() - new Date(hb.lastHeartbeat).getTime()) < HEARTBEAT_TIMEOUT;
+            return {
+                workerId: hb.workerId,
+                sessionId: hb.sessionId,
+                status: isOnline ? hb.status : 'offline',
+                lastHeartbeat: hb.lastHeartbeat,
+                isOnline,
+                metadata: hb.metadata
+            };
+        });
+
+        // If in worker mode, get detailed status from worker service
+        if (this.isWorker && this.workerService) {
+            const detailedStatus = await this.workerService.getStatus();
+
+            // Merge with heartbeat data
+            return workers.map(w => {
+                if (w.workerId === this.workerService.workerId) {
+                    return {
+                        ...w,
+                        detailed: detailedStatus
+                    };
+                }
+                return w;
+            });
+        }
+
+        return workers;
+    }
+
+    /**
+     * Get detailed status for a specific worker
+     * @param {string} workerId - Worker ID
+     * @returns {Object} Worker status
+     */
+    async getWorkerDetailedStatus(workerId = null) {
+        if (this.isWorker) {
+            // In worker mode, just return local status
+            return await this.workerService.getStatus();
+        } else {
+            // In server mode, we can only return what's in the database
+            const heartbeat = await WorkerHeartbeat.findOne({
+                workerId: workerId || { $exists: true }
+            }).sort({ lastHeartbeat: -1 });
+
+            if (!heartbeat) {
+                return null;
+            }
+
+            const isOnline = (Date.now() - new Date(heartbeat.lastHeartbeat).getTime()) < HEARTBEAT_TIMEOUT;
+
+            return {
+                workerId: heartbeat.workerId,
+                sessionId: heartbeat.sessionId,
+                status: isOnline ? heartbeat.status : 'offline',
+                lastHeartbeat: heartbeat.lastHeartbeat,
+                isOnline,
+                metadata: heartbeat.metadata,
+                note: 'For detailed session info, query from worker directly or use healthCheck endpoint'
+            };
         }
     }
 }
